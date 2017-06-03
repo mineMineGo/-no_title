@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>从web图片裁剪出发：了解H5中的canvas</title>
+</head>
+<body>
+    <form name='test'>
+        <input type="file" name='file'>
+        <input type="submit" value="提交">
+        <button id="clip">裁剪</button>
+    </form>
+    <canvas width="300" height="300"></canvas>
+</body>
+<script type="text/javascript" src="js/jquery-3.2.1.js"></script>
+<script type="text/javascript">
+    (function () {
+        /*
+         好了，现在进入正文。
+         在上一回《从web图片裁剪出发：了解H5中的blob》
+         中我解释了图片在浏览器中以怎样的形式留存，
+         并且在最后一个example中演示了选择图片、预览最后提交的过程。
+         然而这个预览并没有起到什么卵用，因为只能预览不能处理，原图片还是原图片，
+         预览变得可有可无。
+         这一篇我们就在预览这一步里做点手脚，加入处理图片的功能。
+
+         　　我们先修改之前的example，
+         既然要处理图片，肯定要引入canvas，
+         所以我们把原来img这个标签去掉，取而代之的是canvas，
+         并在js中加入对应的修改。
+
+
+         */
+        var canvas = document.querySelector('canvas'),
+            ctx = canvas.getContext('2d'),
+            preview = new Image();
+        document.test.file.addEventListener('change', function() {
+            var fr = new FileReader();
+            fr.onload = function() {
+                preview.src = this.result;
+//
+                preview.onload = function () {
+                    canvas.width = 500;
+                    canvas.height = 500*preview.height/preview.width;
+                    drawImage();
+                }
+            };
+            fr.readAsDataURL(this.files[0]);
+        });
+        function drawImage() {
+            ctx.drawImage(preview, 0, 0,500,500* canvas.height/canvas.width); //把图片绘制到canvas上
+        }
+
+
+        //加入裁剪功能
+
+        /*
+         我们来分析下实现这样一个功能需要做什么。
+         首先选取框有个开始点和结束点，在鼠标按下去的时候确定开始点，
+         在松开的时候确定结束点，在移动的时候还要不停的绘制。
+         那么绘制一个有选取框的内容分几步呢？
+         第一步是绘制底图，第二步是绘制阴影，
+         第三部还是绘制底图，但是只作用于选取框内部
+         。最后想取消选取框怎么办，我们还要有个方法重置开始点和结束点，
+         并且只绘制底图。
+
+         　　我们一步一步来，首先确定开始点和结束点。
+         */
+        var sPoint = {},
+            ePoint = {};
+        canvas.addEventListener('mousedown', function(e) {
+            if(e.button === 0) {
+                sPoint.x = e.offsetX;
+                sPoint.y = e.offsetY;
+                sPoint.drag = true;
+            }
+        });
+        //然后我们确定绘制阴影的的方法，并且在鼠标按下去移动的时候不停的绘制。
+        function drawCover() {
+            ctx.save();
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.restore();
+        }
+        canvas.addEventListener('mousemove', function(e) {
+            if(e.button === 0 && sPoint.drag) {
+                var nPoint = {
+                    x: e.offsetX,
+                    y: e.offsetY
+                };
+                ctx.save();    //clip要通过restore回复
+                ctx.clearRect(0, 0, canvas.width, canvas.height);    //画布全清
+                drawImage();    //绘制底图
+                drawCover();    //绘制阴影
+                ctx.beginPath();    //开始路径
+                ctx.rect(sPoint.x, sPoint.y, nPoint.x - sPoint.x, nPoint.y - sPoint.y);    //设置路径为选取框
+                ctx.clip();    //截取路径内为新的作用区域
+                drawImage();    //在选取框内绘制底图
+                ctx.restore();    //恢复clip截取的作用范围
+            }
+        });
+
+        //　最后我们添加松开鼠标的事件监听，松开左键为拖动结束，松开右键为复原
+
+        canvas.addEventListener('mouseup', function(e) {
+            if(e.button === 0) {
+                sPoint.drag = false;
+                ePoint.x = e.offsetX;
+                ePoint.y = e.offsetY;
+            }else if(e.button === 2) {
+                restore();
+            }
+        });
+        function restore() {
+            sPoint = {};
+            ePoint = {};
+            drawImage();
+        }
+
+        //由于右键会出现恶心的浏览器自带菜单栏，影响体验，我们屏蔽它。
+
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+
+        //现在选取框有了，我们要开始截取了。新添加一个按钮，然后添加点击监听。
+        var clip = document.querySelector('#clip');
+        clip.addEventListener('click', function(e) {
+            e.preventDefault();    //阻止默认事件，不然会触发form的submit
+            if(sPoint.x !== undefined && ePoint.x !== undefined) {
+                var imgData = ctx.getImageData(sPoint.x, sPoint.y, ePoint.x - sPoint.x, ePoint.y - sPoint.y);    //把裁剪区域的图片信息提取出来
+                ctx.clearRect(0, 0, canvas.width, canvas.height);    //清空画布
+                canvas.width = Math.abs(ePoint.x - sPoint.x);    //重置canvas的大小为新图的大小
+                canvas.height = Math.abs(ePoint.y - sPoint.y);
+                ctx.putImageData(imgData, 0, 0);    //把提取出来的图片信息放进canvas中
+                preview.src = canvas.toDataURL();    //裁剪后我们用新图替换底图，方便继续处理
+            }else {
+                alert('没有选择区域');
+            }
+        });
+
+
+
+        //提交函数
+        document.test.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var formData = new FormData(),
+                xhr = new XMLHttpRequest(),
+                mime = 'image/jpeg',
+                dataUrl = canvas.toDataURL(mime, 0.8),  //取出base64
+                data = atob(dataUrl.split(',')[1]),
+                n = data.length,
+                uInt8 = new Uint8Array(n),
+                blob;
+            while(n--) {
+                uInt8[n] = data.charCodeAt(n);
+            }
+            blob = new Blob([uInt8.buffer], {type: mime});
+            formData.append('file', blob, 'test.jpg');
+            xhr.open('post', '/upload');
+            xhr.send(formData);
+        })
+    })()
+</script>
+</html>
