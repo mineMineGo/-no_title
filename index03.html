@@ -9,6 +9,7 @@
         <input type="file" name='file'>
         <input type="submit" value="提交">
         <button id="clip">裁剪</button>
+        <button id="grey">灰度</button>
     </form>
     <canvas width="300" height="300"></canvas>
 </body>
@@ -40,15 +41,17 @@
                 preview.src = this.result;
 //
                 preview.onload = function () {
-                    canvas.width = 500;
-                    canvas.height = 500*preview.height/preview.width;
+                    if(canvas.width == 300){
+                        canvas.width = 500;
+                        canvas.height = 500*preview.height/preview.width;
+                    }
                     drawImage();
                 }
             };
             fr.readAsDataURL(this.files[0]);
         });
         function drawImage() {
-            ctx.drawImage(preview, 0, 0,500,500* canvas.height/canvas.width); //把图片绘制到canvas上
+            ctx.drawImage(preview, 0, 0,canvas.width,canvas.height); //把图片绘制到canvas上
         }
 
 
@@ -141,6 +144,52 @@
             }
         });
 
+
+        //还想再处理话可以对裁剪后的图片进行置灰
+        /*
+         裁剪的功能完成了，我们在来实现第二个功能：灰度。
+         如果说裁剪的功能在于clip的用法，那么灰度的实现是基于getImageData返回的对象的认识。
+         这个对象中有一个属性叫data，这是一个数组，以4个为一组，
+         分别存储了一个像素red、green、blue、opacity四个数据。
+         也就是当你的canvas尺寸为1*1时，它的ImageData.data元素为4个。
+         */
+        var grey = document.querySelector('#grey');
+        grey.addEventListener('click', function(e) {
+            e.preventDefault();
+            var startX=0,startY =0,
+                width = canvas.width,
+                height = canvas.height;
+            console.log(canvas.width);
+            console.log(width);
+            //一如既往的清空画布，不然会处理含有选择框的图内容
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            drawImage();//清空后绘制底图
+            var imgData = ctx.getImageData(startX,startY,
+                        width,height);
+            for(var i=0;i<imgData.data.length;){
+                var red = imgData.data[i],
+                    green = imgData.data[i+1],
+                    blue = imgData.data[i+2],
+                    opacity = imgData.data[i+3],//不处理，可有省去这一行，z
+                    //占位说明这一行是透明度
+                    average = (red+green+blue)/3;//所谓灰度其实就是取得三种颜色平均值
+                imgData.data[i] = imgData[i+1] = imgData[i+2] = average;//三个颜色的值为一样的即是对应的灰色
+                i+=4;
+            }
+
+            /*
+             putImageData参数详解：
+             imgData     	规定要放回画布的 ImageData 对象。
+             x	ImageData   对象左上角的 x 坐标，以像素计。
+             y	ImageData   对象左上角的 y 坐标，以像素计。
+             dirtyX	        可选。水平值（x），以像素计，在画布上放置图像的位置。
+             dirtyY	        可选。水平值（y），以像素计，在画布上放置图像的位置。
+             dirtyWidth	    可选。在画布上绘制图像所使用的宽度。
+             dirtyHeight	可选。在画布上绘制图像所使用的高度。
+             */
+            ctx.putImageData(imgData,startX,startY,0,0,width,height);//把处理过的imgData返回canvas中
+            preview.src = canvas.toDataURL();//保存图片的信息方便在进行处理
+        });
 
 
         //提交函数
