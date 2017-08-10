@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>九宫格</title>
+</head>
+<style>
+  * {
+    padding: 0;
+    margin: 0;
+  }
+
+  body {
+    background: url("img/bg.jpg");
+    background-size: cover;
+  }
+  .pic{
+    width: 1030px;
+    margin: 10px auto;
+  }
+  .pic .pic_img{
+    width: 300px;
+    height: 200px;
+    border: 1px solid #808080;
+    box-shadow: 0 0 10px #f5c4f7;
+    float: left;
+    margin: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pic .pic_img div{
+    position: absolute;
+    top:0;
+    left:0;
+    transform-origin: left bottom;
+    transform:rotate(-100deg);
+    /* 这里用all 就会产生问题*/
+    transition: transform 1s;
+  }
+  .pic .pic_img.cur div{
+    transform:rotate(0deg);
+  }
+  .pic .pic_img div.left{
+    transform-origin: left bottom;
+  }
+  .pic .pic_img div.right{
+    transform-origin: right top;
+  }
+  .pic .pic_img div.top{
+    transform-origin: left top;
+  }
+  .pic .pic_img div.bottom{
+    transform-origin: right bottom;
+  }
+  /*****位置支点
+			*transform-origin:left  bottom; 左边
+			*transform-origin:right  bottom; 底部
+			*transform-origin:right  top; 右边
+			*transform-origin:left  top; 上边
+			******/
+</style>
+<body>
+<div class="pic">
+  <div class="pic_img">
+    <img src="img/t_1.jpg" alt="">
+    <div>
+      <img src="img/1.jpg" alt="">
+    </div>
+  </div>
+  <div class="pic_img">
+    <img src="img/t_2.jpg" alt="">
+    <div>
+      <img src="img/2.jpg" alt="">
+    </div>
+  </div>
+  <div class="pic_img">
+    <img src="img/t_3.jpg" alt="">
+    <div>
+      <img src="img/3.jpg" alt="">
+    </div>
+  </div>
+  <div class="pic_img">
+    <img src="img/t_4.jpg" alt="">
+    <div>
+      <img src="img/4.jpg" alt="">
+    </div>
+  </div>
+  <div class="pic_img">
+    <img src="img/t_5.jpg" alt="">
+    <div>
+      <img src="img/5.jpg" alt="">
+    </div>
+  </div>
+  <div class="pic_img">
+    <img src="img/t_6.jpg" alt="">
+    <div>
+      <img src="img/6.jpg" alt="">
+    </div>
+  </div>
+  <div class="pic_img">
+    <img src="img/t_7.jpg" alt="">
+    <div>
+      <img src="img/7.jpg" alt="">
+    </div>
+  </div>
+  <div class="pic_img">
+    <img src="img/t_8.jpg" alt="">
+    <div>
+      <img src="img/8.jpg" alt="">
+    </div>
+  </div>
+  <div class="pic_img">
+    <img src="img/t_9.jpg" alt="">
+    <div>
+      <img src="img/9.jpg" alt="">
+    </div>
+  </div>
+</div>
+</body>
+<script type="text/javascript" src="js/jquery-3.2.1.js"></script>
+<script type="text/javascript">
+  (function () {
+    $(".pic_img").on("mouseenter mouseleave", function (event) {
+      var $this = $(this);
+      var w = $this.width();
+      var h = $this.height();
+      var x = (event.pageX - this.offsetLeft-(w/2))*(w > h ? (h / w):1);
+      var y = (event.pageY - this.offsetTop-(h/2))*(h > w ? (w / h):1);
+      // 计算鼠标指针位于当前元素“比例空间”中的坐标位置（注：关于“比例空间”详见后面的说明）
+      // 上文中提到的元素“比例空间”是指：
+      // 以元素中心为坐标原点，
+      // 以元素左边位置为X轴的-1，
+      // 以元素右边位置为X轴的1，
+      // 以元素顶部位置为Y轴的-1，
+      // 以元素底部位置为Y轴的1，
+      // 的直角坐标空间。
+      var direction = Math.round(((Math.atan2(y,x)*(180/Math.PI))/90)+3) % 4;
+      var dirName = new Array('u','r','d','l')
+      if(event.type === 'mouseenter'){
+        switch (direction) {
+          case 0:
+            mouseEnter($this,'bottom')
+            break;
+          case 1:
+            mouseEnter($this,"left");
+            break;
+          case 2:
+            mouseEnter($this,'top');
+            break;
+          case 3:
+            mouseEnter($this,'right');
+            break
+        }
+      } else {
+        switch (direction) {
+          case 0:
+            mouseLeave($this,'bottom')
+            break;
+          case 1:
+            mouseLeave($this,"left");
+            break;
+          case 2:
+            mouseLeave($this,'top');
+            break;
+          case 3:
+            mouseLeave($this,'right');
+            break
+        }
+      }
+    })
+    function mouseEnter($this,direction) {
+      $this.find('div').removeClass().addClass(direction)
+      $this.addClass('cur')
+    }
+    function mouseLeave($this,direction) {
+      $this.removeClass('cur')
+      $this.find('div').removeClass().addClass(direction);
+    }
+  })()
+</script>
+</html>
