@@ -1,0 +1,66 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+#image{
+  width: 800px;
+  height: 450px;
+  display: block;
+  margin: 0 auto;
+
+  -webkit-filter: blur(20px);
+  filter: blur(20px);
+
+  position:absolute;
+  top: 0;
+  left: 0;
+  /*灰度，能变成灰色老照片,0-1*/
+  /*filter: grayscale(0.8)*/
+  /*等等*/
+  z-index: 0;
+}
+
+#blur_div{
+  width: 800px;
+  height: 450px;
+  margin: 0 auto;
+  position: relative;
+}
+#canvas{
+  display: block;
+  margin: 0 auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+.button{
+  display: block;
+  position: absolute;
+  z-index: 200;
+  width: 100px;
+  height: 30px;
+
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  line-height: 30px;
+
+  border-radius: 5px;
+}
+#reset_button{
+  left: 200px;
+  bottom: 20px;
+  background-color: #058;
+}
+#reset_button:hover{
+  background-color: #047;
+}
+#show_button{
+  right: 200px;
+  bottom: 20px;
+  background-color: #085;
+}
+#show_button:hover{
+  background-color: #074;
+}

@@ -102,7 +102,7 @@ var utils = (function () {
 	});
 
 	me.hasClass = function (e, c) {
-		var re = new RegExp("(^|\\s)" + c + "(\\s|$)");
+		var re = new RegExp("(^|\\js)" + c + "(\\js|$)");
 		return re.test(e.className);
 	};
 
@@ -121,7 +121,7 @@ var utils = (function () {
 			return;
 		}
 
-		var re = new RegExp("(^|\\s)" + c + "(\\s|$)", 'g');
+		var re = new RegExp("(^|\\js)" + c + "(\\js|$)", 'g');
 		e.className = e.className.replace(re, ' ');
 	};
 

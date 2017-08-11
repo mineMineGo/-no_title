@@ -249,7 +249,7 @@ function toArray(obj) {
 }
 
 /**
- * unique array with objects based on a key (like 'id') or just by the array's value
+ * unique array with objects based on a key (like 'id') or just by the array'js value
  * @param {Array} src [{id:1},{id:2},{id:1}]
  * @param {String} [key]
  * @param {Boolean} [sort=False]
@@ -837,7 +837,7 @@ inherit(PointerEventInput, Input, {
             removePointer = true;
         }
 
-        // it not found, so the pointer hasn't been down (so it's probably a hover)
+        // it not found, so the pointer hasn't been down (so it'js probably a hover)
         if (storeIndex < 0) {
             return;
         }
@@ -1128,7 +1128,7 @@ TouchAction.prototype = {
     },
 
     /**
-     * compute the value for the touchAction property based on the recognizer's settings
+     * compute the value for the touchAction property based on the recognizer'js settings
      * @returns {String} value
      */
     compute: function() {
@@ -1173,7 +1173,7 @@ TouchAction.prototype = {
     },
 
     /**
-     * call preventDefault to prevent the browser's default behavior (scrolling in most cases)
+     * call preventDefault to prevent the browser'js default behavior (scrolling in most cases)
      * @param {Object} srcEvent
      */
     preventSrc: function(srcEvent) {
@@ -1217,7 +1217,7 @@ function cleanTouchActions(actions) {
 /**
  * Recognizer flow explained; *
  * All recognizers have the initial state of POSSIBLE when a input session starts.
- * The definition of a input session is from the first input until the last input, with all it's movement in it. *
+ * The definition of a input session is from the first input until the last input, with all it'js movement in it. *
  * Example session for mouse-input: mousedown -> mousemove -> mouseup
  *
  * On each recognizing cycle (see Manager.recognize) the .recognize() method is executed
@@ -1414,7 +1414,7 @@ Recognizer.prototype = {
         if (this.canEmit()) {
             return this.emit(input);
         }
-        // it's failing anyway
+        // it'js failing anyway
         this.state = STATE_FAILED;
     },
 
@@ -2200,7 +2200,7 @@ Manager.prototype = {
         var recognizers = this.recognizers;
 
         // this holds the recognizer that is being recognized.
-        // so the recognizer's state needs to be BEGAN, CHANGED, ENDED or RECOGNIZED
+        // so the recognizer'js state needs to be BEGAN, CHANGED, ENDED or RECOGNIZED
         // if no recognizer is detecting a thing, it is set to `null`
         var curRecognizer = session.curRecognizer;
 
