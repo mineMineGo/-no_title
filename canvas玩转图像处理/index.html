@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body style="background: black">
+  <canvas id="canvas" style="display: block;margin: 0 auto;border: solid 1px #aaa;" width="300px" height="300px">
+    您的浏览器尚不支持canvas
+  </canvas>
+  <canvas id="waterMark"style="display: none;margin: 0 auto;border: solid 1px #aaa;"></canvas>
+  <input type="range" min="0.5" max="1.9" step="0.01" value="1.0" id="scale_range" style="display: block;margin: 0 auto;width: 500px;"/>
+</body>
+<script type="text/javascript">
+  var canvas = document.getElementById('canvas');
+  var context = canvas.getContext('2d');
+  var image = new Image();
+  var slider = document.getElementById('scale_range');
+
+  var waterMarkCanvas = document.getElementById('waterMark');
+  var waterMarkContext = waterMarkCanvas.getContext('2d');
+
+  var width = 500;
+  window.onload = function () {
+    var sliderValue = slider.value;
+    image.src='img/1.jpg';
+    image.onload = function () {
+      canvas.width = width ;
+      canvas.height = width / (image.naturalWidth/image.naturalHeight);
+      var scale = canvas.width/canvas.height;
+      var imageWidth  = image.naturalWidth >= image.naturalHeight ? image.naturalHeight * scale : image.naturalWidth;
+      var imageHeight = image.naturalWidth >= image.naturalHeight ? image.naturalHeight: image.naturalWidth / scale;
+
+      drawImageScale(sliderValue,imageWidth,imageHeight);
+
+      slider.onmousemove = function () {
+        sliderValue = slider.value;
+        drawImageScale(sliderValue,imageWidth,imageHeight);
+      }
+      document.body.onmousewheel = function (e) {
+        if (e.wheelDelta > 0) { //当滑轮向上滚动时
+          slider.value = Number(sliderValue) + 0.01;
+          sliderValue = slider.value;
+        }else{
+          slider.value = Number(sliderValue) - 0.01;
+          sliderValue = slider.value;
+        }
+
+        drawImageScale(sliderValue,imageWidth,imageHeight);
+      }
+      /*
+       要在绘图上下文中绘制图片，可以使用 drawImage 方法。该方法有三种不同
+       的参数:
+        drawImage(image,dx,dy)
+        drawImage(image,dx,dy,dw,dh)
+        drawImage(image,sx,sy,sw,sh,dx,dy,dw,dh)
+
+//       drawImage(image,sourceX,sourceY,sourceWidth,sourceHeight,destX,destY,destWidth, destHeight)
+       */
+//      context.drawImage(image,0,0,canvas.width,canvas.height)
+      //context.drawImage(image,0,0,imageWidth,imageHeight,0,0,canvas.width,canvas.height)
+    }
+
+    //setup waterMark设置水印
+
+    waterMarkCanvas.width = 200;
+    waterMarkCanvas.height = 30;
+
+    waterMarkContext.font = 'bold 16px Arial';
+    waterMarkContext.lineWidth = '1';
+    waterMarkContext.fillStyle = 'rgba(255,255,255,0.5)';
+    waterMarkContext.textBaseline = 'middle';
+    waterMarkContext.fillText('===mine mine.com===',15,15)
+
+    
+    function drawImageScale(scale,imageWidth,imageHeight) {
+      var image_width = imageWidth * scale;
+      var image_height = imageHeight* scale;
+
+      context.clearRect(0,0,canvas.width,canvas.height);
+      context.drawImage(image,(image_width-imageWidth)/2,(image_height - imageHeight)/2,
+        imageWidth-imageWidth*(scale-1),imageHeight-imageHeight*(scale-1),0,0,canvas.width,canvas.height);
+
+      context.drawImage(waterMarkCanvas,canvas.width - waterMarkCanvas.width,
+        canvas.height - waterMarkCanvas.height);
+    }
+  }
+</script>
+</html>
