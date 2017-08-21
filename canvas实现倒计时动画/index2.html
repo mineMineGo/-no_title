@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>canvas绘制圆和弧线</title>
+</head>
+<body>
+  <canvas id="myCanvas" width="800" height="800"></canvas>
+</body>
+<script type="text/javascript">
+  (function () {
+    var myCanvas = document.getElementById('myCanvas');
+    var myContext = myCanvas.getContext('2d');
+
+    myCanvas.width = 1024;
+    myCanvas.height = 20000;
+
+    myContext.lineWidth = 5;
+    myContext.strokeStyle = "#005588";
+
+    myContext.arc(300,300,200,0,-1.5*Math.PI,true);
+    myContext.stroke();
+
+    for (var i=0;i<10;i++) {
+      myContext.beginPath();
+      myContext.arc(50+i*100,60,40,0,2*Math.PI*(i+1)/10,false);
+      //closePath会自动闭合开口的圆弧
+      myContext.closePath();
+      myContext.stroke();
+    }
+
+    for(var j=0;j<10;j++){
+      //　没有closePath不会闭合
+      myContext.beginPath();
+      myContext.arc(50+j*100,550,40,0,2*Math.PI*(j+1)/10,false);
+      myContext.stroke();
+    }
+
+    for (var m=0;m<10;m++) {
+      myContext.beginPath();
+      myContext.arc(50+m*100,650,40,0,2*Math.PI*(m+1)/10,false);
+      //closePath会自动闭合开口的圆弧
+      myContext.closePath();
+      myContext.stroke();
+    }
+    for(var k=0;k<10;k++){
+      //　没有closePath不会闭合
+      myContext.beginPath();
+      myContext.arc(50+k*100,750,40,0,2*Math.PI*(k+1)/10,true);
+      myContext.stroke();
+    }
+
+    myContext.fillStyle = '#005588';
+    for(var n=0;n<10;n++){
+      //　没有closePath不会闭合
+      myContext.beginPath();
+      myContext.arc(50+n*100,850,40,0,2*Math.PI*(n+1)/10,true);
+      // closePath对于fill了来说是没有用的。
+      myContext.fill();
+    }
+
+  })()
+</script>
+</html>
