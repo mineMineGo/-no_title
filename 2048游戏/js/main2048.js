@@ -3,6 +3,7 @@
  */
 var board = new Array();
 var score = 0;
+var hasConflictedArr = new Array();
 $(document).ready(function () {
     newGame()
 });
@@ -56,8 +57,10 @@ function init() {
     
     for (var i = 0; i < 4; i++) {
         board[i] = new Array();
+        hasConflictedArr[i] = new Array();
         for (var j = 0; j < 4; j++) {
             board[i][j] = 0;
+            hasConflictedArr[i][j] = false;
         }
     }
     updateBoardView();
@@ -89,6 +92,7 @@ function updateBoardView() {
                 });
                 $ele.html(board[i][j]);
             }
+            hasConflictedArr[i][j] = false;
         }
     }
 }
@@ -159,7 +163,9 @@ function moveLeft() {
                         showMoveAnimation(i, j, i, k);
                         board[i][k] = board[i][j];
                         board[i][j] = 0;
-                    } else if (board[i][k] === board[i][j] && noBlockHorizontal(i, k, j, board)) {
+                    } else if (board[i][k] === board[i][j] &&
+                        noBlockHorizontal(i, k, j, board) &&
+                        !hasConflictedArr[i][k]) {
                         // move
                         showMoveAnimation(i, j, i, k);
                         // add
@@ -167,7 +173,9 @@ function moveLeft() {
                         board[i][j] = 0;
                         // add score
                         score += board[i][k];
-                        updateScore(score)
+                        updateScore(score);
+                        //
+                        hasConflictedArr[i][k] = true;
                     }
                 }
             }
@@ -194,13 +202,14 @@ function moveRight() {
                         showMoveAnimation(i,j,i,k);
                         board[i][k] = board[i][j];
                         board[i][j] = 0;
-                    } else if　(board[i][k] === board[i][j] && noBlockHorizontal(i,j,k,board)) {
+                    } else if　(board[i][k] === board[i][j] && noBlockHorizontal(i,j,k,board) && !hasConflictedArr[i][k]) {
                         showMoveAnimation(i,j,i,k);
                         board[i][k] += board[i][j];
                         board[i][j] = 0;
     
                         score += board[i][k];
                         updateScore(score);
+                        hasConflictedArr[i][k] = true;
                     }
                 }
             }
@@ -222,13 +231,15 @@ function moveUp() {
                         showMoveAnimation(i,j,k,j);
                         board[k][j] = board[i][j];
                         board[i][j] = 0;
-                    }else  if(board[k][j] === board[i][j] && noBlockVertical(j,k,i,board)){
+                    }else  if(board[k][j] === board[i][j] && noBlockVertical(j,k,i,board) && !hasConflictedArr[k][j]){
                         showMoveAnimation(i,j,k,j);
                         board[k][j] += board[i][j];
                         board[i][j] = 0;
     
                         score += board[k][j];
-                        updateScore(score)
+                        updateScore(score);
+    
+                        hasConflictedArr[k][j] = true;
                     }
                 }
             }
@@ -250,13 +261,15 @@ function moveDown() {
                         showMoveAnimation(i,j,k,j);
                         board[k][j] = board[i][j];
                         board[i][j] = 0;
-                    }else if(board[k][j] === board[i][j] && noBlockVertical(j,i,k,board)){
+                    }else if(board[k][j] === board[i][j] && noBlockVertical(j,i,k,board) && !hasConflictedArr[k][j]){
                         showMoveAnimation(i,j,k,j);
                         board[k][j] += board[i][j];
                         board[i][j] = 0;
     
                         score += board[k][j];
                         updateScore(score);
+    
+                        hasConflictedArr[k][j] = true;
                     }
                 }
             }
