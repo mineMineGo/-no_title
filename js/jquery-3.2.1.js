@@ -5621,7 +5621,7 @@ var
 	/* eslint-enable */
 
 	// Support: IE <=10 - 11, Edge 12 - 13
-	// In IE/Edge using regex groups here causes severe slowdowns.
+	// In IE/Edge using regexp groups here causes severe slowdowns.
 	// See https://connect.microsoft.com/IE/feedback/details/1736512/
 	rnoInnerhtml = /<script|<style|<link/i,
 

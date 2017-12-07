@@ -2,9 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <!--htmlWebpackPlugin-->
+    <title><%=htmlWebpackPlugin.options.title %></title>
+    <script type="text/javascript">
+        <%= compilation.assets[
+        htmlWebpackPlugin.files.chunks.my_main.entry.substr(
+            htmlWebpackPlugin.files.publicPath.length)].source()%>
+    </script>
 </head>
 <body>
-$END$
+<!--这会一行出示，模板自动化构建时候应该是不显示的-->
+
+
+
+
+    <p>我是作为模板渲染进入的</p>
+    <p> 现在时间：<%= htmlWebpackPlugin.options.date%></p>
+
+    <% for (var key in htmlWebpackPlugin.files.chunks){%>
+        <% if(key==='main'){%>
+            <script type="text/javascript" src="<%=
+            htmlWebpackPlugin.files.chunks[key].entry
+            %>">
+
+            </script>
+        <%}%>
+    <%}%>
+
 </body>
 </html>

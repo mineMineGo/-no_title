@@ -1276,7 +1276,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 	rbuggyQSA = [];
 
 	if ( (support.qsa = rnative.test( document.querySelectorAll )) ) {
-		// Build QSA regex
+		// Build QSA regexp
 		// Regex strategy adopted from Diego Perini
 		assert(function( el ) {
 			// Select is set to empty string on purpose
@@ -2975,7 +2975,7 @@ var rootjQuery,
 				selector[ selector.length - 1 ] === ">" &&
 				selector.length >= 3 ) {
 
-				// Assume that strings that start and end with <> are HTML and skip the regex check
+				// Assume that strings that start and end with <> are HTML and skip the regexp check
 				match = [ null, selector, null ];
 
 			} else {
@@ -5621,7 +5621,7 @@ var
 	/* eslint-enable */
 
 	// Support: IE <=10 - 11, Edge 12 - 13
-	// In IE/Edge using regex groups here causes severe slowdowns.
+	// In IE/Edge using regexp groups here causes severe slowdowns.
 	// See https://connect.microsoft.com/IE/feedback/details/1736512/
 	rnoInnerhtml = /<script|<style|<link/i,
 
