@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设计模式－工厂设计模式</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui"/>
+</head>
+<body>
+<a href="https://www.cnblogs.com/bfwbfw/p/7661020.html ">非原创，查看原地址点击</a>
+
+一，介绍<br/>
+
+工厂模式创建对象（视为工厂里的产品）时无需指定创建对象的具体类。<br/>
+
+工厂模式定义一个用于创建对象的接口，这个接口由子类决定实例化哪一个类。该模式使一个类的实例化延迟到了子类。而子类可以重写接口方法以便创建的时候指定自己的对象类型。
+
+<br/>
+在这里将工厂简单分为三种：<br/>
+
+（1）简单工厂：通过第三方的类完成松耦合的任务。<br/>
+（2）复杂工厂：通过把实例化的任务交给子类来完成的，用以到达松耦合的目的。<br/>
+（3）超级工厂：通过eval()来完成智能工厂。<br/>
+工厂的目的：在于判断接口最终用哪个类实例化（故与接口密不可分）。<br/>
+使用工厂最终达到的效果是：多态，和类与类之间的松耦合。
+<br/>
+<br/>
+二，正文部分<br/>
+工厂模式与接口是密不可分的所以我们需要先引入接口文件和继承类文件<br/>
+
+
+</body>
+<script type="text/javascript">
+    console.log('设计模式－工厂设计模式')
+    /*(定义一个静态方法来实现接口与实现类的直接检验
+    //静态方法不要写出Interface.prototype ,因为这是写到接口的原型链上的
+    //我们要把静态的函数直接写到类层次上
+    //(1)定义一个接口类
+    */
+
+    var Interface = function (name, methods) {
+        if (arguments.length < 2) {
+            alert('参数必须是两个');
+            return
+        }
+        this.name = name;
+        this.methods = [];　//定义一个空数组来装载函数名
+        for (var i = 0; i < methods.length; i++) {
+            if (typeof methods[i] !== 'string') {
+                alert('函数名必须是字符串类型')
+            } else {
+                this.methods.push(methods[i])
+            }
+        }
+    }
+    Interface.ensureImplement = function (object) {
+        if (arguments.length < 2) {
+            throw new Error("参数必须不少于２个");
+        }
+        for (var i = 1; i < arguments.length; i++) {
+            var inter = arguments[i];
+            // 如果是接口就必须是interface类型
+            if (inter.constructor !== Interface) {
+                throw new Error("如果是接口类的话，就必须是Interface类型");
+            }
+            // 判断接口中的方法是否全部实现
+            // 遍历函数集合
+            for (var j = 0; j < inter.methods.length; j++) {
+                var method = inter.methods[j]; //接口中所有函数
+                // object[method]传入的函数
+                // 最终是判断传入的函数是否与接口中所用的函数匹配
+                if (!object[method] || typeof object[method] !== 'function') {
+                    // 实现类必须有方法名字与接口中所用方法名相同
+                    throw new Error('实现类中没有完全实现接口中的所有方法')
+                }
+            }
+        }
+
+    }
+
+    // （2）继承文件
+    // /*创建extend函数为了程序中所有的继承操作*/
+    //subClass:子类  superClass：超类
+
+    function extend(subClass, superClass) {
+        // 1　使子类原型属性等于父类的原型属性
+        // 初始化一个中间空对象，目的是为了转换主父关系
+        var F = function () {}
+        F.prototype = superClass.prototype;
+        //让子类继承
+        subClass.prototype = new F()
+        subClass.prototype.constructor = subClass;
+        // 3为子类增加属性　superClass => 原型链的引用
+        subClass.superClass = superClass.prototype;
+        //　４增加一个保险，就算你的原型类是超类（object）那么要是也把你的构造函数级别降下来
+        if (superClass.prototype.constructor === Object.prototype.constructor) {
+            superClass.prototype.constructor = superClass;
+        }
+    }
+
+
+    // 创建接口对象
+    var Pet = new Interface('Pet', ['eat', 'run', 'sing', 'register']);
+    //　定义一个宠物店并在prototype上进行扩展
+    var PetShop = function () {}
+    PetShop.prototype = {
+        //　出售宠物的方法
+        sellPet: function (kind) {
+            //　宠物对象
+            var pet;
+            //　宠物种类
+            switch (kind) {
+                case "dog":
+                    pet = new Dog();
+                    break;
+                case 'cat':
+                    pet = new Cat();
+                    break;
+                case 'pig':
+                    pet = new Pig();
+                    break;
+                default:
+                    pet = new Bird();
+            }
+            //　验证接口
+            //　判断pet对象是否全部实现接口pet里面全部的方法(对象，接口)
+            Interface.ensureImplement(pet, Pet);
+            pet.eat();
+            pet.register();
+            return pet
+        }
+    }
+    // 3分析宠物的一些特点可以将一些公共的部分提取出来（这里只是简单的提取）
+    // 基类　有共同的提出来
+    function basePet() {
+        this.register = function () {
+            document.write('宠物登记...<br>');
+        }
+        this.eat = function () {
+            document.write('宠物吃饭...<br>');
+        }
+    }
+
+    // 各个实现类---这里是各种动物
+    function Dog() {
+        Dog.superClass.constructor.call(this);//继承父类
+        //实现接口部分
+        this.run = function () {
+            document.write("小狗跑．．．<br>")
+        }
+        this.sing = function () {
+            document.write("小狗唱歌．．.<br>")
+        }
+    }
+
+    function Cat() {
+        Cat.superClass.constructor.call(this);//继承父类
+        //实现接口部分
+        this.run = function () {
+            document.write("小猫跑......<br>")
+        }
+        this.sing = function () {
+            document.write("小猫唱歌......<br>")
+        }
+    }
+
+    function Pig() {
+        Pig.superClass.constructor.call(this);//继承父类
+        //实现接口部分
+        this.run = function () {
+            document.write("小猪跑......<br>")
+        }
+        this.sing = function () {
+            document.write("小猪唱歌......<br>")
+        }
+    }
+
+    function Bird() {
+        Bird.superClass.constructor.call(this);//继承父类
+        //实现接口部分
+        this.run = function () {
+            document.write("小鸟跑......<br>")
+        }
+        this.sing = function () {
+            document.write("小鸟唱歌......<br>")
+        }
+    }
+
+    // 5各个实现类的继承基类
+    //继承
+    extend(Dog, basePet);
+    extend(Cat, basePet);
+
+    extend(Pig, basePet);
+    extend(Bird, basePet);
+
+
+    // 6创建宠物的开始卖宠物
+    var newPetShop = new PetShop();
+    var flowerPig = newPetShop.sellPet('pig');
+    flowerPig.run()
+
+    /*
+    总结一下，上述好像没怎么体现有关工厂之类的，我们应该注意到这么一个问题就是：当需要增加一个新品种宠物时，我们需要修改 '宠物店类'，耦合度较高。
+
+为了解决这个问题我们使用简单工厂模式来解决。
+
+
+     */
+</script>
+</html>
