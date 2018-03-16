@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>小球坠落动画效果</title>
+</head>
+<body>
+  <canvas id="myCanvas" width="1024" height="800" style="border: solid 1px red;"></canvas>
+</body>
+<script type="text/javascript">
+  (function () {
+    var ball = {
+      x: 512,
+      y: 100,
+      r: 20,
+      g: 2,//　重力加速度
+      vx: -4,// 水平速度
+      vy: -10,　//　垂直速度
+      color: '#005588'
+    };
+    window.onload = function () {
+      var myCanvas = document.getElementById('myCanvas');
+      var myContext = myCanvas.getContext('2d');
+
+      myCanvas.width = 1024;
+      myCanvas.height = 768;
+      setInterval(function () {
+        render(myContext);
+        update()
+      },50);
+      function update() {
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+        ball.vy += ball.g;
+        //　判断小球是否坠落到底部
+        if(ball.y >= myCanvas.height - ball.r){
+          ball.y = myCanvas.height - ball.r;
+          ball.vy = -ball.vy*0.5
+        }
+      }
+      function render(ctx) {
+        ctx.clearRect(0,0,myCanvas.width,myCanvas.height);
+
+        //　必须beginPath否则以前的路径也会被绘制出来，
+        //　因为绘制状态没有清除
+        ctx.beginPath();
+        ctx.fillStyle = ball.color;
+        ctx.arc(ball.x,ball.y,ball.r,0,2*Math.PI,false);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+  })()
+</script>
+</html>
