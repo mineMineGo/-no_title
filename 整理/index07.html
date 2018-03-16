@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>摄像头</title>
+</head>
+<body>
+    <video width="640" height="480" autoplay></video>
+    <canvas id="canvas_first" width="640" height="480"></canvas>
+    <canvas id="canvas_second" width="640" height="480"></canvas>
+</body>
+<script type="text/javascript">
+    (function () {
+        //1： 调用摄像头
+        var video = document.querySelector("video");
+        navigator.webkitGetUserMedia({
+            video: true
+        },success,error);
+        function success(stream) {
+            video.src=window.webkitURL.createObjectURL(stream);
+            video.play();
+        }
+        function error(err) {
+            alert('video error::'+err)
+        }
+        //2： 捕捉video画面
+        /*
+         光是开着摄像头监视房间可没有任何意义，浏览器不会帮你对监控画面进行分析。
+         所以这里我们得手动用脚本捕获 video 上的帧画面，用于在后续进行数据分析。
+
+         从这里开始咱们就要借助 canvas 力量了。
+         在 Canvas入门（五）一文我们介绍过 ctx.drawImage() 方法，
+         通过它可以捕获 video 帧画面并渲染到画布上。
+         */
+        var first_canvas = document.getElementById("canvas_first");
+        var ctx = first_canvas.getContext('2d');
+        
+        //把当前视频镇内容渲染到画布上
+        setTimeout(function () {
+             ctx.drawImage(video,0,0,640,480);
+        },2000);
+
+        //3:对捕捉到的两个帧动画执行差异混合
+        /*
+         在上面我们提到过，要有效地识别某个场景，
+         需要对视频画面进行数据分析。
+
+         那么要怎么识别咱们的房子是否有人突然闯入了呢？
+         答案很简单 —— 定时地捕获 video 画面，
+         然后对比前后两帧内容是否存在较大变化。
+
+         我们先简单地写一个定时捕获的方法，
+         并将捕获到的帧数据存起来：
+         */
+
+        var preFrame,//前一帧
+            currentFrame; //当前帧
+        //捕捉并保存帧内容
+        function captureAndSaveFrame(){
+            console.log(ctx);
+            preFrame =  currentFrame;
+            ctx.drawImage(video,0,0,640,480);
+            currentFrame = canvas.toDataURL();//转为base64并保存
+        }
+        //定时捕捉
+        function timer(delta){
+            setTimeout(function () {
+                captureAndSaveFrame();
+                timer(delta)
+            },delta || 500)
+        }
+        timer();
+        //如上代码所示，画布会每隔500毫秒捕获并渲染一次 video 的帧内容：
+
+        //留意这里我们使用了 canvas.toDataURL 方法来保存帧画面。
+
+        //接着就是数据分析处理了，我们可以通过对比前后捕获的帧画面来判断摄像头是否监控到变化，那么怎么做呢？
+
+        //熟悉设计的同学肯定常常使用一个图层功能 —— 混合模式：
+
+        //当有两个图层时，对顶层图层设置“差值/Difference”的混合模式，可以一目了然地看到两个图层的差异：
+
+        /*
+         差值”模式原理：要混合图层双方的RGB值中每个值分别进行比较，
+         用高值减去低值作为合成后的颜色，通常用白色图层合成一图像时，可以得到负片效果的反相图像。
+         用黑色的话不发生任何变化（黑色亮度最低，下层颜色减去最小颜色值0，结果和原来一样），
+         而用白色会得到反相效果（下层颜色被减去，得到补值），其它颜色则基于它们的亮度水平
+         在CSS3中，已经有 blend-mode 特性来支持这个有趣的混合模式，
+         不过我们发现，在主流浏览器上，
+         canvas 的 globalCompositeOperation 接口也已经良好支持了图像混合模式：
+         */
+
+    })();
+</script>
+</html>

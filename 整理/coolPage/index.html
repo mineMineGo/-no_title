@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>炫酷单页面</title>
+</head>
+<style type="text/css">
+  body {
+    background: url("img/bg.jpg");
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  .check {
+    height: 320px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+  }
+
+  .check ul {
+    width: 900px;
+    margin: 0 auto;
+    background: #f00;
+  }
+
+  ul li {
+    list-style: none;
+    width: 150px;
+    height: 150px;
+    position: absolute;
+    -webkit-transition: all 2s;
+  }
+
+  ul li:nth-of-type(1) {
+    right: 900px;
+  }
+
+  ul li .rotate {
+    width: 150px;
+    height: 150px;
+    animation: roll 3s linear infinite;
+    background: url("img/bg2.png");
+    background-size: 100% 100%;
+    -webkit-transition: all 2s;
+  }
+
+  ul li .rotate:hover {
+    cursor: pointer;
+    opacity: 0.5;
+  }
+
+  ul li:nth-of-type(1) img {
+    position: absolute;
+    top: 5px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  ul li:nth-of-type(2) {
+    right: 60px;
+    top: 100px;
+  }
+
+  ul li:nth-of-type(2) img {
+    position: absolute;
+    top: 3px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  ul li:nth-of-type(3) {
+    top: -240px;
+    right: 160px;
+  }
+
+  ul li:nth-of-type(3) img {
+    position: absolute;
+    top: 3px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  @-webkit-keyframes roll {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .content_320{
+    height: 320px;
+  }
+  .content{
+    color: white;
+  }
+  .target{
+    top: 0 !important;
+    right: 50px !important;
+  }
+</style>
+　　
+<body>
+<div class="check">
+  <ul>
+    <li>
+      <div class="rotate"></div>
+      <img src="img/ico4.png" alt="">
+    </li>
+    <li>
+      <div class="rotate"></div>
+      <img src="img/ico5.png" alt="">
+    </li>
+    <li>
+      <div class="rotate"></div>
+      <img src="img/ico7.png" alt="">
+    </li>
+  </ul>
+</div>
+<div class="content">
+  <div class="pane">
+    <p>css动画</p>
+    <p>做动画效果</p>
+  </div>
+</div>
+</body>
+<script type="text/javascript" src="js/jquery-3.2.1.js"></script>
+<script type="text/javascript">
+  (function () {
+    $(document).ready(function () {
+      $('.check li').click(function () {
+        $(this).addClass('target').siblings().removeClass('target');
+        $('.content').addClass('content_320')
+        var i = Number($(this).index());
+        switch (i){
+          case 0:
+            $(".check li").eq(1).css({"top":"120px", "right":"900px"});
+            $(".check li").eq(2).css({"top":"120px", "right":"60px"});
+            break;
+          case 1:
+            $(".check li").eq(2).css({"top":"120px", "right":"900px"});
+            $(".check li").eq(0).css({"top":"120px", "right":"60px"});
+            break;
+          case 2:
+            $(".check li").eq(0).css({"top":"120px", "right":"900px"});
+            $(".check li").eq(1).css({"top":"120px", "right":"60px"});
+            break
+        }
+      })
+    })
+  })()
+</script>
+</html>

@@ -1,0 +1,53 @@
+@charset "utf-8";
+body {
+  background-color: red;
+  height: 100%;
+}
+/*
+我是注释，编译后出现
+ */
+/*
+less中定义变量用@tesWidth
+ */
+div {
+  width: 300px;
+}
+/*混合样式*/
+.div1 {
+  width: 100px;
+  height: 100px;
+  background-color: yellow;
+  width: 200px;
+  background-color: #005588;
+  border: solid 33px green;
+  line-height: 30px;
+}
+.div1 .sanjiao {
+  border-width: 100px;
+  border-color: transparent transparent #ccc transparent;
+  border-style: solid dashed solid dashed;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+.div2 {
+  width: 200px;
+  background-color: #005588;
+}
+.mine {
+  width: 620px;
+}
+.mine .test_argument {
+  border: 40px yellow solid;
+}
+.test_03 {
+  width: calc(100% - 35);
+}
+.test_important {
+  border-width: 5px !important;
+  border-color: transparent transparent #ccc transparent !important;
+  border-style: solid dashed solid dashed !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}

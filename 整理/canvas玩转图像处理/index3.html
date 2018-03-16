@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div style="margin: 20px auto;width: 1700px;">
+  <canvas id="leftCanvas" width="800" height="600" style=""></canvas>
+  <canvas id="rightCanvas" width="800" height="600" style=""></canvas>
+</div>
+<div style="clear: both;"></div>
+<div style="text-align: center;margin-top: 50px;font-size: 20px">
+  <a href="javascript:grayFilter()">Filter</a>
+  <a href="javascript:blackEffect()">Black&white Effect</a>
+  <a href="javascript:reverseEffect()">Reverse Effect</a>
+  <a href="javascript:blurEffect()">Blur Effect(有问题)</a>
+</div>
+</body>
+<script type="text/javascript">
+  var leftCanvas = document.getElementById('leftCanvas');
+  var leftContext = leftCanvas.getContext('2d');
+
+  var rightCanvas = document.getElementById('rightCanvas');
+  var rightContext = rightCanvas.getContext('2d');
+
+  var image = new Image();
+  window.onload = function () {
+    image.src = 'img/1.jpg';
+    image.onload = function () {
+      var scale = leftCanvas.width / leftCanvas.height;
+      var imageWidth = image.naturalWidth >= image.naturalHeight ? image.naturalHeight * scale : image.naturalWidth;
+      var imageHeight = image.naturalWidth >= image.naturalHeight ? image.naturalHeight : image.naturalWidth / scale;
+
+      leftContext.drawImage(image, 0, 0, imageWidth, imageHeight, 0, 0, leftCanvas.width, leftCanvas.height);
+
+
+    }
+  }
+  function grayFilter() {
+    var imageData = leftContext.getImageData(0, 0, leftCanvas.width, leftCanvas.height);
+    var pixelData = imageData.data;
+    for (var i = 0; i < rightCanvas.width * rightCanvas.height; i++) {
+//          pixelData[ 4 * i + 0 ] = 0;
+//          pixelData[4*i+1] = 0;
+//          pixelData[4*i+2] = 0;
+      //里面存储的是rgba值
+      var r = pixelData[4 * i + 0];
+      var g = pixelData[4 * i + 1];
+      var b = pixelData[4 * i + 2];
+
+      //　灰度滤镜公式
+      var gray = r * 0.3 + g * 0.59 + b * 0.11;
+      pixelData[4 * i + 0] = gray;
+      pixelData[4 * i + 1] = gray;
+      pixelData[4 * i + 2] = gray;
+    }
+    rightContext.putImageData(imageData, 0, 0, 0, 0, rightCanvas.width, rightCanvas.height);
+  }
+  function blackEffect() {
+    var imageData = leftContext.getImageData(0, 0, leftCanvas.width, leftCanvas.height);
+    var pixelData = imageData.data;
+    for (var i = 0; i < rightCanvas.width * rightCanvas.height; i++) {
+//          pixelData[ 4 * i + 0 ] = 0;
+//          pixelData[4*i+1] = 0;
+//          pixelData[4*i+2] = 0;
+      //里面存储的是rgba值
+      var r = pixelData[4 * i + 0];
+      var g = pixelData[4 * i + 1];
+      var b = pixelData[4 * i + 2];
+
+      //　灰度滤镜公式
+      var gray = r * 0.3 + g * 0.59 + b * 0.11;
+      if (gray > 255 / 2) {
+        v = 255
+      } else {
+        v = 0;
+      }
+      pixelData[4 * i + 0] = v;
+      pixelData[4 * i + 1] = v;
+      pixelData[4 * i + 2] = v;
+    }
+    rightContext.putImageData(imageData, 0, 0, 0, 0, rightCanvas.width, rightCanvas.height);
+  }
+
+  function reverseEffect() {
+    var imageData = leftContext.getImageData(0, 0, leftCanvas.width, leftCanvas.height);
+    var pixelData = imageData.data;
+    for (var i = 0; i < rightCanvas.width * rightCanvas.height; i++) {
+//          pixelData[ 4 * i + 0 ] = 0;
+//          pixelData[4*i+1] = 0;
+//          pixelData[4*i+2] = 0;
+      //里面存储的是rgba值
+      var r = pixelData[4 * i + 0];
+      var g = pixelData[4 * i + 1];
+      var b = pixelData[4 * i + 2];
+
+      pixelData[4 * i + 0] = 255 - r;
+      pixelData[4 * i + 1] = 255 - g;
+      pixelData[4 * i + 2] = 255 - b;
+    }
+    rightContext.putImageData(imageData, 0, 0, 0, 0, rightCanvas.width, rightCanvas.height);
+  }
+  
+  function blurEffect() {
+    var imageData = leftContext.getImageData(0, 0, leftCanvas.width, leftCanvas.height);
+    var pixelData = imageData.data;
+
+    var tempImageData = leftContext.getImageData(0, 0, leftCanvas.width, leftCanvas.height);
+    var tempPixelData = tempImageData.data;
+
+    for(var i=1;i<rightCanvas.height-1;i++){
+      for(var j=1;j<rightCanvas.width-1;j++){
+
+        var totalr= 0,totalg=0,totalb=0;
+        for(var dx=-1;dx<=1;dx++){
+          for(var dy=-1;dy<=1;dy++){
+            var x = i + dx;
+            var y = j + dy;
+
+            var p = x * rightCanvas.width + y;
+
+            totalr =  tempPixelData[p*4+0];
+            totalg =  tempPixelData[p*4+1];
+            totalb =  tempPixelData[p*4+2];
+          }
+        }
+        var p = i * rightCanvas.width + j;
+        pixelData[p*4+0] = totalr / 2;
+        pixelData[p*4+1] = totalg / 2;
+        pixelData[p*4+2] = totalb / 2;
+      }
+    }
+    rightContext.putImageData(imageData, 0, 0, 0, 0, rightCanvas.width, rightCanvas.height);
+  }
+</script>
+</html>

@@ -1,0 +1,89 @@
+@charset "utf-8";
+@bodyBag: red;
+@test_01: 300px;
+
+body{
+  background-color: @bodyBag;
+  height: 100%;
+}
+// 我是注释编译后不出现
+/*
+我是注释，编译后出现
+ */
+
+/*
+less中定义变量用@tesWidth
+ */
+@testWidth : 300px;
+div{
+  width: @testWidth;
+}
+/*混合样式*/
+.div1{
+  width: 100px;
+  height: 100px;
+  background-color: yellow;
+  .div2;
+  .border_02(33px);
+  .lineHeight();
+
+  //　匹配模式
+  .sanjiao{
+    .triangle(top,100px);
+  }
+}
+
+.div2{
+  width: 200px;
+  background-color: #005588;
+}
+//　混合也是可以带参数的
+.border_02(@border_width){
+  border: solid @border_width green;
+}
+// 混合书写也是可以带默认参数的
+.lineHeight(@width: 30px){
+  line-height: @width;
+}
+//　匹配模式
+.triangle(top,@w:5px,@c:#ccc){
+  border-width: @w;
+  border-color: transparent transparent @c transparent;
+  border-style: solid dashed solid dashed;
+}
+.triangle(bottom,@w:5px,@c:#ccc){
+  border-width: @w;
+  border-color: @c transparent transparent  transparent;
+  border-style: solid dashed solid dashed;
+}
+//　只要使用　.triangle　就有这个样式
+.triangle(@_,@w:5px,@c:#ccc){
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+//　运算
+.mine{
+  width: @test_01 * 2 + 20;
+  .test_argument{
+    .test_arg(40px,yellow)
+  }
+}
+.test_arg(@w:30px,@c:red,@xx:solid){
+  border: @arguments;
+}
+//避免编译
+//　有时候我们需要输出一些不正确的css或者
+// less不认识的专用语法
+//　要输出这样的值我们可以在字符串前面加一个～
+//　例如　width: ~ 'calc(100% - 35)'
+
+//　避免编译,
+//　例如calc需要是浏览器来计算的不是less编译的所以需要原样输出
+.test_03{
+  width: ~'calc(100% - 35)'
+}
+// important关键字
+.test_important{
+  .triangle(top) !important;
+}
