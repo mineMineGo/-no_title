@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>相册轮播</title>
+</head>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+  }
+
+  body {
+    background: url('img/bg.jpg');
+  }
+
+  .picList {
+    width: 750px;
+    height: 560px;
+    margin: 35px auto;
+  }
+
+  .picList ul li:hover {
+    cursor: pointer;
+  }
+
+  .picList ul li {
+    list-style: none;
+    float: left;
+    background: #fff;
+    margin: 3px;
+    box-shadow: 0 0 10px #fff;
+  }
+
+  .picList ul li img {
+    width: 230px;
+    height: 159px;
+    padding: 4px;
+  }
+
+  .pan {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  .pan .showImage img {
+    border: 4px solid #fff;
+    width: 660px;
+    height: 460px;
+  }
+
+  .pan .showImage {
+    width: 668px;
+    height: 468px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    z-index: 90;
+  }
+
+  .pan .showImage span {
+    position: absolute;
+  }
+
+  .pan a {
+    position: absolute;
+    width: 50px;
+    height: 80px;
+    box-shadow: 0px 0px 20px #fff;
+    border-radius: 10px;
+    z-index: 9;
+    font-size: 30px;
+    text-align: center;
+    line-height: 80px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .pan{
+    display: none;
+  }
+
+  .pan a.prev {
+    left: 100px;
+    top: 35%;
+  }
+
+  .pan a.next {
+    right: 100px;
+    top: 35%;
+  }
+
+  .pan a:hover {
+    box-shadow: 0px 0px 10px #999999;
+  }
+</style>
+<body>
+<div class="picList">
+  <ul>
+    <li>
+      <img src="img/main/1.jpg" alt="">
+    </li>
+    <li>
+      <img src="img/main/2.jpg" alt="">
+    </li>
+    <li>
+      <img src="img/main/3.jpg" alt="">
+    </li>
+    <li>
+      <img src="img/main/4.jpg" alt="">
+    </li>
+    <li>
+      <img src="img/main/5.jpg" alt="">
+    </li>
+    <li>
+      <img src="img/main/6.jpg" alt="">
+    </li>
+    <li>
+      <img src="img/main/7.jpg" alt="">
+    </li>
+    <li>
+      <img src="img/main/8.jpg" alt="">
+    </li>
+    <li>
+      <img src="img/main/9.jpg" alt="">
+    </li>
+  </ul>
+</div>
+<!--页面遮盖层-->
+<div class="pan">
+  <div class="show">
+    <div class="showImage"  id="jq_showImage">
+      <span><img src="img/show/0/1.jpg" alt=""></span>
+      <span><img src="img/show/0/2.jpg" alt=""></span>
+      <span><img src="img/show/0/3.jpg" alt=""></span>
+      <span><img src="img/show/0/4.jpg" alt=""></span>
+      <span><img src="img/show/0/5.jpg" alt=""></span>
+    </div>
+    <a class="prev" id="jq_prev">&lt;</a>
+    <a class="next" id="jq_next">&gt;</a>
+  </div>
+</div>
+</body>
+<script type="text/javascript" src="js/jquery-3.2.1.js"></script>
+<script type="text/javascript">
+  (function () {
+    $(".picList ul li").click(function (e) {
+      e.stopPropagation();
+      var index = $(this).index()
+      for (var i=0;i<5;i++){
+        var url = 'img/show/'+index+"/"+(i+1)+".jpg"
+        $("#jq_showImage img").eq(i).attr("src",url);
+      }
+      $('.pan').fadeIn(800)
+    })
+    //上一页
+    $("#jq_prev").click(function(e){
+      e.stopPropagation();
+      $("#jq_showImage span:last").animate({"left":"-688px"},800,function(){
+        $(this).animate({"left":"0px"},800);
+        $("#jq_showImage").prepend($(this));
+      });
+    });
+    //下一页
+    $("#jq_next").click(function(e){
+      e.stopPropagation();
+      $("#jq_showImage span:first").animate({"left":"688px"},800,function(){
+        $(this).animate({"left":"0px"},800);
+        $("#jq_showImage").append($(this));
+      });
+    });
+    //消失
+    $('.pan').click(function () {
+      $('.pan').fadeOut(800);
+    })
+  })()
+</script>
+</html>
