@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>虚线</title>
+</head>
+<body>
+    <canvas id="myCanvas"></canvas>
+</body>
+<script type="text/javascript">
+    (function () {
+
+        /*
+        ctx.setLineDash([4,2])；//设置虚线，参数为数组，第一个值为实线宽度，第二个值
+        为空白的宽度
+        ctx.lineDashOffset = 0;//虚线起始偏移量
+         */
+
+        var canvas = document.getElementById('myCanvas');
+        var ctx = canvas.getContext('2d');
+        var offset = 0;
+        function draw() {
+            offset++;
+            if(offset  == 8){
+                offset = 0;
+            }
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.setLineDash([4,4]);
+            ctx.lineDashOffset = -offset;
+            ctx.strokeRect(10,10,100,100)
+        }
+        setInterval(draw,100);
+    })();
+</script>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>变形</title>
+</head>
+<body>
+    <canvas id="myCanvas" width="800px" height="200px"></canvas>
+    <canvas id="myCanvas1" width="800px" height="200px"></canvas>
+    <canvas id="myCanvas2" width="800px" height="200px"></canvas>
+    <canvas id="myCanvas3" width="800px" height="200px"></canvas>
+<script type="text/javascript">
+    (function () {
+        //在此之前需要了解一个概念：canvas绘图状态
+        /*
+         canvas的状态就是当前画面应用的所有样式和变形的一个快照
+         另外用来操作这个状态的有两个方法
+         save（）和restore().
+         save（）用来保存当前状态，
+         restore（）用来恢复刚才的状态，他们都可以进行多次调用
+         */
+
+        //状态
+        var myCanvas = document.getElementById('myCanvas');
+        var ctx = myCanvas.getContext('2d');
+
+        ctx.fillStyle = 'black';
+        ctx.fillRect(20,20,150,150);
+        ctx.save();//保存当前状态
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(45,45,100,100);
+        ctx.restore();//恢复刚才保存的状态,恢复了样式黑色
+        ctx.fillRect(70,70,50,50);
+
+        //位移
+        var myCanvas1 = document.getElementById('myCanvas1');
+        var ctx1 = myCanvas1.getContext('2d');
+//        ctx1.translate(x,y);//更改canvas的原点
+        for(var i=0;i<4;i++){
+            ctx1.save();
+            if(i%2 == 0 ) {
+                ctx1.fillStyle = 'red';
+            }else{
+                ctx1.fillStyle = 'green';
+            }
+            ctx1.translate(100*i,0);
+            ctx1.fillRect(0,50,50,50);
+            ctx1.restore();
+        }
+
+        //旋转
+//        ctx.rotate(Math.PI *2);//参照圆点顺时针旋转360度
+        var myCanvas2 = document.getElementById('myCanvas2');
+        var ctx2 = myCanvas2.getContext('2d');
+        ctx2.translate(150,100);//把圆点移动到（75,75）
+
+        ctx.fillStyle = 'red';
+        ctx2.beginPath();
+        /*
+         arc(圆心的x坐标，
+         圆心的y坐标，
+         圆的半径，
+         起始角（以弧度计，即l圆心的3点钟位置是0度），
+         结束角，(以弧度计)
+         规定应该是顺时针还是逆时针画图,FALSE顺时针)
+         */
+
+        for(var i=0;i<8;i++){
+            ctx2.save();
+            ctx2.fillStyle = 'rgb('+(50*i)+','+(255-50*i)+',255)';
+            for(var j=0;j<i*6;j++){ //每一圈有i*6个圆点
+                ctx2.rotate(Math.PI*2/(i*6));
+                ctx2.beginPath();
+                ctx2.arc(0,i*12.5,5,0,Math.PI*2,true);
+                ctx2.fill();
+            }
+            ctx2.restore()
+        }
+
+        //缩放
+        //ctx.scale(x,y);//基于原点缩放，x，y是两个轴的缩放倍数
+        var myCanvas3 = document.getElementById('myCanvas3');
+        var ctx3 = myCanvas3.getContext('2d');
+        ctx3.fillStyle = 'red';
+        ctx3.scale(0.8,1.2);
+        ctx3.beginPath();
+        ctx3.arc(75,75,60,0,2*Math.PI);
+        ctx3.fill();
+    })();
+</script>
+</body>
+</html>

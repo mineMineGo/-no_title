@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>canvas</title>
+</head>
+<body>
+    <canvas id="myCanvas">你的浏览器不支持canvas</canvas>
+</body>
+<script type="text/javascript">
+    (function () {
+        //获取canvas容器
+        var can = document.getElementById('myCanvas');
+        //创建一个画布
+        var ctx = can.getContext('2d');
+        //另外我们还可以获得容器的高度和宽度
+        var canWidth = can.width;
+        var canHeight = can.height;
+
+        //ctx.fillStyle = 'green';//指定填充颜色
+        //-------------------------绘制----------------------------------
+        //填充一个矩形
+//        ctx.fillRect(0,0,100,100);//默认颜色为黑色
+        //边框矩形,默认为1px黑色
+        //ctx.strokeRect(10,10,150,100);
+
+        //清除制定的矩形区域变为透明色
+        //ctx.clearRect(0,0,100,150);//绘制动态效果时候常用来清除整个画布
+
+        //绘制路径
+        //新建路径，beginPath是绘制新图形的开始
+        ctx.beginPath();
+        //路径（线）的起点，一般在上面这条命令后执行
+        ctx.moveTo(10,10);
+        //线的终点
+        ctx.lineTo(100,100);
+        ctx.stroke();
+        //
+        /*
+         说明：
+         1. fill()和stroke()函数表示绘图结束。
+            如果要继续绘制，需要重新新建路径（beginPath()）。
+
+         2. 如果lineTo()最后的路径没有封闭，fill()函数会自动封闭路径，
+            而stroke()函数不会。
+         */
+
+        /*
+        绘制一个倒三角
+         */
+        ctx.beginPath();
+        ctx.moveTo(20,20);
+        ctx.lineTo(100,75);
+        ctx.lineTo(100,25);
+        ctx.fill();//自动将路径封闭，并默认填充黑色
+
+        /*
+        样式
+         */
+        /*
+        ctx.fillStyle = "red";//针对fill()有效的颜色，还可以取值“#fff”,rgba(0,0,0,0);
+
+        ctx.strokeStyle = "red";//针对stroke()有效的颜色，取值同上
+
+        ctx.globalAlpha = 0.5;//透明度
+
+        //线段端点
+        ctx.lineWidth = 2;//线条宽度
+        ctx.lineCap = 'butt（默认）'/'round(圆弧)'/'square(方形)';//线段端点显示的样式
+        */
+        //例子
+
+        var lineCap  = ['butt','round','square'];
+        ctx.strokeStyle ='green';
+        for(var i=0;i<lineCap.length;i++){
+            ctx.lineWidth = 15;//线段宽度
+            ctx.lineCap = lineCap[i];//线段端点样式
+            ctx.beginPath();
+            ctx.moveTo(25+i*50,10);
+            ctx.lineTo(25+i*50,140);
+            ctx.stroke();
+        }
+
+
+
+
+    })();
+</script>
+</html>

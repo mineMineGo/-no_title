@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>线段连接处</title>
+</head>
+<body>
+<canvas id="myCanvas">你的浏览器不支持canvas</canvas>
+</body>
+<script type="text/javascript">
+    (function () {
+        //获取canvas容器
+        var can = document.getElementById('myCanvas');
+        //创建一个画布
+        var ctx = can.getContext('2d');
+        //线段连接处
+        //ctx.lineJoin = 'miter(默认)'/'round(圆角)'/'bevel(横线)' //两线段连接出所显示的样子
+
+        var lineJoin = ['miter','round','bevel'];
+        ctx.lineWidth = 10;//线宽度
+        ctx.strokeStyle = 'red';
+        for(var i = 0;i<lineJoin.length;i++){
+            ctx.lineJoin = lineJoin[i];
+            ctx.beginPath();
+            ctx.moveTo(10,50+i*40);
+            ctx.lineTo(50,10+i*40);
+            ctx.lineTo(90,50+i*40);
+            ctx.lineTo(130,10+i*40);
+            ctx.lineTo(170,50+i*40);
+            ctx.stroke();
+        }
+
+
+
+
+
+
+    })();
+</script>
+</html>

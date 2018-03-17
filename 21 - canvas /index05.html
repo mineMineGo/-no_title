@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>文字</title>
+</head>
+<body>
+    <canvas id="myCanvas">你的浏览器暂不支持canvas</canvas>
+</body>
+<script type="text/javascript">
+    (function () {
+        var myCanvas = document.getElementById('myCanvas');
+        var ctx = myCanvas.getContext('2d');
+        ctx.shadowOffsetX = 2;//x轴阴影距离，负值表示往上，正直表示向下
+        ctx.shadowOffsetY = 2;//y轴阴影距离，负值表示往左，正值表示往右
+        ctx.shadowBlur = 2;//阴影的模糊程度
+        ctx.shadowColor = 'rgba(0,0,0,0.5)';//阴影颜色
+        ctx.font = '30px Times New Roman';//设置字体和字体大小
+        ctx.fillStyle = 'Black';
+        ctx.fillText('Sample String',15,30);//实体文字
+        ctx.strokeStyle = 'red';
+        ctx.strokeText('Hello World',15,100);//边框文字
+
+        //还有一些其他属性
+        ctx.font = '20px Times New Roman';
+        ctx.textAlign = 'center';    //start, end, left, right or center
+        ctx.textBaseline = 'middle'; //top, hanging, middle, alphabetic, ideographic, bottom
+        ctx.direction = 'inherit';   //ltr, rtl, inherit
+
+
+
+
+    })();
+</script>
+</html>

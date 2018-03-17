@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>渐变</title>
+</head>
+<body>
+
+    <canvas id="myCanvas">你的浏览器暂不支持canvas</canvas>
+    <canvas id="myCanvas1">你的浏览器暂不支持canvas</canvas>
+</body>
+<script type="text/javascript">
+    (function () {
+
+
+        var myCanvas = document.getElementById('myCanvas');
+        var ctx = myCanvas.getContext('2d');
+
+        //渐变基本函数
+        //定义线性渐变，渐变的起点（x1,x2）与终点（y1,y2）
+        //var bg = ctx.createLinearGradient(x1,x2,y1,y2);
+        //var bg1 = ctx.createRadialGradient(50,50,0,50,50,100);//定义径向渐变
+        //addColorStop() 方法规定渐变对象中的颜色和位置。
+        //第一个参数介于 0.0 与 1.0 之间的值，表示渐变中开始与结束之间的位置。
+        //您可以多次调用 addColorStop() 方法来改变渐变。
+        //addColorStop() 方法与 createLinearGradient() 或 createRadialGradient() 一起使用
+        //bg.addColorStop(0,'red');//定义好，开始上色
+        //bg.addColorStop(0.5,'blue');//定义好，开始上色
+        //bg.addColorStop(1,'rgba(0,0,0,0.6)');//定义好，开始上色
+
+        /*
+        例子
+         */
+        var bg = ctx.createLinearGradient(0,0,0,200);
+        bg.addColorStop(0,'black');
+        bg.addColorStop(0.3,'red');
+        bg.addColorStop(0.5,'green');
+        bg.addColorStop(0.7,'blue');
+        bg.addColorStop(1.0,'yellow');
+        ctx.fillStyle = bg;
+        ctx.fillRect(10,10,200,200);
+
+//径向渐变
+        var myCanvas1 = document.getElementById('myCanvas1');
+        var ctx1 = myCanvas1.getContext('2d');
+        //参数：
+        // 开始圆心坐标x,
+        // 开始圆心坐标y,
+        // 开始远的半径r,
+        // 结束圆心坐标x,
+        // 结束圆心坐标y,
+        // 结束圆的半径r
+        var bg1 =ctx1.createRadialGradient(100,100,0,100,100,50);
+        bg1.addColorStop(0,'#FF5F98');
+        bg1.addColorStop(0.75,'#FF0188');
+        bg1.addColorStop(1,'rgba(255,1,136,0)');
+        ctx1.fillStyle = bg1;
+        ctx1.fillRect(0,0,150,150);
+
+
+
+    })();
+</script>
+</html>
