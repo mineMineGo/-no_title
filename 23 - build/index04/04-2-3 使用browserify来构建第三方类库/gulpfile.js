@@ -12,6 +12,9 @@ var source = require("vinyl-source-stream");
 
 var buffer = require("vinyl-buffer");
 
+var gif = require('gulp-if');
+
+var isProduction = process.env.ENV　=== "prod"; 
 // fs属于node核心模块之一
 var fs = require('fs');
 
@@ -29,7 +32,7 @@ gulp.task('mainjs', function(){
     b.bundle()
      .pipe(source('main.js'))
      .pipe(buffer())
-     .pipe(uglify())
+     .pipe(gif(isProduction, uglify()))
     // 这里不能自动创建文件夹，所以指定的文件夹必须存在
     .pipe(gulp.dest('assets/dist/'));
   };
