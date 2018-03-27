@@ -1,0 +1,11 @@
+html{
+  background-color: red;
+}
+body{
+  margin-top: 10px;
+}
+
+div{
+  background: black;
+  color: red;
+}
