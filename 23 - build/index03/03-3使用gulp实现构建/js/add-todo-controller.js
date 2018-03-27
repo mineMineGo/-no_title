@@ -1,13 +1,13 @@
 module.exports = ['$scope', function($scope){
-  $scope.newTodo = ""
+  $scope.newTodo = "";
   $scope.addTodo = function(newTodo){
     if(!newTodo){
-      return
+      return;
     }
     $scope.todos.push({
       name: newTodo
-    })
-    $scope.setTodos($scope.todos)
-    $scope.newTodo = ''
-  }
-}]
+    });
+    $scope.setTodos($scope.todos);
+    $scope.newTodo = '';
+  };
+}];

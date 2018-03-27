@@ -1,16 +1,16 @@
 module.exports = ['$scope', function($scope){
   $scope.setTodos = function(todos){
     localStorage.setItem('todos', JSON.stringify(todos))
-  }
+  };
 
   $scope.getTodos = function(){
-    todos = localStorage.getItem('todos')
+    todos = localStorage.getItem('todos');
     if(todos){
-      todos = JSON.parse(todos)
+      todos = JSON.parse(todos);
     }else{
-      todos = []
+      todos = [];
     }
-    return todos
-  }
-  $scope.todos = $scope.getTodos()
-}]
+    return todos;
+  };
+  $scope.todos = $scope.getTodos();
+}];
