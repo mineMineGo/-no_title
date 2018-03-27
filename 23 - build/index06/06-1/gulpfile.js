@@ -11,7 +11,7 @@ gulp.task('default', function(){
 gulp.task('minify-css', function(){
   gulp.src('assets/css/*.css')
     .pipe(cleanCss())
-    .pipe(gulp.dest('dist/css'))
+    .pipe(gulp.dest('dist/css'));
 });
 
 gulp.task('cssWatch', function(){

@@ -1,0 +1,12 @@
+html{
+  background-color: black;
+  color: red;
+}
+body{
+  font-size: 30px;
+}
+
+#app{
+  color: yellow;
+  line-height: 30px;
+}
