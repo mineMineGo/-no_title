@@ -6,6 +6,12 @@ var sequence = require("run-sequence");
 
 var watchify = require('watchify');
 
+var uglify = require("gulp-uglify");
+
+var source = require("vinyl-source-stream");
+
+var buffer = require("vinyl-buffer");
+
 // fs属于node核心模块之一
 var fs = require('fs');
 
@@ -21,8 +27,11 @@ gulp.task('mainjs', function(){
   });
   var bundle = function(){
     b.bundle()
+     .pipe(source('main.js'))
+     .pipe(buffer())
+     .pipe(uglify())
     // 这里不能自动创建文件夹，所以指定的文件夹必须存在
-    .pipe(fs.createWriteStream('assets/dist/main.js'));
+    .pipe(gulp.dest('assets/dist/'));
   };
   bundle();
   b.on("update", bundle);

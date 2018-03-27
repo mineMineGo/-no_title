@@ -4,11 +4,16 @@
   "dependencies": {
     "browserify": "^16.1.1",
     "gulp": "^3.9.1",
+    "gulp-uglify": "^3.0.0",
     "run-sequence": "^2.2.1",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0",
     "watchify": "^3.11.0"
   },
   "browserify": {
-    "transform": ["browserify-shim"]
+    "transform": [
+      "browserify-shim"
+    ]
   },
   "browserify-shim": {
     "angular": "angular",
