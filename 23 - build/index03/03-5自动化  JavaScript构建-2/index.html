@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="TodoList">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Todo List</title>
+  <link rel="stylesheet" href="./bootstrap.css">
+</head>
+
+<body>
+  <div class="container" ng-controller="TodosController">
+    <div class="todos list-group">
+      <div class="lsit-group-item" 
+        ng-controller="TodoController"
+        ng-repeat="todo in todos track by $index">
+          <span>{{todo.name}}</span>
+          <button type="button" class="close"
+            ng-click="deleteTodo(todo)"
+            aria-label="close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+    </div>
+
+    <div class="input-group" ng-controller="AddTodoController">
+      <input type="text" class="form-control" placeholder="New Todo" ng-model="newTodo" />
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button" ng-click="addTodo(newTodo)">ADD</button>
+      </span>
+    </div>
+
+  </div>
+</body>
+<script type="text/javascript" src="./angular.js"></script>
+<script type="text/javascript" src="./lodash.js"></script>
+<!-- <script type="text/javascript" src="./js/add-todo-controller.js"></script>
+<script type="text/javascript" src="./js/todos-controller.js"></script>
+<script type="text/javascript" src="./js/todo-controller.js"></script> -->
+
+<!-- 
+  在项目目录下运行命令，
+  -o 是指定文件夹，默认是根目录
+  运用的命令是　browserify  js/add-todo-controller.js  js/todo-controller.js  js/todos-controller.js  js/index.js  -o js/main.js -->
+<script type="text/javascript" src="./assets/dist/main.js"></script>
+</html>
