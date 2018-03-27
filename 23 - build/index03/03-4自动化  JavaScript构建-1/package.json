@@ -1,0 +1,12 @@
+{
+  "name": "",
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  },
+  "version": "",
+  "dependencies": {
+    "browserify": "^16.1.1",
+    "run-sequence": "^2.2.1",
+    "shelljs": "^0.8.1"
+  }
+}
