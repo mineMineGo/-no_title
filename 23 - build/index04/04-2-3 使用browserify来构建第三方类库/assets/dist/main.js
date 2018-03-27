@@ -1,4 +1,54 @@
-require=(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({"angular":[function(require,module,exports){
+(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
+module.exports = ['$scope', function($scope){
+  $scope.newTodo = "";
+  $scope.addTodo = function(newTodo){
+    if(!newTodo){
+      return;
+    }
+    $scope.todos.push({
+      name: newTodo
+    });
+    $scope.setTodos($scope.todos);
+    $scope.newTodo = '';
+  };
+}];
+},{}],2:[function(require,module,exports){
+var angular = require("angular");
+var _ = require('lodash');
+angular
+.module("TodoList", [])
+.controller('TodosController', require('./todos-controller.js'))
+.controller('AddTodoController', require('./add-todo-controller.js'))
+.controller("TodoController", require('./todo-controller.js'));
+},{"./add-todo-controller.js":1,"./todo-controller.js":3,"./todos-controller.js":4,"angular":5,"lodash":6}],3:[function(require,module,exports){
+module.exports = ['$scope', function($scope){
+  $scope.deleteTodo = function(delData){
+    _.remove($scope.todos, function(todo){
+      return todo === delData;
+    });
+    $scope.setTodos($scope.todos);
+  };
+}];
+},{}],4:[function(require,module,exports){
+module.exports = ['$scope', function($scope){
+  $scope.setTodos = function(todos){
+    localStorage.setItem('todos', JSON.stringify(todos))
+  };
+
+  $scope.getTodos = function(){
+    todos = localStorage.getItem('todos');
+    if(todos){
+      todos = JSON.parse(todos);
+    }else{
+      todos = [];
+    }
+    return todos;
+  };
+  $scope.todos = $scope.getTodos();
+}];
+},{}],5:[function(require,module,exports){
+(function (global){
+; var __browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 /**
  * @license AngularJS v1.6.9
  * (c) 2010-2018 Google, Inc. http://angularjs.org
@@ -34358,8 +34408,14 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],"lodash":[function(require,module,exports){
+; browserify_shim__define__module__export__(typeof angular != "undefined" ? angular : window.angular);
+
+}).call(global, undefined, undefined, undefined, undefined, function defineExport(ex) { module.exports = ex; });
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],6:[function(require,module,exports){
 (function (global){
+; var __browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 /**
  * @license
  * Lodash <https://lodash.com/>
@@ -51458,5 +51514,9 @@ $provide.value("$locale", {
   }
 }.call(this));
 
+; browserify_shim__define__module__export__(typeof _ != "undefined" ? _ : window._);
+
+}).call(global, undefined, undefined, undefined, undefined, function defineExport(ex) { module.exports = ex; });
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[]);
+},{}]},{},[2]);

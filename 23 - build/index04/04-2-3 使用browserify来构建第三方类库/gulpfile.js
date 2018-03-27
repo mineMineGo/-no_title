@@ -10,7 +10,7 @@ var watchify = require('watchify');
 var fs = require('fs');
 
 gulp.task("default", function(){
-  sequence('vendorjs','mainjs');
+  sequence('mainjs');
 });
 gulp.task('mainjs', function(){
   var b = browserify({
@@ -18,7 +18,7 @@ gulp.task('mainjs', function(){
     cache: {},
     packageCache: {},
     plugin: [watchify]
-  }).external('angular').external('lodash');
+  });
   var bundle = function(){
     b.bundle()
     // 这里不能自动创建文件夹，所以指定的文件夹必须存在
@@ -26,12 +26,4 @@ gulp.task('mainjs', function(){
   };
   bundle();
   b.on("update", bundle);
-});
-
-gulp.task('vendorjs', function(){
-  var b = browserify().require('./bower_components/angular/angular.js',{
-    expose: 'angular'
-  }).require('./bower_components/lodash/dist/lodash.js',{
-    expose: 'lodash'　
-  }).bundle().pipe(fs.createWriteStream('./assets/dist/vendor.js'));
 });
