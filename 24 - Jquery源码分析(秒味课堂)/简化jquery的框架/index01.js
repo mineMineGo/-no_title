@@ -17,6 +17,11 @@
   console.log(window);
     // 21-94　行定义了一些变量和函数
     var 
+    // A central reference to the root jQuery(document)
+    rootjQuery, 
+  
+    // The deferred used on DOM ready
+	  readyList,
 
     // 定义一个core_strundefined,使用typeof方法判断更加准确点
     core_strundefined = typeof undefined,
@@ -30,21 +35,93 @@
     _jQuery = window.jQuery,
     _$ = window.$,
 
+    // 这个变量是用到$.type()时候用到的，是获得某个变量或者元素的类型(类型判断)
+    // 最终呈现的一个结果是
+    // ｛　
+    //   '[Object String]': 'string',
+    //   '[Object Array]': 'array'
+    // ｝
+    class2type = {},
+
+    // 跟缓存数据有关，
+    core_deletedIds = [],
+
+    // 版本号码
+    core_version = "2.0.3",
+
+
+    // Save a reference to some core methods
+    core_concat = core_deletedIds.concat,
+    core_push = core_deletedIds.push,
+    core_slice = core_deletedIds.slice,
+    core_indexOf = core_deletedIds.indexOf,
+    core_toString = class2type.toString,
+    core_hasOwn = class2type.hasOwnProperty,
+    core_trim = core_version.trim,
+
     // 61行 定义了 一个函数
-      // Define a local copy of jQuery
-      jQuery = function() {};
+    // Define a local copy of jQuery
+    jQuery = function(selector, context) {
+      return new jQuery.fn.init( selector, context, rootjQuery );
+    };
+
+    // Used for matching numbers
+    // 根据正则表达式匹配数字
+    core_pnum = /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/.source,
+
+    // 匹配空格来分割出单词
+    core_rnotwhite = /\S+/g,
+
+    // 前半部分匹配标签
+    // 后半部分匹配 id (相比以前版本增加了防注入哈希功能，请百度继续了解更多)
+
+    // 了解之一
+    // https://segmentfault.com/q/1010000002976169
+    // [^#<]...[^>]是用来排除像#<tagName ...>这种情况。
+    // jquery 1.6.3以下版本，quickExpr没有#，有可能被攻击中利用进行XSS攻击，
+    // 例如：将地址栏中的hash修改为
+    // #<img src='/' onerror=(function(){//恶意代码}())。
+    // 如果代码中有$(location.hash)这种写法，就会触发恶意代码。
+
+    // 匹配的是类似　<p>aaa 或者 #div等等
+    rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/,
+
+    // 匹配独立的一个标签，例如<p></p>  <div></div>
+    rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
+     
+    // 匹配浏览器的前缀　-ms-
+    // 有些转换时候是驼峰命名，有些则不是
+    // 　margin-left : marginLeft
+    //  -webkit-margin-left: webkitMarginLeft
+    //  -ms-margin-left: MsMarginLeft
+    rmsPrefix = /^-ms-/,
+
+    // 大小写,把-l(一个字符)变为L
+    rdashAlpha = /-([\da-z])/gi,
+
+    // 转驼峰的回调函数
+    fcamelCase = function( all, letter ) {
+      return letter.toUpperCase();
+    },
+
+    // DOM加载成功回调函数
+    completed = function() {
+      document.removeEventListener( "DOMContentLoaded", completed, false );
+      window.removeEventListener( "load", completed, false );
+      jQuery.ready();
+    };
 
     //96-283 　给JQuery对象添加一些属性和方法
-      jQuery.fn = jQuery.prototype = {
+    jQuery.fn = jQuery.prototype = {
 
-      };
+    };
 
 
 
     //285-347　extend ：jQuery的继承
-      jQuery.extend = jQuery.fn.extend = function(){
+    jQuery.extend = jQuery.fn.extend = function(){
 　
-      };
+    };
         
     //349-817　扩展一些工具方法
     jQuery.extend();
