@@ -17,7 +17,7 @@
 
   </ul>
 </body>
-<!-- <script type="text/javascript" src="./index.js"></script> -->
+<script type="text/javascript" src="./index.js"></script>
 
 
 <!-- 理解constructor，　了解源代码100行中为什么要给contrustor重新赋值 -->
@@ -33,7 +33,7 @@
 
 
 <!--  -->
-<script src="./index05.js"></script>
+<!-- <script src="./index05.js"></script> -->
 
 
 
@@ -50,7 +50,9 @@
 
     $('div').slice(1,3).css('backgroundColor', 'blue').end().css('color', 'green');
 
-
+    var a  = { };
+    $.extend(a, {name: a});
+    console.log(a)
 
   })
 </script>

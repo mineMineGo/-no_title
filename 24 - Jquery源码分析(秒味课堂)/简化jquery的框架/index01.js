@@ -323,7 +323,7 @@
       if(){}  看看参数正确不
       if(){}  看是不是插件情况
       for(){　可能有多个对象情况
-        if(){} 防止循环利用
+        if(){} 防止循环引用
         if(){} 深拷贝
           else if(){} 浅拷贝
       } 
@@ -352,19 +352,35 @@
 
     // 可能有多个对象
     for ( ; i < length; i++ ) {　
+      
       if(options = arguments[i] !== null){
-          for(name in options){
-            src = target[name];
-            copy = options[name];
-
-            if(target === copy){
-              continue;
-            }
-
+        for(name in options){
+          src = target[name];
+          copy = options[name];
+// 防止循环引用  
+          if(target === copy){
+            continue;
           }
+        }
+
+        // Recurse if we're merging plain objects or arrays
+        if ( deep && copy && ( jQuery.isPlainObject(copy) || (copyIsArray = jQuery.isArray(copy)) ) ) {
+         if(copyIsArray){
+          copyIsArray = false;
+          clone = src && jQuery.isArray(src) ?  src : [];
+         } else {
+           clone = src && jQuery.isPlainObject(src) ? src : {};
+         }
+
+         target[name] = jQuery.extend(deep, clone, copy);
+
+        // Don't bring in undefined values
+        } else if ( copy !== undefined ) {
+          target[ name ] = copy;
+        }
       }
     }
-
+    return target;
   };
 
   //349-817　扩展一些工具方法
