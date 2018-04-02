@@ -44,6 +44,7 @@ var arr1 = ['a','b'];
 var arr2 = {
   0: 'a',
   1: 'b',
+  ff: 'ccc',
   length: 2
 };
 var arr3 = ['c','d'];

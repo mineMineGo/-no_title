@@ -9,11 +9,15 @@
 <style>
 </style>
 <body>
+  <div>111</div>
+  <div>2222</div>
+  <div>3333333</div>
+  <span>55555</span>
   <ul>
 
   </ul>
 </body>
-<!-- <script type="text/javascript" src="./index01.js"></script> -->
+<!-- <script type="text/javascript" src="./index.js"></script> -->
 
 
 <!-- 理解constructor，　了解源代码100行中为什么要给contrustor重新赋值 -->
@@ -24,14 +28,30 @@
 <!-- <script type="text/javascript" src="./index03.js"></script> -->
 
 <!--简单介绍一些 jQuery.parseHTM ,jQuery.merge的用法 -->
-<script src="./index.js"></script>
-<script src="./index04.js"></script>
+<!-- <script src="./index.js"></script> -->
+<!-- <script src="./index04.js"></script> -->
+
+
+<!--  -->
+<script src="./index05.js"></script>
+
+
 
 <script>
 
-  window.a == undefined;  // true
+  $('div').get(1)
+  $(function(){
 
-  typeof window.a == 'undefined';// true
+    window.a == undefined;  // true
 
+    typeof window.a == 'undefined';// true
+    
+    $('div').pushStack($('span')).css('background', 'red').end().css('backgroundColor', 'yellow');
+
+    $('div').slice(1,3).css('backgroundColor', 'blue').end().css('color', 'green');
+
+
+
+  })
 </script>
 </html>

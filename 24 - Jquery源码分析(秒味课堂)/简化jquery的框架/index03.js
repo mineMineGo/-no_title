@@ -55,12 +55,14 @@ if(typeof selector === "string"){
     // 进一步判断
     if(match[1]){
       // $('<li>')
+
+      //经过这个判断得到的就是原生的document节点
       context = context instanceof jQuery ? context[0] : context;
       
       jQuery.merge(
         this,
         jQuery.parseHTML(
-          match[1],
+          match[1], 
           context && context.nodeType
             ? context.ownerDocument || context
             : document,
@@ -68,16 +70,30 @@ if(typeof selector === "string"){
         )
       );
 
+      // HANDLE: $(html, props)
+      // 先利用匹配单标签正则判断　并且　判断是否是对象字面量
+      if (rsingleTag.test(match[1]) && jQuery.isPlainObject(context)) {
+        // 对context进行for in 循环
+        for (match in context) {
+          // 判断是不是函数　，如果其中有方法就调用方法
+          if (jQuery.isFunction(this[match])) {
+            this[match](context[match]);
+
+            // ...and otherwise set as attributes
+          } else {
+            //　否则就是属性
+            this.attr(match, context[match]);
+          }
+        }
+      }　　
+
+      return this;
 
     } else {
       // $('#div1')
+      elem = document.getElementById(match[2]);
     }
   }
-
-
-
-
-
 } 
 else if(selector.nodeType){
   // 类似于　$(this) $(document)

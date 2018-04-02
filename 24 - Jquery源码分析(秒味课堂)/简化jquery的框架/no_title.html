@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>对象引用</title>
+</head>
+<body>
+  
+</body>
+<script type="text/javascript">
+  //--------
+  var a = 5;
+  var b = a;
+  b += 3;
+  console.log(b); // 8
+  console.log(a); // 5
+
+
+  // ---------
+  var a = [1,2,3];
+  var b = a;
+ 
+  b.push(4);
+  console.log(b); //[1,2,3,4]
+  console.log(a);// [1,2,3,4]
+
+
+  // ----
+  var a = [1,2,3];
+  var b = a;
+  b = [1,2,3,4];
+  console.log(b); //[1,2,3,4]
+  console.log(a);// [1,2,3]
+
+  // ---
+  var obj = {
+    a: 10
+  };
+  var obj2 = obj;
+  obj2.a = 20;
+  console.log(obj.a);// 20
+
+  // ---
+  
+  // 浅拷贝(浅克隆)
+  var obj = {
+    a: 10
+  };
+  function copy(obj){
+    var newObj = {};
+    for(var attr in obj){
+      newObj[attr] = obj[attr];
+    }
+    return newObj
+  }
+
+  var obj2 = copy(obj);
+
+  obj2.a = 20;
+
+  console.log(obj.a); //10
+
+
+
+  // 会遇到问题的浅拷贝
+  var obj = {
+    a: {
+      title: '猪八戒'
+    }
+  }
+  function lightCopy(obj){
+    var newObj = {};
+    for(var attr in obj){
+      newObj[attr] = obj[attr];
+    }
+    return newObj
+  }
+
+  var obj2 = lightCopy(obj);
+  console.log(obj2)
+  obj2.a.title = '孙悟空';
+  console.log(obj.a.title); // '孙悟空'
+
+
+  // 用到了深拷贝
+
+  var obj = {
+    a: {
+      title: '猪八戒'
+    }
+  }
+  // 深拷贝就用到了递归
+  // 函数调用函数自身
+  // 最后一次判断一个终止条件，可以执行递归动作
+  function deepCopy(obj){
+    if(typeof obj != 'object' ){
+      return obj;
+    }
+    var newObj = {};
+    for(var attr in obj){
+      newObj[attr] = deepCopy(obj[attr]);
+    }
+    return newObj
+  }
+
+  var obj2 = deepCopy(obj);
+  console.log(obj2)
+  obj2.a.title = '孙悟空';
+  console.log(obj.a.title); // '猪八戒'
+</script>
+</html>

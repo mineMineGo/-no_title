@@ -105,6 +105,18 @@
       length: 'this对象的长度',
       toArray(): '转为数组',
       get(): '转原生集合',
+      pushStack():  JQ对象的入栈,
+      each(): 遍历集合,
+      ready(): DOM加载的集合，
+      silce(): 集合的截取,
+      first(): 集合的第一项,
+      last(): 集合的最后一项,
+      eq(): 集合的指定项,
+      map(): 返回新集合,
+      end(): 返回集合前一个状态,
+      push(): 内部使用，
+      sort(): 内部使用,
+      splice(): 内部使用
 
 
       */
@@ -171,14 +183,17 @@
 
             // HANDLE: $(#id)
           } else {
+            // match = ['#div1', null, 'div1'];类似于这样的结构
             elem = document.getElementById(match[2]);
 
             // Check parentNode to catch when Blackberry 4.6 returns
             // nodes that are no longer in the document #6963
+
+            //　兼容黑莓4.6中的一个问题
             if (elem && elem.parentNode) {
               // Inject the element directly into the jQuery object
               this.length = 1;
-              this[0] = elem;
+              this[0] = elem;　　
             }
 
             this.context = document;
@@ -197,6 +212,7 @@
         }
 
         // HANDLE: $(DOMElement)
+        //　进入判断的是类似于$(this) $(docuemnt)之类的
       } else if (selector.nodeType) {
         this.context = this[0] = selector;
         this.length = 1;
@@ -205,9 +221,10 @@
         // HANDLE: $(function)
         // Shortcut for document ready
       } else if (jQuery.isFunction(selector)) {
-        return rootjQuery.ready(selector);
+        return rootjQuery.ready(selector);　
       }
 
+      // 剩下类似于　$([]) $({}) $($('#div1'))
       if (selector.selector !== undefined) {
         this.selector = selector.selector;
         this.context = selector.context;
@@ -221,10 +238,134 @@
 
     // this的长度，默认是0
     length: 0,
+    // 转数组　
+    toArray: function() {
+      return core_slice.call( this );
+    },
+    //  转　原生集合
+    get: function( num ) {
+      console.log(this)
+      return num == null ?
+  
+        // Return a 'clean' array
+        this.toArray() :
+  
+        // Return just the object
+        ( num < 0 ? this[ this.length + num ] : this[ num ] );
+    },
+    // JQ对象入栈处理
+    pushStack: function( elems ) {
+
+      // Build a new jQuery matched element set
+      var ret = jQuery.merge( this.constructor(), elems );
+  
+      // Add the old object onto the stack (as a reference)
+      ret.prevObject = this;
+      ret.context = this.context;
+  
+      // Return the newly-formed element set
+      return ret;
+    },
+
+    each: function( callback, args ) {
+      return jQuery.each( this, callback, args );
+    },
+
+    ready: function( fn ) {
+      // Add the callback
+      jQuery.ready.promise().done( fn );
+  
+      return this;
+    },
+
+    slice: function() {
+      return this.pushStack( core_slice.apply( this, arguments ) );
+    },
+
+    first: function() {
+      return this.eq( 0 );
+    },
+  
+    last: function() {
+      return this.eq( -1 );
+    },
+
+    eq: function( i ) {
+      var len = this.length,
+        j = +i + ( i < 0 ? len : 0 );
+      return this.pushStack( j >= 0 && j < len ? [ this[j] ] : [] );
+    },
+
+    map: function( callback ) {
+      return this.pushStack( jQuery.map(this, function( elem, i ) {
+        return callback.call( elem, i, elem );
+      }));
+    },
+  
+    end: function() {
+      return this.prevObject || this.constructor(null);
+    }, 
+
+    push: core_push,
+    sort: [].sort,
+    splice: [].splice
   };
 
+  // Give the init function the jQuery prototype for later instantiation
+  jQuery.fn.init.prototype = jQuery.fn;
+
   //285-347　extend ：jQuery的继承
-  jQuery.extend = jQuery.fn.extend = function() {};
+  jQuery.extend = jQuery.fn.extend = function() {
+
+    /*
+      定义一些变量
+      if(){}　看看是不是深拷贝情况
+      if(){}  看看参数正确不
+      if(){}  看是不是插件情况
+      for(){　可能有多个对象情况
+        if(){} 防止循环利用
+        if(){} 深拷贝
+          else if(){} 浅拷贝
+      } 
+    */
+    var options, name, src, copy, copyIsArray, clone,
+		target = arguments[0] || {},
+		i = 1,
+		length = arguments.length,
+    deep = false;
+    
+    // 看看是不是深拷贝
+    if (typeof target === "boolean") {
+      deep = target;
+      target = arguments[1] || {};
+      i = 2; 
+    }
+    //看看参数正确不
+    if(typeof target !== 'object' && !jQuery.isFunction(target)){
+      target = {};
+    }
+    //　看看是不是插件情况
+    if(length === i ){
+      target = this;
+      --i;　
+    }
+
+    // 可能有多个对象
+    for ( ; i < length; i++ ) {　
+      if(options = arguments[i] !== null){
+          for(name in options){
+            src = target[name];
+            copy = options[name];
+
+            if(target === copy){
+              continue;
+            }
+
+          }
+      }
+    }
+
+  };
 
   //349-817　扩展一些工具方法
   jQuery.extend();
