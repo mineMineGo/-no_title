@@ -384,7 +384,60 @@
   };
 
   //349-817　扩展一些工具方法
-  jQuery.extend();
+  jQuery.extend({
+    /*
+      expando: 生成唯一JQ字符串(内部)
+      noConflict():　防止冲突
+      isReady: DOM是否加载完成(内部)
+      readyWait: 等待多少文件的计数器(内部)
+      holdReady(): 推迟DOM触发
+      ready(): 准备DOM触发
+      isFunction(): 是否为函数
+      isArray(): 是否为数组
+      isWindow(): 是否是window
+      isNumberic(): 是否为数字
+      type(): 判断数据类型
+      isPlainObject(): 是否位对象自变量
+      isEmptyObject(): 是否位空的对象
+      error(): 抛出异常
+      parseHTML(): 解析节点
+      parseJSON(): 解析JSON
+      parseXML(): 解析XML
+      noop(): 空函数
+      globalEval()：　全局解析JS
+      camelCase(): 转驼峰
+      nodeName(): 是否位指定节点名(内部)
+      each():　遍历集合
+      trim(): 去除前后空格
+      makeArray(): 类数组转为真数组
+      inArray(): 数组版indexOf
+      merge(): 合并数组
+      gerp(): 过滤新数组
+      map(): 映射新数组
+      guid：　唯一标识符(内部)
+      proxy(): 改this指向
+      access(): 多功能值操作(内部)
+      now(): 当前时间
+      swap()：　css交换(内部)
+    */
+   expando: "jQuery" + (core_version　+ Math.random()).replace(/\D/g, ""),
+
+   noConflict: function(deep){
+    if(window.$ === jQuery){
+      window.$ = _$; //如果已经定义了$，这里时候jq已经放弃了$,因为30,31行已经把$赋值给了_$,这里有又重新赋值了
+    }
+
+    if(deep && window.jQuery === jQuery){
+      window.jQuery = _jQuery;
+    }
+   
+    return jQuery;
+   },
+   
+   isReady: false,
+
+   readyWait: ''
+  });
 
   //877-2856　Sizzle: 复杂选择器的实现
 
