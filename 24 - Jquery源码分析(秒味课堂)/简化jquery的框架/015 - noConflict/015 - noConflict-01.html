@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>noConflict</title>
+</head>
+<body>
+  
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script>
+
+  
+  // 利用jquey自带函数可以解决冲突
+  var miaov = $.noConflict();
+
+
+  var $ = 123;
+  console.log($); //这里$已经被覆盖了
+
+  miaov(function(){
+      console.log($);
+      console.log(miaov);
+  })
+
+</script>
+</html>
