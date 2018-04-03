@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>jq-ready</title>
+</head>
+<body>
+<!--通过一张图片可以看出过程-->
+<img src="" alt="">
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+
+    <!--以下两者有什么区别-->
+    //jq这个是等页面中的dom加载完毕就会触发的事件
+
+    //比如一个img有dom节点，也有资源src, onload是两者都加载完毕才会触发的,
+    // 而jq是img节点渲染完毕就会触发的
+    //所以jq的事件触发机制比原生的onload事件要早
+    //那他是怎么做到的呢？？？？？
+    //　有一个DOMContentLoaded是一个原生的dom节点加载完毕事件
+
+    $(function () {
+        //这个方法进入的是jq中的
+        /*
+         if (jQuery.isFunction(selector)) {
+            return rootjQuery.ready(selector);　// 其实这个就是$(document).ready(function(){})
+          }
+         */
+    });
+
+    //原生的这个onload是等页面中所有的资源都加载玩才会触发的事件
+    window.onload = function (ev) {  };
+
+
+    // DOMContentLoaded
+
+
+    $().ready();//这是实例方法
+
+
+//    三种写法监听事件完成机制都可以
+    $(document).on('ready', function () {
+        
+    });
+    
+    $(function () {
+        
+    });
+    
+    $(document).ready(function () {
+        
+    });
+
+//    还有一个推迟ready事件机制
+    $.holdReady(true);//推迟ready事件触发
+    $.holdReady(false);// 重新唤醒ready事件触发
+
+    $(function () {
+        alert('ready事件触发了');
+    })
+
+</script>
+</html>

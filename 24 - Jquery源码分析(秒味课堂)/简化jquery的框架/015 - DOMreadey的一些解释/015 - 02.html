@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>jq-ready</title>
+</head>
+<body>
+<!--通过一张图片可以看出过程-->
+<img src="" alt="">
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+
+//    还有一个推迟ready事件机制,它的用途呢
+
+
+    $.holdReady(true);//推迟ready事件触发
+    $.getScript('./a.js', function () {
+        $.holdReady(false);// 重新唤醒ready事件触发
+    });
+
+    $.holdReady(true);//推迟ready事件触发
+    $.getScript('./b.js', function () {
+        $.holdReady(false);// 重新唤醒ready事件触发
+    });
+
+
+    $(function () {
+        alert('ready事件触发了');
+    })
+
+</script>
+</html>
