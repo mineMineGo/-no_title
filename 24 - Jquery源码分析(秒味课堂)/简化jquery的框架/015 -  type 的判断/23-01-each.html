@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>each</title>
+</head>
+<body>
+  <p id="someElement"></p>
+  <p id="anotherElement"></p>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //each 遍历一个集合
+  var arr = ['a','b','c' ,'d', {
+    name: 'gao'
+  }];
+  $.each(arr,function (i, value) {
+    console.log(i+" : " + value);
+  });
+
+  var obj = {
+    name: '孙悟空',
+    age : 500,
+    sex: false
+  };
+  $.each(obj, function (i, value) {
+    console.log(i +" : " + value)
+  });
+
+  // jquery的api只是解释了前两个参数
+  // 源码中还有第三个参数,一般用于内部使用时候才用第三个参数
+
+  console.log("each第三个参数应用：：：：：");
+  $.each(obj,function ( a,b,c) {
+    console.log(a);
+    console.log(b);
+    console.log(c);
+  }, ["ni", "sha","gua"]);
+
+</script>
+</html>

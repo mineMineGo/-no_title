@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>camelCase</title>
+</head>
+<body>
+  <p id="someElement"></p>
+  <p id="anotherElement"></p>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //camelCase 转驼峰，比如-样式转换
+
+  var str = 'margin-top';
+  console.log($.camelCase(str)); // marginTop
+
+  var str1 = '-ms-margin-top';
+  console.log($.camelCase(str1)); // msMarginTop 这里的首字母不会产生大写
+
+  var str2 = '-moz-margin-top';
+  console.log($.camelCase(str2));// MozMarginTop 这里的首字母会产生大写
+
+  var str3 = '-webkit-margin-top';
+  console.log($.camelCase(str3));// WebkitMarginTop 这里的首字母会产生大写
+
+  function myCamelCase(string) {
+    return string.replace('-ms-', 'ms-').replace(/-([\da-z])/gi, function( all, letter ) {
+      return letter.toUpperCase();
+    });
+  }
+
+  var str4 = '-ms-margin-top';
+  console.log(myCamelCase(str4));
+</script>
+</html>

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>type</title>
+</head>
+<body>
+
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+    <!--原生的typeof　支持的有限-->
+
+    console.log(typeof null);//object
+    console.log(typeof undefined); //undefined
+    console.log(typeof (12434)); // number
+    console.log(typeof ('111')); // string
+    console.log(typeof ([]));    // object
+    console.log(typeof ({}));    // object
+    console.log(typeof function () { // function
+    });
+
+
+    console.log(null == null) ;// true
+    console.log(String(null)); // 'null'
+    console.log(undefined == null); // trueddd
+    console.log(String(undefined)); // 'undefined'
+
+    var a = 'hello';
+    console.log($.type(a)); //string
+    var a = 111;
+    console.log($.type(a));//number
+    var a = [1,2,3,3];
+    console.log($.type(a));//array
+    var a = {
+        age: '30'
+    };
+    console.log($.type(a)); //object
+    var a = null;
+    console.log($.type(a)); //null
+    var a = false;
+    console.log($.type(a));//boolean
+    var a = new Date;
+    console.log($.type(a)); //date
+
+
+    console.log('call call call')
+    console.log({}.toString.call([1,2,3,34]));
+
+
+
+
+
+
+
+
+
+
+
+    // 4月4日面试题
+    var name = "world";
+    (function () {
+        if(typeof name === undefined){
+            console.log('hello Tom');
+        }else{
+            console.log('hello -' + name)
+        }
+        console.log(typeof  name )
+    })();
+
+    var arr = [];
+    for (var i=0;i<5;i++){
+        arr[i] = function () {
+            console.log(i)
+        }
+    }
+    arr[i-2]();
+
+
+    function foo() {
+        console.log(this.b);
+    }
+    var b = 10;
+    var a = {
+        b: 'hello',
+        c: foo
+    }
+    a.c();
+    var d = a.c;
+    d();
+
+</script>
+</html>

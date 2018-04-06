@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>判断是否是对象自变量定义</title>
+</head>
+<body>
+
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  var a = {
+    nama: '孙悟空',
+    age: '100'
+  };
+  var b = new Object();
+  console.log($.isPlainObject(a));   // true
+  console.log($.isPlainObject(b));   // true
+
+
+  // 原理实现
+  function isPlainObject(obj) {
+    // !== object 必然不是兑对象自变量，比如number, string, boolean等
+    // dom节点用$.type()判断的话会返回object
+    // window用$.type()也是返回object
+    if (jQuery.type(obj) !== 'object' || obj.nodeType || jQuery.isWindow(obj)) {
+      return false;
+    }
+    try {
+      if(obj.constructor &&
+          !core_hasOwn.call(obj.constructor.prototype, 'isPrototypeOf')){
+        return false;
+      }
+    } catch(e) {
+      return false
+    }
+  }
+
+</script>
+</html>

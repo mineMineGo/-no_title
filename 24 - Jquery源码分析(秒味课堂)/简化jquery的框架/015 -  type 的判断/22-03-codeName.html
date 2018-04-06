@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>codeName</title>
+</head>
+<body>
+  <p id="someElement"></p>
+  <p id="anotherElement"></p>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //codeName 是否在为指定节点
+
+  // 用法
+  $(function () {
+    var bol = $.nodeName(document.documentElement, 'html');
+    console.log(bol); //true
+
+    var bol2 = $.nodeName(document.documentElement, 'body');
+    console.log(bol2); // false
+
+  });
+</script>
+</html>

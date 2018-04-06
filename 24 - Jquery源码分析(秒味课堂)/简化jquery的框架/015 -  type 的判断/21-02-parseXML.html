@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>parseXML</title>
+</head>
+<body>
+  <p id="someElement"></p>
+  <p id="anotherElement"></p>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //parseXML 用法
+  var str = "<rss version='2.0'><channel><title>RSS Title</title></channel></rss>",
+      xmlDoc = $.parseXML(str),
+      $xml = $(xmlDoc),
+      $title = $xml.find("title");
+  $('#someElement').append($title.text());
+
+  $title.text(' xml title');
+
+  $('#anotherElement').append($title.text());
+
+</script>
+</html>

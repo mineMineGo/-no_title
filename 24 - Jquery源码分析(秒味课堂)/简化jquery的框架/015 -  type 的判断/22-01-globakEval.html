@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>globalEval</title>
+</head>
+<body>
+  <p id="someElement"></p>
+  <p id="anotherElement"></p>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //globalEval 作用个： 全局解析js
+
+  function test() {
+    jQuery.globalEval('var newVar = true');
+  }
+
+  test();
+  console.log(newVar); // true
+
+
+
+  function test1() {
+    eval('var a = 1');
+    console.log('inner:  a is ' + a);
+  }
+
+  test1();
+  // console.log(a); //a is not defined
+
+
+  // window.eval 和eval是不一样的，可见
+  function test2() {
+    window.eval('var a = 1');
+  }
+  test2();
+  console.log(a); // 1
+
+
+  function test3() {
+    //  这里的eval又是不一样的
+    var myEval = eval;
+    myEval('var a = 1');
+  }
+
+  test3();
+  console.log(a); // 1
+
+
+
+
+//   解释
+  /*
+  因为eval既是一个关键字，又是window下面的一个属性,
+  所以说当函数内部直接使用eval时候是当做一个关键字来使用的，所以是在局部中生效的
+  使用window.eval时候是当做window的一个属性使用，所以是在全局生效的
+  另外第三种当eval赋值给变量myEval这个变量时候，是和window.eval是一样的效果
+   */
+  
+</script>
+</html>

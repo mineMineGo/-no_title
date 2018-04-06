@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>判断对象是否为空</title>
+</head>
+<body>
+
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+
+  var obj = {
+    name: 'hello'
+  };
+  var obj2 = {};
+
+  function obj3() {
+
+  }
+  // 函数本身建立时候系统会自动添加一个 constructor属性，但是for in 是循环不出来的
+  // 即使手动重新改写了constructor, for in 时候也不会出现
+
+  obj3.prototype.constructor = "minemine";
+  for(var attr in obj3){
+    console.log('这个for-in走入了 ');//这句话是不会出现的
+  }
+
+  var obj4 = new obj3();
+  console.log($.isEmptyObject(obj)); //false
+  console.log($.isEmptyObject(obj2)); // true
+  console.log($.isEmptyObject(obj4)); // true
+
+  //实现原理 for in
+
+
+
+
+</script>
+</html>
