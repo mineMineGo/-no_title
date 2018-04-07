@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>proxy</title>
+</head>
+<body>
+  <input type="button" value="点我">
+  <input type="button" value="取消绑定">
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //proxy  更改this指向
+
+  function show(n1, n2) {
+    console.log(n1);
+    console.log(n2);
+    console.log(this)
+  }
+
+  show(); // window
+
+  $.proxy(show, document)(3,4); // 3,4,document
+
+  $.proxy(show, document,3,4)(); // 3,4,document
+
+  $.proxy(show, document,3)(4); // 3,4,document
+
+
+
+  var obj = {
+    show: function () {
+      console.log(this);
+    }
+  };
+
+ // $(document).click(obj.show); //document
+
+ // $(document).click($.proxy(obj.show, obj)) // {show: function(){...}}
+
+  // 简写方式跟上面是一样的效果, 源码内部做了判断会实现转换
+  $(document).click($.proxy(obj, 'show'));    // {show: function(){...}}
+
+
+
+</script>
+</html>

@@ -721,9 +721,35 @@
 
       // 防止变为复合数组 , 复合数组： [[1], [2]]
       return core_concat.apply([], ret);
+    },
+
+    guid: 1,
+    // 改变this指向
+    proxy: function (fn, context) {
+      var tmp, args, proxy;
+
+      //对应的是简化写法
+      if(typeof context === "string"){
+        tmp = fn[context];
+        context = fn;
+        fn = tmp;
+      }
+      // fn必须是一个函数
+      if(!jQuery.isFunction(fn)){
+        return undefined;
+      }
+      // 截取参数，返回一个新的数组，包含从 start 到 end （不包括该元素）的 arrayObject 中的元素。
+      args = core_slice.call(arguments, 2);
+
+      proxy = function () {
+        //更改this指向，并组合参数
+        return fn.apply(context || this, args.concat(core_slice.call(arguments)));
+      };
+
+      proxy.guid = fn.guid = fn.guid || jQuery.guid++;
+
+      return proxy;
     }
-
-
   });
   // 844
   jQuery.each("Boolean Number String Function Array Date RegExp Object Error".split(" "), function (i, name) {
