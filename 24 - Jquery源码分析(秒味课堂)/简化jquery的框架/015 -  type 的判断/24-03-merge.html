@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>merge</title>
+</head>
+<body>
+  <div></div>
+  <div></div>
+  <div></div>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //merge  合并数组
+
+  /*
+   merge: function (first, second) {
+      var l = second.length,
+          i = first.length,
+          j = 0;
+      if(typeof l === "number"){
+        for (;j<l;j++){
+          first[i++] = second[j];
+        }
+      } else {
+        while (second[j] !== undefined){
+          first[ i++ ] = second[ j++ ];
+        }
+      }
+      first.length = i;
+
+      return first;
+    }
+
+   */
+
+
+  // 进入上面if判断的是
+  var a = $.merge(['a','b', 'c'], ['d','e', 'f']);
+
+  console.log(a); //  ['a','b', 'c', 'd', 'e', 'f'];
+
+
+  var e = $.merge(['a','b','c'], {
+    0: '12',
+    1: "23",
+    2: '45',
+    length: 3
+  });
+  console.log(e); // ["a", "b", "c", "12", "23", "45"]
+
+
+
+  // else
+
+  var f = $.merge(['a','b','c'], {
+    0: '12',
+    1: "23",
+    2: '45',
+    length: '3'
+  });
+  console.log(f);
+
+  var b = $.merge(['a','b', 'c'], {
+    0: 'c',
+    1: 'd',
+    2: 'e'
+  });
+
+  console.log(b); // ['a','b', 'c', 'c','d', 'e']
+
+  var c = $.merge({0: 'a', 1: 'b', 2: 'c'}, {
+    3: 'd',
+    4: '5'
+  });
+  console.log(c); // {0: "a", 1: "b", 2: "c", length: undefined}
+
+
+  var d = $.merge({0: 'a', 1: 'b', 2: 'c', length: 3}, {
+    0: 'd',
+    1: 'e'
+  });
+  console.log(d);// {0: "a", 1: "b", 2: "c",3: "d", 4: "e", length: 5}
+
+
+</script>
+</html>
