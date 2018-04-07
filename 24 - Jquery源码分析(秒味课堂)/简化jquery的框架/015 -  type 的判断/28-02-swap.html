@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>swap-css交换</title>
+</head>
+<body>
+  <div id="div1" style="width: 100px;height: 100px;background-color: red">
+    我是验证信息
+  </div>
+  <div id="div2" style="width: 100px;height: 100px;background-color: yellow;display: none">
+    我是验证信息
+  </div>
+  <!--样式中不会显示但是可以获得宽高度等属性-->
+  <div id="div3" style="width: 100px;height: 100px;background-color: yellow;visibility: hidden;position: absolute;"> 1111</div>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //swap css交换
+
+  $(function () {
+    console.log($('#div1').css('width')); // 100px
+    console.log($("#div1").get(0).offsetWidth);// 100
+
+
+    console.log($('#div2').css('width')); // 100px
+    //元素隐藏时候原生的是获取不到宽度的，而$可以
+    console.log($("#div2").get(0).offsetWidth);// 0
+
+    // jquery是如何做到的呢，就是利用这个swap方法
+    //原因“ 先通过更改样式，然后存取来获得数据，然后在还原样式（参考div3）
+
+    console.log($('#div3').css('width')); // 100px
+    console.log($("#div3").get(0).offsetWidth);// 100
+  });
+</script>
+</html>

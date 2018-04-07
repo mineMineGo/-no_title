@@ -799,8 +799,46 @@
           bulk ?
               fn.call(elems) :
               length ? fn(elems[0], key) : emptyGet;
+    },
+    
+    now: Date.now,
+    // css交换
+    swap: function (elem, options, callback, args) {
+      var ret, name, old = {};
+
+      for(name in options){
+        old[name] = elem.style[name];
+        elem.style[name] = options[name];
+      }
+
+      ret = callback.apply(elem, args || []);
+
+      for (name in options){
+        elem.style[name] = old[name];
+      }
+      return ret;
     }
   });
+
+  jQuery.ready.promise = function(obj){
+    if(!readyList){
+
+      readyList = jQuery.Deferred();
+      if(document.readyState === "complete"){
+        setTimeout(jQuery.ready)
+      }else{
+        // Use the handy event callback
+        document.addEventListener( "DOMContentLoaded", completed, false );
+
+        // A fallback to window.onload, that will always work
+        window.addEventListener( "load", completed, false );
+      }
+
+    }
+    return readyList.promise(obj);
+  };
+
+
   // 844
   jQuery.each("Boolean Number String Function Array Date RegExp Object Error".split(" "), function (i, name) {
     class2type["[object " + name + "]"] = name.toLowerCase();
@@ -818,6 +856,7 @@
     return type === 'array' || type !== 'function' &&
         (length === 0 || typeof length === "number"  && length > 0 && ( length - 1 ) in obj )
   }
+  rootjQuery = jQuery(document);
 
   //877-2856　Sizzle: 复杂选择器的实现
 
