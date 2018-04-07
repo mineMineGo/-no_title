@@ -692,6 +692,35 @@
         }
       }
       return ret;
+    },
+    // arg参数限于内部使用
+    map: function (elems, callback, arg) {
+      var value,
+          i = 0,
+          length = elems.length,
+          isArray = isArrayLike(elems),
+          ret = [];
+
+      if(isArray){
+        for ( ;i < length; i++) {
+          value = callback(elems[i], i, arg);
+
+          if(value !== null){
+            ret[ret.length] = value;
+          }
+
+        }
+      } else {
+        for(i in elems){
+          value = callback(elems[i], i, arg);
+          if(value !== null){
+            ret[ret.length] = value;
+          }
+        }
+      }
+
+      // 防止变为复合数组 , 复合数组： [[1], [2]]
+      return core_concat.apply([], ret);
     }
 
 

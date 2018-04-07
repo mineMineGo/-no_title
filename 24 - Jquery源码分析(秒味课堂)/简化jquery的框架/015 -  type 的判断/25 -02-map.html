@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>map</title>
+</head>
+<body>
+  <div></div>
+  <div></div>
+  <div></div>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //map 映射新数组
+
+
+  var arr = [1,2,3,4];
+  
+  var arr1 = $.map(arr, function (value) {
+    return value * 2
+  });
+  console.log(arr1); // [2,4,6,8]
+
+
+  var arr2 = [1,2,3,4];
+
+  var arr3 = $.map(arr2, function (value) {
+    return [value * 2]
+  });
+  console.log(arr3); // [2,4,6,8]
+
+  // apply传递的是一个数组参数, 这里是多个参数， 相当于[].concat([2]).concat([4]).concat([6]);
+  console.log([].concat.apply([], [[2],[4], [6]])); // [2,4,6]
+
+  // call传递的参数是多个, 这里只有一个参数，相当于[].concat([[2],[4],[6]]);
+  console.log([].concat.call([], [[2], [4], [6]])); // [[2],[4],[6]]
+
+
+</script>
+</html>
