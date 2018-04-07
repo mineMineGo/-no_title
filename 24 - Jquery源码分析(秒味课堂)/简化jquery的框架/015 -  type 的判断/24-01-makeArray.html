@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>makeArray</title>
+</head>
+<body>
+  <div></div>
+  <div></div>
+  <div></div>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //makeArray 类数组转为真数组
+
+//  用法
+  var  a = {
+    name: '1',
+    age: 600
+  }
+  var b = $.makeArray(a);
+  console.log(b); // [{name: "1",age: 600}];
+
+
+  window.onload = function (ev) {
+    var aDiv = document.getElementsByTagName('div');
+    console.log($.makeArray(aDiv));
+    var str = "hello";
+    console.log($.makeArray(str)); // ["hello"]
+
+
+    // 内部使用两个参数，外部使用一个参数
+    console.log($.makeArray(str, {length: 1})); // {1: 'hello, length: 1 }
+  }
+
+
+</script>
+</html>
