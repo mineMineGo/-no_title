@@ -861,6 +861,10 @@
   //877-2856　Sizzle: 复杂选择器的实现
 
   //2880-3042　Callbacks :回调对象:　对函数的统一管理
+  jQuery.Callbacks = function(options){
+    options = typeof options === "string";
+  },
+
 
   //3043-3183　Defereed：　延迟对象： 对异步的统一管理
 
