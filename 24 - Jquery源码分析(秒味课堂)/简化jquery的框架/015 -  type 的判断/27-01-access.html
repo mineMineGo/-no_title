@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>access</title>
+</head>
+<body>
+  <div id="div1" style="width: 100px;height: 100px;background-color: red">
+    我是验证信息
+  </div>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //access 内部使用
+
+  $(function () {
+
+    // 根据参数的不同分别获取或者设定相应的样式
+    console.log($("#div1").css('width')); // 100px
+
+    $('#div1').css('backgroundColor','yellow');
+
+
+    // 也可以一次性设置多个样式
+    $('#div1').css({
+      'fontSize': '30px',
+      "fontWeight": 'bold'
+    })
+  })
+
+</script>
+</html>
