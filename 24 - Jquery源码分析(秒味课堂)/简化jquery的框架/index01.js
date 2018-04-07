@@ -642,6 +642,21 @@
     
     trim: function (text) {
       return text == null ? '' : core_trim.call(text)
+    },
+
+    makeArray: function (arr, results) {
+      var ret = results || [];
+      if(arr != null){
+        if(isArrayLike(Object(arr))){
+          jQuery.merge(ret, typeof arr === "string" ? [arr] :arr);
+        }else {
+          core_push.call(ret, arr);
+        }
+      }
+      return ret;
+    },
+    inArray: function (elem, arr, i) {
+      return arr == null ? -1 : core_indexOf.call(arr,elem, i);
     }
 
 
