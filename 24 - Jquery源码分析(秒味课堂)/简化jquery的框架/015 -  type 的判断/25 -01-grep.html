@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>grep</title>
+</head>
+<body>
+  <div></div>
+  <div></div>
+  <div></div>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //grep 过滤得到新数组
+  var arr = [1,2,3,4];
+  var newArr = $.grep(arr, function (value, index) {
+    console.log(index, value);
+
+    // 返回一个return true的值重新构成的一个数组
+    return value > 2;
+  });
+  console.log(newArr); // [3,4]
+  
+  
+  
+  // 当第三个参数为true时候，将返回返回值为false的每一项组成的新数组
+  var arr1 = [1,2,3,4,5];
+  
+  var newArr1 = $.grep(arr1, function (value, index) {
+      return value > 2;
+  }, true);
+  console.log(newArr1);  // [1,2]
+  
+  
+  
+  
+  
+</script>
+</html>

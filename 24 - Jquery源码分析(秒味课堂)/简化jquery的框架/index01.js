@@ -412,7 +412,7 @@
       makeArray(): 类数组转为真数组
       inArray(): 数组版indexOf
       merge(): 合并数组
-      gerp(): 过滤新数组
+      grep(): 过滤新数组
       map(): 映射新数组
       guid：　唯一标识符(内部)
       proxy(): 改this指向
@@ -675,6 +675,23 @@
       first.length = i;
 
       return first;
+    },
+    // 过滤新数组
+    grep: function (elems, callback, inv) {
+       var retVal,
+           ret = [],
+           i = 0,
+           length = elems.length;
+
+       inv = !!inv; //当不才传递第三个参数时候是undefined, !!undefined就是false
+
+      for (; i < length; i++) {
+        retVal = !!callback(elems[i], i);
+        if(inv !== retVal){
+          ret.push(elems[i]);
+        }
+      }
+      return ret;
     }
 
 
