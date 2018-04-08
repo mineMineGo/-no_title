@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Callbacks统一函数管理</title>
+</head>
+<body>
+
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //Callbacks 统一函数管理
+
+  var bBtn = true;
+  function aaa() {
+    console.log('aaa');
+    if(bBtn){
+      // 根据输出结果可以看出，打印aaa之后仍然是执行了bbb函数,
+      // 才又执行了ab.fire()函数,说明内部做了处理
+      ab.fire();
+      bBtn = false;
+    }
+  }
+
+  function bbb() {
+    console.log('bbb');
+  }
+
+  function ccc() {
+    console.log('ccc');
+  }
+
+  var ab = $.Callbacks();
+  ab.add(aaa);
+  ab.add(bbb);
+
+
+  ab.fire(); //aaa bbb aaa bbb
+
+
+</script>
+</html>

@@ -916,8 +916,12 @@
         if(list){
           if(stack){
             if(stack.length){
-              fire(stack.shift())
+              fire(stack.shift());
             }
+          }else if(memory) {
+            list = [];
+          } else {
+            self.disable();
           }
         }
       },
@@ -963,17 +967,24 @@
           return fn ? jQuery.inArray(fn, list) >-1 : !!(list && list.length);
         },
         empty: function(){
-
+          list = [];
+          firingLength = 0;
+          return this;
         },
         disable: function () {
-
+          list = stack = memory = undefined;
+          return this;
         },
         // Is it disabled?
         disabled: function () {
           return !list;
         },
         lock: function () {
-
+          stack = undefined;
+          if(memory){
+            self.disable()
+          }
+          return this;
         },
         // is it locked
         locked: function () {
