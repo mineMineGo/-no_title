@@ -1016,6 +1016,15 @@
 
   //3043-3183　Defereed：　延迟对象： 对异步的统一管理
 
+  jQuery.extend({
+    Deferred: function (func) {
+
+    },
+    when: function () {
+      
+    }
+  });
+
   //3184-3295　Support: 　功能检测:
 
   //3308-3652　data() : 数据缓存
