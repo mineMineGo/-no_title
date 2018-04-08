@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Callbacks统一函数管理</title>
+</head>
+<body>
+
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //Callbacks统一函数管理
+
+  function aaa() {
+    console.log('aaa');
+    return false;
+  }
+
+  function bbb() {
+    console.log('bbb');
+  }
+
+  var cd = $.Callbacks();
+
+  cd.add(aaa);
+  cd.add(bbb);
+
+  cd.fire(); // aaa bbb
+  cd.fire(); // aaa bbb
+
+console.log('once----');
+  // once 只会触发一次,其实就是作用于list 中的循环事件，只触发一次循环事件
+  var cde = $.Callbacks('once');
+
+  cde.add(aaa);
+  cde.add(bbb);
+
+  cde.fire(); // aaa bbb
+  cde.fire(); // 不会在触发
+
+
+  console.log('memory----');
+  // memory 记忆
+  //　不按照顺序了，如果在执行fire后仍然有add那也会触发,其实就是作用于add事件，
+  //  add之后仍然触发了fire事件
+  var cdef = $.Callbacks('memory');
+
+  cdef.add(aaa);
+  cdef.fire();   // aaa
+  cdef.add(bbb); // bbb
+
+  console.log('unique----');
+  //unique 唯一的，去重
+  var cdefg = $.Callbacks('unique');
+
+  cdefg.add(aaa);
+  cdefg.add(aaa);
+  cdefg.fire(); //aaa 只会触发一次
+
+
+  console.log('stopOnFalse----');
+  // stopOnFalse
+  // 作用到了　for循环中
+  var cdefgh = $.Callbacks('stopOnFalse');
+
+  cdefgh.add(aaa);
+  cdefgh.add(bbb);
+  cdefgh.fire(); //aaa  这时候不会触发bbb事件，因为aaa　返回值为false
+
+
+  // 还可以接受组合参数
+console.log('once, unique----');
+  var cdefghi = $.Callbacks('once unique');
+
+  cdefghi.add(aaa);
+  cdefghi.add(aaa);
+  cdefghi.add(bbb);
+  cdefghi.add(bbb);
+
+  cdefghi.fire(); // aaa bbb　并且去重了
+  cdefghi.fire(); // 不会在触发
+
+  /*
+  源码中options可能的选项
+  Possible options:
+
+  once　
+
+  memory
+
+  unique
+
+  stopOnFalse
+
+
+   */
+
+</script>
+</html>

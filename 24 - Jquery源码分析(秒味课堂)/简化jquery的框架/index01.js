@@ -515,7 +515,7 @@
     },
     isEmptyObject: function (obj) {
       var name;
-      for(name in obj){
+      for (name in obj) {
         return false;
       }
       return true;
@@ -525,21 +525,21 @@
       throw new Error(msg);
     },
 
-    parseHTML: function (data, context, keepScripts ) {
-      if(!data || typeof data !== 'string' ){
+    parseHTML: function (data, context, keepScripts) {
+      if (!data || typeof data !== 'string') {
         return null;
       }
-      if(typeof context === 'bollean'){
+      if (typeof context === 'bollean') {
         keepScripts = context;
         context = false;
       }
       context = context || document;
       var parsed = rsingleTag.exec(data),
-          scripts = !keepScripts && [];
+        scripts = !keepScripts && [];
 
       // Single tag 如果是单标签,例如 <li></li>
-      if ( parsed ) {
-        return [ context.createElement( parsed[1] ) ];
+      if (parsed) {
+        return [context.createElement(parsed[1])];
       }
       // 多标签的话 <li></li><div></div><li></li>
 
@@ -557,33 +557,34 @@
     parseXML: function (data) {
       var xml, tmp;
       // 只有字符串类型的才可以被解析
-      if(!data || typeof data !== "string"){
+      if (!data || typeof data !== "string") {
         return null;
       }
       // 支持ie9
-      try{
+      try {
         tmp = new DOMParser();
         xml = tmp.parseFromString(data, "text/xml");
-      }catch (e){
+      } catch (e) {
         xml = undefined;
       }
-      if(!xml || xml.getElementsByTagName("parsererror").length){
+      if (!xml || xml.getElementsByTagName("parsererror").length) {
         jQuery.error('Invalid XML' + data);
       }
       return xml;
     },
     // 一个空函数
-    noop: function() {},
+    noop: function () {
+    },
 
     // 全局解析js
     globalEval: function (code) {
       var script,
-          // 这里的eval也进行了赋值，否则就会局部生效，而不是全局生效
-          indirect = eval;
+        // 这里的eval也进行了赋值，否则就会局部生效，而不是全局生效
+        indirect = eval;
       code = jQuery.trim(code);
-      if(code){
+      if (code) {
         //严格模式下不支持eval解析的
-        if(code.indexOf("use strict") === 1){
+        if (code.indexOf("use strict") === 1) {
           script = document.createElement("script");
           script.text = code;
           document.head.appendChild(script).parentNode.removeChild(script);
@@ -603,35 +604,39 @@
     // args仅限于内部使用
     each: function (obj, callback, args) {
       var value,
-          i = 0,
-          length = obj.length,
-          isArray = isArrayLike(obj);
+        i = 0,
+        length = obj.length,
+        isArray = isArrayLike(obj);
 
-      if(args){
-        if(isArray){
-          for( ;i<length;i++){
+      if (args) {
+        if (isArray) {
+          for (; i < length; i++) {
             value = callback.apply(obj[i], args);
-            if(value === false){break}
+            if (value === false) {
+              break
+            }
           }
-        }else {
-          for(i in obj){
-            value = callback.apply(obj[i],args);
-            if(value === false){break}
+        } else {
+          for (i in obj) {
+            value = callback.apply(obj[i], args);
+            if (value === false) {
+              break
+            }
           }
         }
       } else {
-        if(isArray){
-          for(;i<length;i++){
+        if (isArray) {
+          for (; i < length; i++) {
             // 当某个循环中的返回值为false 就立即停止循环
             value = callback.call(obj[i], i, obj[i]);
-            if(value === false){
+            if (value === false) {
               break;
             }
           }
         } else {
-          for(i in obj){
-            value = callback.vall(obj[i],i,obj[i]);
-            if(value === false){
+          for (i in obj) {
+            value = callback.vall(obj[i], i, obj[i]);
+            if (value === false) {
               break
             }
           }
@@ -639,37 +644,37 @@
       }
       return obj;
     },
-    
+
     trim: function (text) {
       return text == null ? '' : core_trim.call(text)
     },
 
     makeArray: function (arr, results) {
       var ret = results || [];
-      if(arr != null){
-        if(isArrayLike(Object(arr))){
-          jQuery.merge(ret, typeof arr === "string" ? [arr] :arr);
-        }else {
+      if (arr != null) {
+        if (isArrayLike(Object(arr))) {
+          jQuery.merge(ret, typeof arr === "string" ? [arr] : arr);
+        } else {
           core_push.call(ret, arr);
         }
       }
       return ret;
     },
     inArray: function (elem, arr, i) {
-      return arr == null ? -1 : core_indexOf.call(arr,elem, i);
+      return arr == null ? -1 : core_indexOf.call(arr, elem, i);
     },
-    
+
     merge: function (first, second) {
       var l = second.length,
-          i = first.length,
-          j = 0;
-      if(typeof l === "number"){
-        for (;j<l;j++){
+        i = first.length,
+        j = 0;
+      if (typeof l === "number") {
+        for (; j < l; j++) {
           first[i++] = second[j];
         }
       } else {
-        while (second[j] !== undefined){
-          first[ i++ ] = second[ j++ ];
+        while (second[j] !== undefined) {
+          first[i++] = second[j++];
         }
       }
       first.length = i;
@@ -678,16 +683,16 @@
     },
     // 过滤新数组
     grep: function (elems, callback, inv) {
-       var retVal,
-           ret = [],
-           i = 0,
-           length = elems.length;
+      var retVal,
+        ret = [],
+        i = 0,
+        length = elems.length;
 
-       inv = !!inv; //当不才传递第三个参数时候是undefined, !!undefined就是false
+      inv = !!inv; //当不才传递第三个参数时候是undefined, !!undefined就是false
 
       for (; i < length; i++) {
         retVal = !!callback(elems[i], i);
-        if(inv !== retVal){
+        if (inv !== retVal) {
           ret.push(elems[i]);
         }
       }
@@ -696,24 +701,24 @@
     // arg参数限于内部使用
     map: function (elems, callback, arg) {
       var value,
-          i = 0,
-          length = elems.length,
-          isArray = isArrayLike(elems),
-          ret = [];
+        i = 0,
+        length = elems.length,
+        isArray = isArrayLike(elems),
+        ret = [];
 
-      if(isArray){
-        for ( ;i < length; i++) {
+      if (isArray) {
+        for (; i < length; i++) {
           value = callback(elems[i], i, arg);
 
-          if(value !== null){
+          if (value !== null) {
             ret[ret.length] = value;
           }
 
         }
       } else {
-        for(i in elems){
+        for (i in elems) {
           value = callback(elems[i], i, arg);
-          if(value !== null){
+          if (value !== null) {
             ret[ret.length] = value;
           }
         }
@@ -729,13 +734,13 @@
       var tmp, args, proxy;
 
       //对应的是简化写法
-      if(typeof context === "string"){
+      if (typeof context === "string") {
         tmp = fn[context];
         context = fn;
         fn = tmp;
       }
       // fn必须是一个函数
-      if(!jQuery.isFunction(fn)){
+      if (!jQuery.isFunction(fn)) {
         return undefined;
       }
       // 截取参数，返回一个新的数组，包含从 start 到 end （不包括该元素）的 arrayObject 中的元素。
@@ -757,27 +762,27 @@
     // value 就是类似于设置属性的属性值
     // chainable 如果为真就代表要设置，为假就是获取
 
-    access: function (elems, fn, key,value,chainable, emptyGet, raw) {
+    access: function (elems, fn, key, value, chainable, emptyGet, raw) {
       var i = 0,
-          length = elems.length,
-          bulk = key == null;
+        length = elems.length,
+        bulk = key == null;
 
-    //  设置多个值
-      if(jQuery.type(key) === 'object'){
-        chainable  = true;
-        for(i in key){
+      //  设置多个值
+      if (jQuery.type(key) === 'object') {
+        chainable = true;
+        for (i in key) {
           jQuery.access(elems, fn, i, key[i], true, emptyGet, raw);
         }
-      }else if(value !== undefined) {
+      } else if (value !== undefined) {
         // 设置单个值
         chainable = true;
 
-        if(!jQuery.isFunction(value)){
+        if (!jQuery.isFunction(value)) {
           raw = true;
         }
 
-        if(bulk){
-          if(raw){
+        if (bulk) {
+          if (raw) {
             fn.call(elems, value);
             fn = null;
           } else {
@@ -787,51 +792,51 @@
             }
           }
         }
-        if(fn){
-          for(;i<length;i++){
-            fn(elems[i], key, raw ? value : value.call(elems[i], i, fn(elems[i],key)) )
+        if (fn) {
+          for (; i < length; i++) {
+            fn(elems[i], key, raw ? value : value.call(elems[i], i, fn(elems[i], key)))
           }
         }
       }
       return chainable ?
-          elems:
-          // gets
-          bulk ?
-              fn.call(elems) :
-              length ? fn(elems[0], key) : emptyGet;
+        elems :
+        // gets
+        bulk ?
+          fn.call(elems) :
+          length ? fn(elems[0], key) : emptyGet;
     },
-    
+
     now: Date.now,
     // css交换
     swap: function (elem, options, callback, args) {
       var ret, name, old = {};
 
-      for(name in options){
+      for (name in options) {
         old[name] = elem.style[name];
         elem.style[name] = options[name];
       }
 
       ret = callback.apply(elem, args || []);
 
-      for (name in options){
+      for (name in options) {
         elem.style[name] = old[name];
       }
       return ret;
     }
   });
 
-  jQuery.ready.promise = function(obj){
-    if(!readyList){
+  jQuery.ready.promise = function (obj) {
+    if (!readyList) {
 
       readyList = jQuery.Deferred();
-      if(document.readyState === "complete"){
+      if (document.readyState === "complete") {
         setTimeout(jQuery.ready)
-      }else{
+      } else {
         // Use the handy event callback
-        document.addEventListener( "DOMContentLoaded", completed, false );
+        document.addEventListener("DOMContentLoaded", completed, false);
 
         // A fallback to window.onload, that will always work
-        window.addEventListener( "load", completed, false );
+        window.addEventListener("load", completed, false);
       }
 
     }
@@ -844,26 +849,158 @@
     class2type["[object " + name + "]"] = name.toLowerCase();
   });
 
-  function isArrayLike(obj){
+  function isArrayLike(obj) {
     var length = obj.length,
-        type = jQuery.type(obj);
-    if(jQuery.isWindow(obj)){
+      type = jQuery.type(obj);
+    if (jQuery.isWindow(obj)) {
       return false;
     }
-    if(obj.nodeType === 1 && length){
+    if (obj.nodeType === 1 && length) {
       return true
     }
     return type === 'array' || type !== 'function' &&
-        (length === 0 || typeof length === "number"  && length > 0 && ( length - 1 ) in obj )
+      (length === 0 || typeof length === "number" && length > 0 && (length - 1) in obj)
   }
+
   rootjQuery = jQuery(document);
 
   //877-2856　Sizzle: 复杂选择器的实现
 
+
+
+
+
+
+
+  // String to Object options format cache
+  var optionsCache = {};
+
+// Convert String-formatted options into Object-formatted ones and store in cache
+  function createOptions( options ) {
+    var object = optionsCache[ options ] = {};
+    jQuery.each( options.match( core_rnotwhite ) || [], function( _, flag ) {
+      object[ flag ] = true;
+    });
+    return object;
+  }
+
   //2880-3042　Callbacks :回调对象:　对函数的统一管理
-  jQuery.Callbacks = function(options){
-    options = typeof options === "string";
-  },
+  jQuery.Callbacks = function (options) {
+    options = typeof options === "string" ?
+      (optionsCache[options] || createOptions(options)) :
+      jQuery.extend({}, options);
+
+    var memory,
+      fired,
+      firing,
+      firingStart,
+      firingLength,
+      firingIndex,
+      list = [],
+      stack = !options.once && [],
+      fire = function (data) {
+        // for 循环 list
+        memory = options.memory && data;
+        fired = true;
+        firingIndex = firingStart || 0;
+        firingStart = 0;
+        firingLength = list.length;
+        firing = true;
+        for(;list && firingIndex < firingLength; firingIndex++){
+          if(list[firingIndex].apply(data[0], data[1]) == false && options.stopOnFalse){
+            memory = false;
+            break;
+          }
+        }
+        firing = false;
+        if(list){
+          if(stack){
+            if(stack.length){
+              fire(stack.shift())
+            }
+          }
+        }
+      },
+      self = {
+        add: function () {
+          if(list){
+            var start = list.length;
+            (function add(args) {
+              jQuery.each(args, function (_,arg) {
+                var type = jQuery.type(arg);
+                if(type === "function"){
+                  // 数组要不要进行去重操作
+                  if (!options.unique || !self.has(arg)) {
+                    list.push(arg);
+                  }
+                } else if (arg && arg.length && type !== 'string') {
+                  add(arg);
+                }
+
+              });
+            })(arguments);
+          }
+        },
+        remove: function f() {
+          if(list){
+            jQuery.each(arguments, function (_, arg) {
+              var index;
+              while ((index == jQuery.inArray(arg, list, index )) > -1) {
+                list.splice(index, 1);
+                if(firing){
+                  if(index <= firingLength ){
+                    firingLength--;
+                  }　
+                  if(index <= firingIndex) {
+                    firingIndex--;
+                  }
+                }
+              }
+            });
+          }
+        },
+        has: function (fn) {
+          return fn ? jQuery.inArray(fn, list) >-1 : !!(list && list.length);
+        },
+        empty: function(){
+
+        },
+        disable: function () {
+
+        },
+        // Is it disabled?
+        disabled: function () {
+          return !list;
+        },
+        lock: function () {
+
+        },
+        // is it locked
+        locked: function () {
+          return !stack;
+        },
+        fireWith: function (context, args) {
+          if(list && (!fired || stack)){
+            args = args || [];
+            args = [context, args.slice ? args.slice() : args];
+            if (firing) {
+              stack.push(args);
+            } else {
+              fire(args); //　最终调用上面的局部函数fire
+            }
+          }
+          return this;
+        },
+        fire: function () {
+          self.fireWith( this, arguments );
+          return this;
+        },
+        fired: function () {
+          return !!fired;
+        }
+      };
+    return self;
+  };
 
 
   //3043-3183　Defereed：　延迟对象： 对异步的统一管理

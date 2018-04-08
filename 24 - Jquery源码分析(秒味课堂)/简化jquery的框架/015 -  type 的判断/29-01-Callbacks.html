@@ -12,6 +12,53 @@
 </body>
 <script type="text/javascript" src="../index.js"></script>
 <script type="text/javascript">
-  //
+  //Callbacks统一函数管理
+
+  function aaa() {
+    console.log('aaa');
+  }
+
+  function bbb() {
+    console.log('bbb');
+  }
+
+  var cd = $.Callbacks();
+
+  cd.add(aaa);
+  cd.add(bbb);
+
+  cd.fire(); // aaa  bbb
+
+  cd.remove(aaa);
+  cd.fire(); // bbb
+
+  //　比如下面回调函数就类似一样效果
+  document.addEventListener('click',function () {
+      console.log('你点击了');
+  });
+
+  document.addEventListener('click',function () {
+      console.log('你又点击了');
+  });
+
+  document.addEventListener('click',function () {
+      console.log('你又TM点击了');
+  });
+
+  /*
+  源码中options可能的选项
+  Possible options:
+
+  once
+
+  memory
+
+  unique
+
+  stopOnFalse
+
+
+   */
+
 </script>
 </html>
