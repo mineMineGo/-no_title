@@ -39,6 +39,37 @@
 
   // 输出结果：　1111, 22222
 
+  // -----------------------------
+  var abc = $.Deferred();
+
+  setTimeout(function () {
+    console.log(777);
+    abc.reject();
+  }, 1000);
+
+  abc.fail(function () {
+    console.log(888)
+  });
+
+  // 输出结果 777, 888
+
+  // ------------------------------------------
+
+  var adcd = $.Deferred();
+  setTimeout(function () {
+    console.log(999);
+    // 通知
+    abcd.notify();
+  }, 1000);
+
+  // 过程
+  adcd.progress(function () {
+    console.log(100000);
+  });
+
+  // 输出结果999， 100000
+
+
   console.log('--------------------------');
   var ab = $.Deferred();
 

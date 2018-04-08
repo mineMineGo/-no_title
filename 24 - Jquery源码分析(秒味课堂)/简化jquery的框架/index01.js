@@ -1018,6 +1018,61 @@
 
   jQuery.extend({
     Deferred: function (func) {
+      var tuples = [
+          // action, listener,  listener list, final state
+          // 这里可以看出 成功和失败里面有once，只会执行一次，而notify没有once
+          // 因为成功和失败就代表状态的结束了，所以执行一次就好了。而进度notify需要连续触发，可以做一个进度条之类的
+          ['resolve', 'done', jQuery.Callbacks("once memory"), "resolved"],
+          ['reject', 'fail', jQuery.Callbacks('once memory'), 'rejected'],
+          ['notify', 'progress', jQuery.Callbacks('memory')]
+      ],
+          state = "pending",
+          promise = {
+            state: function(){
+              return state;
+            },
+            always: function () {
+              deferred.done(arguments).fail(arguments)
+            },
+            then: function () {
+              var fns = arguments;
+            },
+            promise: function () {
+
+            }
+          },
+          deferred= {};
+      promise.pipe = promise.then;
+
+      jQuery.each(tuples, function (i, tuple) {
+        var list = tuple[2],
+            stateString = tuple[3];
+
+        // promise [done | fail | progress] = list.add
+        promise[tuple[1]] = list.add;
+
+        if(stateString){
+          list.add(function () {
+            state  = stateString;
+          }, tuple[i ^ 1])
+        }
+
+        // deferred[resolve | reject | notify ]
+        deferred[tuple[0]] = function () {
+          deferred[ tuple[0] + "With"](this === deferred ? promise: this, arguments);
+          return this;
+        };
+
+        deferred[tuple[0] + "With"] = list.fireWith;
+      });
+
+      promise.promise(deferred);
+
+      if ( func ) {
+        func.call( deferred, deferred );
+      }
+
+      return deferred;
 
     },
     when: function () {
