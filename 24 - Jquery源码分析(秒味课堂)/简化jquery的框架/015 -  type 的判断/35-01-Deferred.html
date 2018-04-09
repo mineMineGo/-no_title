@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Deferred 延迟对象:对异步的统一管理</title>
+</head>
+<body>
+  <input type="button" value="点我">
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //Deferred 延迟对象:对异步的统一管理
+
+  /*
+    promise:
+      state
+      always
+      then
+      promise
+      pipe
+      done
+      fail
+      progress
+
+
+    deferred:
+
+      resolve
+      reject
+      notify
+
+      state
+      always
+      then
+      promise
+      pipe
+      done
+      fail
+      progress
+
+   */
+
+  function aaa() {
+    var ab = $.Deferred();
+    setTimeout(function () {
+      ab.resolve();
+    },1000);
+    return ab;
+  }
+
+
+  aaa().done(function () {
+    console.log("例子１");
+    console.log("成功");
+  }).fail(function () {
+    console.log("例子１");
+    console.log("失败");
+  });
+  //运行结果是
+  // 1000ms以后输出　　"成功"
+
+
+
+  function bbb() {
+    var abc = $.Deferred();
+    setTimeout(function () {
+      abc.resolve();
+    },1000);
+    return abc;
+  }
+
+
+  bbb().done(function () {
+    console.log("例子2");
+    console.log("成功");
+  }).fail(function () {
+    console.log("例子2");
+    console.log("失败");
+  });
+
+  bbb().reject();
+
+  // 仍然是
+  // 1s以后输出 成功 ....
+// 因为这里的bbb()函数调用的时候，两次调用返回的两个结果其实是不一样，
+  // 所以这里的reject没有走上面的链式调用中的fail函数
+
+  function ccc() {
+    var abcd = $.Deferred();
+    setTimeout(function () {
+      abcd.resolve();
+    },1000);
+    return abcd;
+  }
+
+  var isOne = ccc();
+  isOne.done(function () {
+    console.log('例子3');
+    console.log('成功');
+  }).fail(function () {
+    console.log("例子3");
+    console.log('失败');
+  });
+  isOne.reject();
+  // 例子三 马上输出的结果　--- 失败
+  // 因为这里的reject()先执行了
+
+
+  //---------------------------------------------------
+  // 如果不想结果被发生改变
+  function ddd() {
+    var abcde = $.Deferred();
+    setTimeout(function () {
+      abcde.resolve();
+    },1000);
+    return abcde.promise();
+  }
+
+  var mine = ddd();
+  mine.done(function () {
+    console.log("例子４");
+    console.log("成功");
+  }).fail(function () {
+    console.log("例子4");
+    console.log("失败");
+  });
+  console.log(mine);
+  /*
+  {
+   state
+      always: function(){},
+      then: function(){},
+      promise: function(){},
+      pipe: function(){},
+      done: function(){},
+      fail: function(){},
+      progress: function(){},
+      state: function(){}
+  }
+   */
+  mine.reject(); // mine.reject is not a function
+
+
+
+
+
+</script>
+</html>

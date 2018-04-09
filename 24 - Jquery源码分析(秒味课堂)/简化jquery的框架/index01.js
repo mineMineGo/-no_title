@@ -1036,9 +1036,27 @@
             },
             then: function () {
               var fns = arguments;
+              return jQuery.Deferred(function (newDefer) {
+                jQuery.each(tuples, function (i, tuple) {
+                  var action = tuple[0],
+                    fn = jQuery.isFunction(fns[i]) && fns[i];
+                  deferred[tuple[1]](function () {
+                    var returned = fn && fn.apply(this, arguments);
+                    if(returned && jQuery.isFunction(returned.promise)){
+                      returned.promise()
+                        .done(newDefer.resolve)
+                        .fail(newDefer.reject)
+                        .progress(newDefer.notify)
+                    } else {
+                      newDefer[action + 'With'](this === "promise" ? newDefer.promise() :this, fn ? [returned] : arguments);
+                    }
+                  })
+                });
+                fns = null;
+              }).promise()
             },
-            promise: function () {
-
+            promise: function (obj) {
+              return obj != null ? jQuery.extend(obj, promise) : promise;
             }
           },
           deferred= {};
@@ -1066,6 +1084,7 @@
         deferred[tuple[0] + "With"] = list.fireWith;
       });
 
+      // make the deferred a promise
       promise.promise(deferred);
 
       if ( func ) {
