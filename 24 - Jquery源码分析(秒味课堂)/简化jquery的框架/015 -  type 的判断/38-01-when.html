@@ -33,5 +33,43 @@
   });
   // 输出结果是 ---- 失败了
 
+
+
+  function ccc() {
+    var a = $.Deferred();
+    a.resolve();
+    return a;
+  }
+
+  function ddd() {
+    var b = $.Deferred();
+    b.reject();
+    // return b;
+  }
+
+  // 因为ccc()函数状态已经是完成的，而ddd()函数返回值不是一个延迟对象
+  // 会默认跳过这个函数，所以最终结果是成功状态所以会触发done中的函数
+  $.when(ccc(), ddd()).done(function () {
+    console.log("成功了");
+  }).fail(function () {
+    console.log("失败了");
+  });
+
+
+
+  //同理下面的也会触发done中的函数
+  $.when(111, 222).done(function () {
+    console.log("成功了");
+  }).fail(function () {
+    console.log("失败了");
+  });
+
+  // 结果同上
+  $.when().done(function () {
+    console.log("成功了");
+  }).fail(function () {
+    console.log("失败了");
+  });
+
 </script>
 </html>

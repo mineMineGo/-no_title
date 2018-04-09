@@ -1101,11 +1101,67 @@
       return deferred;
 
     },
-    when: function () {
-      var deferred;
+    when: function (subordinate) {
+      var i =0,
+        // 把arguments变为一个数组
+        resolveValues = core_slice.call(arguments),
+        // 不传递参数length就是0
+        // 传递一个参数时候 length = 1
+        // 传递多个参数 比如 两个函数，两个数字 length = 4
+        length = resolveValues.length,
+        // 不传递参数时候length就是0, remaining 就是length,(计数器 )，就是0
+        /* 传递一个参数时候length=1， remaining 就是 看(subordinate && jQuery.isFunction(subordinate.promise))，
+            这时候subordinate是真(因为有第一个参数)
+            假如jQuery.isFunction(subordinate.promise)是真 这时候 remaining 就是length 就是 1
+            假如jQuery.isFunction(subordinate.promise)是假 这时候 remaining 就是0
+          */
+        /*
+        此时length就是4， remaining = 4
+        * */
 
+        remaining = length !== 1 || (subordinate && jQuery.isFunction(subordinate.promise)) ? length : 0,
 
+        // length是0时候 deferred 就是 jQuery.Deferred()
+        // length是1时候 deferred 就是 subordinate 就是传递的函数参数
+        // length是4时候 deferred就是  jQuery.Deferred()
+        deferred = remaining ===1 ? subordinate : jQuery.Deferred(),
 
+        updateFunc = function (i, contexts, values) {
+          return function (value) {
+            contexts[i] = this;
+            values[i] = arguments.length > 1 ? core_slice.call(arguments) :value;
+            if(values === progressValues){
+
+            } else if (!(--remaining)) {
+              deferred.resolveWith(context, values);
+            }
+          }
+        },
+        progressValues, progressContexts, resolveContexts;
+      // 不传递参数时候length== 0，不进入if判断
+      // length为1时候仍然跳过这个if
+      // length是4,所以进入
+      if(length > 1){
+        progressValues = new Array(length);
+        progressContexts = new Array(length);
+        resolveContexts = new Array(length);
+
+        for (;i<length; i++) {
+          if(resolveValues[i] && jQuery.isFunction(resolveValues[i].promise)){
+            resolveValues[i].promise()
+                .done(updateFunc(i, resolveContexts, resolveValues))
+                .fail(deferred.reject)
+                .progress(updateFunc(i, progressContexts, progressContexts))
+          } else {
+            --remaining;
+          }
+        }
+      }
+      // 不传递参数时候remaining就是 0, 就会走入
+      // remaining是1时候, 会跳过
+      if(!remaining){
+        deferred.resolveWith(resolveContexts, resolveValues);
+      }
 
       // 返回一个延迟对象，不能在外部更改状态
       return deferred.promise();
