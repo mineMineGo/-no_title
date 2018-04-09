@@ -1014,7 +1014,7 @@
   };
 
 
-  //3043-3183　Defereed：　延迟对象： 对异步的统一管理
+  //3043-3183　Deferred：　延迟对象： 对异步的统一管理
 
   jQuery.extend({
     Deferred: function (func) {
@@ -1034,7 +1034,7 @@
             always: function () {
               deferred.done(arguments).fail(arguments)
             },
-            then: function () {
+            then: function (/* fnDone, fnFail, fnProgress */) {
               var fns = arguments;
               return jQuery.Deferred(function (newDefer) {
                 jQuery.each(tuples, function (i, tuple) {
@@ -1046,14 +1046,14 @@
                       returned.promise()
                         .done(newDefer.resolve)
                         .fail(newDefer.reject)
-                        .progress(newDefer.notify)
+                        .progress(newDefer.notify);
                     } else {
                       newDefer[action + 'With'](this === "promise" ? newDefer.promise() :this, fn ? [returned] : arguments);
                     }
                   })
                 });
                 fns = null;
-              }).promise()
+              }).promise();
             },
             promise: function (obj) {
               return obj != null ? jQuery.extend(obj, promise) : promise;
@@ -1069,18 +1069,25 @@
         // promise [done | fail | progress] = list.add
         promise[tuple[1]] = list.add;
 
+        // 只有完成和未完成才会走入　if　中,　进行中的是没有这个状态的
         if(stateString){
           list.add(function () {
             state  = stateString;
-          }, tuple[i ^ 1])
+          },
+            // 位运算元素符号　
+            /*
+                0^1 1
+                1^1 0
+                2^1 3
+                3^1 2
+             */
+            tuples[i ^ 1][2].disable, tuples[2][2].lock);
         }
-
         // deferred[resolve | reject | notify ]
         deferred[tuple[0]] = function () {
           deferred[ tuple[0] + "With"](this === deferred ? promise: this, arguments);
           return this;
         };
-
         deferred[tuple[0] + "With"] = list.fireWith;
       });
 
