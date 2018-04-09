@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>when 延迟对象的辅助方法 </title>
+</head>
+<body>
+  <input type="button" value="点我">
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //when
+
+  var a = $.Deferred();
+
+  // a.done(function () {
+  //
+  // }).fail(function () {
+  //
+  // });
+  // ...等方法
+
+
+
+  // $.when().done()
+
+
+  function aaa() {
+    var ab = $.Deferred();
+    // ab.resolve();
+    ab.reject();
+    return ab;
+  }
+
+  function bbb() {
+    var abb = $.Deferred();
+    // abb.resolve();
+    return abb;
+  }
+
+
+  // 需求：　当aaa函数和bbb函数均完成以后才触发某个逻辑
+  // 这时候$.when()就可以返回作用了
+
+  $.when(aaa(), bbb()).done(function () {
+    console.log("两个均成功了111");
+  }).fail(function () {
+    console.log('至少有一个函数转态是失败了');
+  });
+
+  // when源码分析
+  /*
+  　循环when函数中参数,同时有一个计数器记录参数长度,
+    第一个函数状态变为完成时候计算器减１, 执行第二个参数
+    然后依次执行，计数器也相应减1，直到所有的参数函数状态均变为完成,计数器也为0,
+    返回一个延迟对象，调用接下来的　done　函数 ;
+   */
+
+
+</script>
+</html>

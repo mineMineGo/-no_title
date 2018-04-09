@@ -1102,7 +1102,13 @@
 
     },
     when: function () {
-      
+      var deferred;
+
+
+
+
+      // 返回一个延迟对象，不能在外部更改状态
+      return deferred.promise();
     }
   });
 
