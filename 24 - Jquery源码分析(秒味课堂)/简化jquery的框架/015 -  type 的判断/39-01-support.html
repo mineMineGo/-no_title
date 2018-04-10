@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>support 功能检测</title>
+</head>
+<body>
+
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //support　功能检测函数
+
+  // 为什么要使用jquery呢
+  // 一个重要原因就是解决了兼容性问题
+
+
+  $(function () {
+    for(var attr in $.support){
+      $('body').append('<div>' + attr +" : " + $.support[attr] + "</div>");
+      /*
+      输出结果
+        checkOn : true
+        optSelected : true
+        reliableMarginRight : true
+        boxSizingReliable : true
+        pixelPosition : true
+        noCloneChecked : true
+        optDisabled : true
+        radioValue : true
+        checkClone : true
+        focusinBubbles : false
+        clearCloneStyle : true
+        cors : true
+        ajax : true
+        boxSizing : true
+       */
+    }
+  })
+
+
+
+</script>
+</html>
