@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>support 功能检测</title>
+</head>
+<body>
+  <div>1111</div>
+  <div id="outer">
+    <input type="checkbox" checked="true">
+    <input type="text">
+  </div>
+  <select disabled="true">
+    <option>1</option>
+    <option checked="true">2</option>
+    <option>3</option>
+    <option>4</option>
+    <option>5</option>
+  </select>
+</body>
+<script type="text/javascript">
+  //support　功能检测函数
+  var insideOption = document.getElementsByTagName('option')[1];
+  console.log(insideOption.disabled); // chrome: false
+
+
+  var div = document.getElementById('outer');
+  console.log(div);
+  // 此事件不支持冒泡事件所以不会被触发,
+  div.onfocus = function (ev) {
+    console.log("此事件被触发了")
+  };
+
+  // 此事件支持冒泡所以会触发,但是chrome, firefox不支持
+  div.onfocusin = function () {
+    console.log('获得焦点了');
+  };
+
+  var div = document.createElement('div');
+  div.style.backgroundColor = "red";
+  div.cloneNode(true).style.backgroundColor = "";
+  console.log(div.style.backgroundColor);
+  // chrome, firefox 下面是red,说明没有受到影响
+
+
+
+</script>
+</html>

@@ -1184,7 +1184,7 @@
       fragment = document.createDocumentFragment(),
       div = document.createElement('div'),
       select = document.createElement('select'),
-      opt = document.appendChild(document.createElement('option'));
+      opt = select.appendChild(document.createElement('option'));
 
     // 在受限制的空间提前结束
     // 基本上所有的浏览器都有默认值，是text，最经版本中的已经去掉了这个判断
@@ -1205,13 +1205,32 @@
     support.boxSizingReliable = true;
     support.pixelPosition = false;
 
-    //
+    //检测元素被克隆时候保留原来的属性状态
     input.checked = true;
     support.onCloneChecked = input.cloneNode(true).checked;
 
-    //
+    //保证那些被禁用的selects中的子项options不被标记为不可用　
+    // webkit中是被标记为禁用的
     select.disabled = true;
     support.optDisabled = !opt.disabled;
+
+    input = document.createElement('input');
+    input.value = "t";
+    input.type = "radio";
+    support.radioValue = input.value === "t";
+
+    input.setAttribute('checked', 't');
+    input.setAttribute('name', 't');
+
+    fragment.appendChild(input);
+    support.checkClone = fragment.cloneNode(true).cloneNode(true).lastChild.checked;
+
+    support.focusinBubbles = "onfocusin" in window;
+
+    div.style.backgroundClip = "content-box";
+    div.cloneNode(true).style.backgroundClip　=　"";
+    support.clearCloneStyle = div.style.backgroundClip === "content-box";
+
 
   })({});
   //3308-3652　data() : 数据缓存
