@@ -1279,17 +1279,66 @@
     rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
     rmultiDash = /([A-Z])/g;
   function Data(){
-
+    // 老的webkit没有object的preventExtensions和freeze方法
+    //　返回一个空对象{}　代替没有　[[set]]　的accessor(存取器)
+    Object.defineProperty(this.cache = {}, 0, {
+      get: function () {
+        return {}
+      }
+    });
+    this.expando = jQuery.expando + Math.random();
   }
   Data.uid =1;
 
-  Data.accepts = function(){
-
+  Data.accepts = function(owner){
+    /*
+    Accept only
+       -Node
+         -Node.ELEMENT_NODE
+         -Node.DOCUMENT_NODE
+       -Object
+         -Any
+     */
+    return owner.nodeType ?
+      // 1: 代表元素
+      // 2: 代表属性
+      // 3: d代表元素或者属性中的文本内容
+      // 4: 代表文档中的cdata部分（不会由解析器解析的文本）
+      // 5: 代表实体引用
+      // 6: 代表实体
+      // 7: 代表处理指令
+      // 8: 代表注释
+      // 9: 代表整个文档(dom树的根节点)
+      //10: 向为文档定义的实体提供接口
+      //11: 代表轻量级的Document对象，能够容纳文档的某个部分
+      //12: 代表DTD中声明的符号
+      owner.nodeType === 1 || owner.nodeType === 9 :true;
   };
 
   Data.prototype = {
-    key: function () {
-      
+    key: function (owner) {
+      if(!Data.accepts(owner)){
+        return 0;
+      }
+      var descriptor = {},
+        //  this.expando随机数属性放到　相应的dom节点上
+        unlock = owner[ this.expando ];
+
+      // 第一次肯定是没有的
+      if(!unlock){
+        unlock = Data.uid++;
+
+        try {
+          descriptor[ this.expando ] = {value: unlock};
+
+          Object.defineProperties(owner, descriptor);
+        } catch (e) {
+          descriptor[ this.expando ] = unlock;
+          jQuery.extend(owner, descriptor);
+        }
+      }
+
+
     },
     set: function () {
 

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>data 数据缓存</title>
+</head>
+<body>
+  <div id="mine"></div>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //data　数据缓存具体分析
+  /*
+
+
+  jQuery.extend({
+    acceptData: function(){
+      
+    },
+    hasData: function(){
+      
+    },
+    data: function(){
+      
+    },
+    removeData: function(){
+      
+    },
+    _data: function(){
+      
+    },
+    _removeData: function () {
+      
+    }
+  });
+
+  jQuery.fn.extend({
+    data: function(){
+      
+    },
+    removeData: function () {
+      
+    }
+  });
+
+
+
+Data.prototype = {
+  key: function(){
+  },
+  set: function(){
+  },
+  get: function(){
+  },
+  access: function(){
+  },
+  hasData: function(){
+  },
+  remove: function(){
+  },
+  discard: function(){
+  }
+}
+
+
+
+     */
+
+  $(function () {
+    //freeze
+
+    var obj = {
+      name: 'hello'
+    };
+
+    Object.freeze(obj); //这时候就不能修改对象属性了
+    obj.name = "111";
+    console.log(obj); // 仍然是 {name: 'hello'}
+
+
+    var obj1 = {
+      name: 'world'
+    };
+
+    /*
+        object.defineProperty　
+        参考(vuejs实现原理貌似)　https://blog.csdn.net/u011277123/article/details/58597638
+        https://segmentfault.com/a/1190000007434923
+     */
+    Object.defineProperty(obj1, 0, {
+      configurable: true,
+      get: function () {
+        return {}
+      }
+    });
+    console.log(obj1);
+    //　这时候　obj1 变为　
+    // {name:'world',
+    // 0:{ (并且0只能获取不能设置，因为没有写set方法)
+    // } }
+
+    obj1[0] = 1234;
+    console.log(obj1[0]); // 没有发生变化
+
+
+    $.data(document.body, "age", 30);
+    $.data($('#mine'), 'name', 'hello');
+    //　源码中3399设置console.log(this) 可以看到
+
+
+
+  });
+</script>
+</html>

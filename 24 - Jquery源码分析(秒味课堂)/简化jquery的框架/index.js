@@ -3396,6 +3396,7 @@ Data.prototype = {
 				}
 			}
 		}
+		console.log(this)
 		return cache;
 	},
 	get: function( owner, key ) {
