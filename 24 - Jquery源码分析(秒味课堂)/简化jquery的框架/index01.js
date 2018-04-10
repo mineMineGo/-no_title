@@ -1231,7 +1231,48 @@
     div.cloneNode(true).style.backgroundClip　=　"";
     support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
+    //以上就是手动创建元素并检验相关功能
 
+    //有些需要dom加载完毕后才能检测的
+    jQuery(function () {
+      var container, marginDiv,
+        divReset = "padding: 0;margin: 0;border:0;display:block;-webkit-box-sizing:content-box;-moz-box-sizing: content-box;" +
+          "box-sizing: content-box",
+        body = document.getElementsByTagName("body")[0];
+      if(!body){
+        return;
+      }
+      container = document.createElement('div');
+      container.style.cssText = "border:0;width:0;height:0;position:absolute;top:0;left:-9999px;margin-top:1px";
+
+      // 检查box-sizing 和　margin　行为
+      body.appendChild(container).appendChild(div);
+      div.innerHTML = "";
+      div.style.cssText = "-webkit-box-sizing:border- box;-moz-box-sizing:border-box;box-sizing:border-box;padding:1px;border:1px;" +
+        "display:block;width:4px;margin-top:1%;position:absolute;top:1%;";
+
+      jQuery.swap(body, body.style.zoom != null ? {zoom: 1} :{}, function () {
+        support.boxSizing = div.offsetWidth === 4;
+      });
+      // node.js下就没有window.getComputedStyle
+      if(window.getComputedStyle){
+        support.pixelPosition = (window.getComputedStyle(div, null) || {}).top !== '1%';
+        support.boxSizingReliable = (window.getComputedStyle(div, null) || {width: '4px'}).width === '4px';
+
+
+        marginDiv = div.appendChild(document.createElement("div"));
+        marginDiv.style.cssText = div.style.cssText = divReset;
+        marginDiv.style.marginRight = marginDiv.style.width = "0";
+        div.style.width = "1px";
+
+        support.reliableMarginRight =
+          !parseFloat((window.getComputedStyle(marginDiv, null) || {}).marginRight);
+      }
+
+      body.removeChild(container);
+
+    });
+    return support;
   })({});
   //3308-3652　data() : 数据缓存
 
