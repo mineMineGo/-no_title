@@ -8,7 +8,7 @@
   <title>when 延迟对象的辅助方法 </title>
 </head>
 <body>
-  <input type="button" value="点我">
+
 </body>
 <script type="text/javascript" src="../index.js"></script>
 <script type="text/javascript">
@@ -59,6 +59,8 @@
 
   //同理下面的也会触发done中的函数
   $.when(111, 222).done(function () {
+    console.log(arguments[0]);
+    console.log(arguments[1]);
     console.log("成功了");
   }).fail(function () {
     console.log("失败了");

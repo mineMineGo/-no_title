@@ -1101,13 +1101,13 @@
       return deferred;
 
     },
-    when: function (subordinate) {
+    when: function (subordinate /*, .... subordinateN */) {
       var i =0,
         // 把arguments变为一个数组
         resolveValues = core_slice.call(arguments),
         // 不传递参数length就是0
-        // 传递一个参数时候 length = 1
-        // 传递多个参数 比如 两个函数，两个数字 length = 4
+        // 传递一个参数时候, length = 1
+        // 传递多个参数 比如 两个函数，两个数字  length = 4
         length = resolveValues.length,
         // 不传递参数时候length就是0, remaining 就是length,(计数器 )，就是0
         /* 传递一个参数时候length=1， remaining 就是 看(subordinate && jQuery.isFunction(subordinate.promise))，
@@ -1117,13 +1117,13 @@
           */
         /*
         此时length就是4， remaining = 4
-        * */
+        */
 
         remaining = length !== 1 || (subordinate && jQuery.isFunction(subordinate.promise)) ? length : 0,
 
         // length是0时候 deferred 就是 jQuery.Deferred()
         // length是1时候 deferred 就是 subordinate 就是传递的函数参数
-        // length是4时候 deferred就是  jQuery.Deferred()
+        // length是4时候 deferred 就是 jQuery.Deferred()
         deferred = remaining ===1 ? subordinate : jQuery.Deferred(),
 
         updateFunc = function (i, contexts, values) {
@@ -1131,9 +1131,9 @@
             contexts[i] = this;
             values[i] = arguments.length > 1 ? core_slice.call(arguments) :value;
             if(values === progressValues){
-
+              deferred.notifyWith(contexts, values);
             } else if (!(--remaining)) {
-              deferred.resolveWith(context, values);
+              deferred.resolveWith(contexts, values);
             }
           }
         },
@@ -1142,14 +1142,20 @@
       // length为1时候仍然跳过这个if
       // length是4,所以进入
       if(length > 1){
+        // new Array[4]   =>   形成一个长度为 4 的空数组
         progressValues = new Array(length);
         progressContexts = new Array(length);
         resolveContexts = new Array(length);
 
         for (;i<length; i++) {
+          // 这里循环参数，如果有函数参数并且返回延迟对象，就进入if
+          // 否则就进去else ，remaining进行自减1
+          // 由此得到，当两个函数参数(并且返回延迟队象)和两个数字 四个参数时候，　remaining最终是符合要求的函数参数的长度2
           if(resolveValues[i] && jQuery.isFunction(resolveValues[i].promise)){
             resolveValues[i].promise()
+                //
                 .done(updateFunc(i, resolveContexts, resolveValues))
+                // 只要又一个失败,就会触发下面的fail函数中的deferred的reject最终结果是触发when后面的跟着的fail函数
                 .fail(deferred.reject)
                 .progress(updateFunc(i, progressContexts, progressContexts))
           } else {
@@ -1159,6 +1165,8 @@
       }
       // 不传递参数时候remaining就是 0, 就会走入
       // remaining是1时候, 会跳过
+      // remaining是2时候, 会跳过
+
       if(!remaining){
         deferred.resolveWith(resolveContexts, resolveValues);
       }
