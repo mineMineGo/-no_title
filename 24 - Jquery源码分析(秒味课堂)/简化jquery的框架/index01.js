@@ -1329,34 +1329,90 @@
         unlock = Data.uid++;
 
         try {
+          // 这样定义可以防止外部更改虽然更改肯能性很小
           descriptor[ this.expando ] = {value: unlock};
-
           Object.defineProperties(owner, descriptor);
         } catch (e) {
+          // 支持 android < 4
           descriptor[ this.expando ] = unlock;
           jQuery.extend(owner, descriptor);
         }
       }
+      // Ensure the cache object
+      if ( !this.cache[ unlock ] ) {
+        this.cache[ unlock ] = {};
+      }
 
-
+      return unlock;
     },
-    set: function () {
-
+    set: function (owner, data, value) {
+      var prop,
+          unlock = this.key(owner),
+          cache = this.cache[unclck];
+      if(typeof data === "string"){
+        cache[data] = value;
+      } else {
+        // data是 {}
+        // 视频中作者任务写法是一样的道理，因为extend就是利用了for in
+        if ( jQuery.isEmptyObject( cache ) ) {
+          jQuery.extend( this.cache[ unlock ], data );
+          // Otherwise, copy the properties one-by-one to the cache object
+        } else {
+          for ( prop in data ) {
+            cache[ prop ] = data[ prop ];
+          }
+        }
+      }
+      return cache;
     },
-    get: function(){
-
+    get: function(owner, key){
+      var cache = this.cache[this.key(owner)];
+      return key === undefined ? cache : cache[key];
     },
-    access: function(){
+    access: function(owner, key, value){
+      var stored;
+      if(key === undefined ||
+          ( (key && typeof key === "string") && value === undefined ) ){
+        stored = this.get(owner, key);
 
+        return stored !== undefined ? stored : this.get(owner, jQuery.camelCase(key))
+      }
+
+      this.set(owner, key, value);
+      return value !== undefined ? value : key;
     },
-    hasData: function(){
-
+    hasData: function(owner){
+      return !jQuery.isEmptyObject(this.cache[owner[this.expando]] || {});
     },
-    remove: function () {
-
+    remove: function (owner, key) {
+      var i, name, camel,
+          unlock = this.key(owner),
+          cache = this.cache[owner];
+      if(key === undefined){
+        this.cache = {};
+      } else {
+        if(jQuery.isArray(key)){
+          name = key.concat(key.map(jQuery.camelCase))
+        }else {
+          camel = jQuery.camelCase(key);
+          if(key in cache){
+            name = [key, camel]
+          } else {
+            name = camel;
+            name = name in cache ?
+                [name] : (name.match(core_rnotwhite) || []);
+          }
+        }
+        i = name.length;
+        while (i--){
+          delete cache[name[i]];
+        }
+      }
     },
-    discard: function () {
-
+    discard: function (owner) {
+      if(owner[this.expando]){
+        delete this.cache[owner[this.expando]];
+      }
     }
   };
 

@@ -107,8 +107,45 @@ Data.prototype = {
 
 
     $.data(document.body, "age", 30);
+    $.data(document.body, "job", "web");
     $.data($('#mine'), 'name', 'hello');
     //　源码中3399设置console.log(this) 可以看到
+
+
+    var obja= {};
+    Object.defineProperties(obja,{
+      name:{
+        get:function () {
+          return obja["_name"];
+        },
+        set:function (name) {
+          if(name != "C#"){
+            obja["_name"]=name;
+          }
+        }
+      },
+      label:{
+        get:function () {
+          return "你不能改变我！！！";
+        }
+      }
+    });
+    obja.name="JavaScript";
+    console.log(obja.name);
+    obja.label="我偏要改变你！！！";
+    console.log(obja.label);
+
+
+
+  var myDiv = document.getElementById('mine');
+  //方法直接在一个对象上定义一个或多个新的属性或修改现有属性，并返回该对象。
+  Object.defineProperties(myDiv, {
+    'jQuery203054446406523727740.7162848644601938': {
+      value: 2
+    }
+  });
+  console.log(myDiv['jQuery203054446406523727740.7162848644601938']);
+
 
 
 

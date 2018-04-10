@@ -3355,6 +3355,7 @@ Data.prototype = {
 			// Secure it in a non-enumerable, non-writable property
 			try {
 				descriptor[ this.expando ] = { value: unlock };
+				console.log(descriptor);
 				Object.defineProperties( owner, descriptor );
 
 			// Support: Android < 4
@@ -3396,7 +3397,7 @@ Data.prototype = {
 				}
 			}
 		}
-		console.log(this)
+		console.log(this);
 		return cache;
 	},
 	get: function( owner, key ) {
