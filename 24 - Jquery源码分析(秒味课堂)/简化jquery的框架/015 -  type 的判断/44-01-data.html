@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>data 数据缓存</title>
+</head>
+<body>
+  <div id="mine"></div>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //data　数据缓存具体分析
+  /*
+
+
+  jQuery.extend({
+    acceptData: function(){
+      
+    },
+    hasData: function(){
+      
+    },
+    data: function(){
+      
+    },
+    removeData: function(){
+      
+    },
+    _data: function(){
+      
+    },
+    _removeData: function () {
+      
+    }
+  });
+
+  jQuery.fn.extend({
+    data: function(){
+      
+    },
+    removeData: function () {
+      
+    }
+  });
+
+
+
+Data.prototype = {
+  key: function(){
+  },
+  set: function(){
+  },
+  get: function(){
+  },
+  access: function(){
+  },
+  hasData: function(){
+  },
+  remove: function(){
+  },
+  discard: function(){
+  }
+}
+
+
+
+     */
+
+  $(function () {
+
+    $('#mine').data('name', 'hello'); // 调用的是　jQuery.fn.extend({ data: function(){}})方法
+    $('#mine').removeData('name'); // 调用的是　jQuery.fn.extend({ removeData: function(){}})方法
+    console.log($('#mine').data('name'));
+
+    $.data(document.body, 'age', '30');
+    $.removeData(document.body,  'age');
+    console.log($.data(document.body, 'age'));
+
+
+  });
+
+</script>
+</html>

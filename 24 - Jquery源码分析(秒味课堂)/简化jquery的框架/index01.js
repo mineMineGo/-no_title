@@ -1275,6 +1275,82 @@
     return support;
   })({});
   //3308-3652　data() : 数据缓存
+  var data_user, data_priv,
+    rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
+    rmultiDash = /([A-Z])/g;
+  function Data(){
+
+  }
+  Data.uid =1;
+
+  Data.accepts = function(){
+
+  };
+
+  Data.prototype = {
+    key: function () {
+      
+    },
+    set: function () {
+
+    },
+    get: function(){
+
+    },
+    access: function(){
+
+    },
+    hasData: function(){
+
+    },
+    remove: function () {
+
+    },
+    discard: function () {
+
+    }
+  };
+
+  // These may be used throughout the jQuery core codebase
+  data_user = new Data(); // 对外
+  data_priv = new Data(); // 对内
+
+  jQuery.extend({
+    acceptData: Data.accepts,
+    
+    hasData: function (elem) {
+      return data_user.hasData(elem) || data_priv.hasData(elem);
+    },
+    
+    data: function (elem, name, data) {
+      return data_user.access(elem, name, data);
+    },
+    
+    removeData: function (elem, name) {
+      data_user.remove(elem, name);
+    },
+    
+    _data: function (elem, name, data) {
+      return data_priv.access(elem, name, data);
+    },
+    
+    _removeData: function (elem, name) {
+      data_priv.remove(elem, name);
+    }
+  });
+
+  jQuery.fn.extend({
+    data :function () {
+      
+    },
+    removeData: function () {
+      
+    }
+  });
+
+  function dataAttr(){
+
+  }
 
   //3653-3797 quene() : 队列管理
 
