@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>data 数据缓存</title>
+</head>
+<body>
+  <div id="mine"></div>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //data　数据缓存
+  $(function () {
+    $("#mine").attr('name', 'hello');
+    console.log($('#mine').attr('name'));
+
+    $("#mine").prop('name', 'world');
+    console.log($('#mine').prop('name'));
+
+    $("#mine").data('name', 'data-world');
+    console.log($('#mine').data('name'));
+
+    // 三者均可以实现设置获取属性
+    // 有什么区别呢
+
+    // $().attr是使用原生的获取和设置方式
+    document.getElementById('mine').setAttribute('name', 'itIsMine');
+    console.log(document.getElementById('mine').getAttribute('name'));
+
+    // 而$().prop()是使用以下方式进行的
+    document.getElementById('mine')[name] = "propSet";
+    console.log( document.getElementById('mine').name)
+
+    // 可以看出来前两种不适合设置大量的数据属性
+    // 为什么呢？这就涉及到了内存泄漏
+    // dom元素与对象之间相互引用，大部分浏览器就会出现内存泄漏。。。
+    /*
+    什么是dom元素和对象之间的相互引用呢
+      例如
+        var oDiv = document.getElementById('mine');
+        var obj = {};
+
+        oDiv.name = obj;
+        obj.age = oDiv; //这时候机会出现内存泄漏
+        而使用$().data设置属性就不会发生
+     */
+    //$().data是使用以下方式进行的
+    /*
+   
+               <div id="div1" xxx="1"><div>
+          大致原理是这样的
+          $('#div1').data(key1, value1);
+          $('body').data(key2, value2)
+          首先呢
+            在#div　body上分别加载一个属性标识符号(值是唯一的)
+
+              就比如 #div1 上面是　opt1: v1
+                    body  上面是　opt2: v2
+                    
+    　   内部用到了一个cache对象
+          调用$().data()以后
+          cache已经变为 {
+            v1: {key1: value1}
+            v2: {key2: value2}
+          }
+
+          这样就建立一个间接连接关系
+          此时对象  value1, value2已经存在一个json对象当中,和dom对象没有关系
+          而dom元素 中的属性自定义属性opt1 opt2的值　v1 v2肯定也不是对象
+     */
+
+  });
+
+</script>
+</html>
