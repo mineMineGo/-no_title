@@ -1177,7 +1177,41 @@
   });
 
   //3184-3295　Support: 　功能检测:
+  // 这个方法只支持检测，具体的抹平浏览器兼容性是在执行其他相关代码时候实现的
   jQuery.support = (function () {
+    // 通过创建一系列元素，来判断元素的兼容性来实行功能检测
+    var input = document.createElement('input'),
+      fragment = document.createDocumentFragment(),
+      div = document.createElement('div'),
+      select = document.createElement('select'),
+      opt = document.appendChild(document.createElement('option'));
+
+    // 在受限制的空间提前结束
+    // 基本上所有的浏览器都有默认值，是text，最经版本中的已经去掉了这个判断
+    if(!input.type){
+      return support;
+    }
+
+    input.type = 'checkbox';
+    //　support: safari5.1 ios5.1 android4.x　android2.3
+    // check the default checkbox/radio value ("" on old webkit; "on" elsewhere)
+    // 老版本webkit中value值是　""   其余的基本上都是"on"
+    support.checkOn = input.value !== "";
+    // option默认选中
+    support.optSelected = opt.selected;
+
+    // 稍候将被定义（只是定义一个初始值）
+    support.reliableMarginRight = true;
+    support.boxSizingReliable = true;
+    support.pixelPosition = false;
+
+    //
+    input.checked = true;
+    support.onCloneChecked = input.cloneNode(true).checked;
+
+    //
+    select.disabled = true;
+    support.optDisabled = !opt.disabled;
 
   })({});
   //3308-3652　data() : 数据缓存
