@@ -1582,15 +1582,57 @@
   //3653-3797 quene() : 队列管理
   jQuery.extend({
     // 类似于push
-    queue: function () {
-      
+    queue: function (elem, type, data) {
+      var queue;
+      if(elem){
+        type = (type || "fx") + "queue";
+        // 第一次肯定是找不到的
+        queue = data_priv.get(elem, type);
+
+        if(data){
+          if(!queue || jQuery.isArray(data) ){
+            queue = data_priv.access(elem, type, jQuery.makeArray(data));
+          }else{
+            queue.push(data);
+          }
+        }
+        return queue || [];
+      }
     },
     //类似于shift方法用于把数组的第一个元素从其中删除，并返回第一个元素的值
-    dequeue: function () {
-      
+    dequeue: function (elem, type) {
+      type = type || "fx";
+      var queue = jQuery.queue(elem, type),
+          starLength = queue.length,
+          fn = queue.shift(),
+          hooks = jQuery._queueHooks(elem, type),
+          next = function () {
+            jQuery.dequeue(elem,type);
+          };
+      // 只有第一次才会走入
+      if(fn === "inprogress"){
+        fn = queue.shift();
+        starLength--;
+      }
+
+      if(fn){
+        if(type === "fx"){
+          queue.unshift("inprogress");
+        }
+        delete hooks.stop;
+        fn.call(elem, next, hooks);
+      }
+      if(!startLength && hooks){
+        hooks.empty.fire();
+      }
     },
-    _queueHooks: function () {
-      
+    _queueHooks: function (elem, type) {
+      var key = type +"queueHooks";
+      return data_priv.get(elem, key) || data_priv.access(elem, key, {
+        empty: jQuery.Callbacks('once memory').add(function () {
+          data_priv.remove(elem, [type + 'queue', key]);
+        })
+      });
     }
   });
 
