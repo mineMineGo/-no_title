@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>queue 队列方法：执行顺序的管理</title>
+</head>
+<style>
+  #mine1{
+    width: 100px;
+    height: 100px;
+    background: red;
+    position: absolute;
+  }
+</style>
+<body>
+  <div id="mine1" data-mine="沙僧"></div>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //queue 队列方法：执行顺序的管理
+
+  // 队列中存储的都是函数
+  $(function () {
+    $('#mine1').click(function () {
+      // 点击厚很明显是先走的宽度，然后走的高度，最后走得left
+
+      // 这里就利用了queue，分别添加队列然后出队
+
+      // $(this).animate({
+      //   width: 300
+      // },2000);
+      // $(this).animate({
+      //   height: 300
+      // },2000);
+      // $(this).animate({
+      //   left: 300
+      // },2000);
+
+
+      //手动添加一个队列，但是没有出队操作，所以会卡住不进行
+      // $(this).animate({
+      //   width: 300
+      // }, 2000).queue('fx', function () {
+      //   // 队列的函数名字叫做fx,所以这里显示 fx
+      // }).animate({
+      //   left: 200
+      // },2000);
+
+
+      //加上出队操作以后,又重新运动了
+      // $(this).animate({
+      //   width: 300
+      // }, 2000).queue(function () {
+      //   // 队列的函数名字叫做fx,所以这里显示 fx
+      //   // 名字默认是fx，所以可以省略
+      //   $(this).dequeue();
+      // }).animate({
+      //   left: 200
+      // },2000);
+
+      //同上一样的效果
+      // $(this).animate({
+      //   width: 300
+      // }, 2000).queue(function (next) {
+      //   // 队列的函数名字叫做fx,所以这里显示 fx
+      //   // 名字默认是fx，所以可以省略
+      // $(this).css('height', '300px');
+      //   //$(this).dequeue();
+      //   next();
+      // }).animate({
+      //   left: 200
+      // },2000);
+
+      // 同上一个效果，利用了animate的回调函数
+      // $(this).animate({
+      //   width: 300
+      // }, 2000, function () {
+      //   // 利用animate的回调函数
+      //   $(this).css('height', '300px');
+      // }).animate({
+      //   left: 200
+      // },2000);
+
+
+      // 在发生改变
+      // $(this).animate({
+      //   width: 300
+      // }, 2000, function () {
+      //   // 利用animate的回调函数
+      //   //　定时器走得时候是无法控制其他队列的,所以高度、left会同时　进行
+      //   var that = this;
+      //   var timer = setInterval(function () {
+      //       that.style.height = that.offsetHeight + 1+ 'px';
+      //       if(that.offsetHeight == 200){
+      //         clearInterval(timer);
+      //       }
+      //   }, 30)
+      // }).animate({
+      //   left: 200
+      // },2000);
+
+
+      // 对于队列呢,可以控制出队时机
+      $(this).animate({
+        width: 300
+      }, 2000).queue(function (next) {
+        var that = this;
+        var timer = setInterval(function () {
+            that.style.height = that.offsetHeight + 1+ 'px';
+            if(that.offsetHeight == 200){
+              clearInterval(timer);
+              next();
+            }
+        }, 30);
+      }).animate({
+        left: 200
+      },2000);
+
+
+
+
+
+
+      // 这个函数是同时变化的
+      // $(this).animate({
+      //   width: 300,
+      //   height: 300,
+      //   left: 300
+      // },2000);
+
+    })
+  });
+
+
+
+
+
+
+</script>
+</html>
