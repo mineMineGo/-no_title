@@ -43,18 +43,18 @@
 
 
 
-    $.dequeue(document, 'q1'); //ccc  取出第一个函数并执行
-    $.dequeue(document, 'q1'); //ddd  接着取出函数并执行
+    $.dequeue(document, 'q1'); //ccc  取出第一个函数并执行，会影响上面的输出结果
+    $.dequeue(document, 'q1'); //ddd  接着取出函数并执行会影响上面的输出结果
 
 
-
+    //
     $('#mine1').queue('p1',aaa);
     $('#mine1').queue('p1',bbb);
-
+    //
     console.log($('#mine1').queue('p1'));
-
-    $("#mine1").dequeue('p1'); //aaaa
-    $("#mine1").dequeue('p1'); //bbbb
+    //
+    $("#mine1").dequeue('p1'); //aaaa  会影响上面的输出结果
+    $("#mine1").dequeue('p1'); //bbbb  会影响上面的输出结果
 
 
 
