@@ -1580,7 +1580,37 @@
   }
 
   //3653-3797 quene() : 队列管理
+  jQuery.extend({
+    // 类似于push
+    queue: function () {
+      
+    },
+    //类似于shift方法用于把数组的第一个元素从其中删除，并返回第一个元素的值
+    dequeue: function () {
+      
+    },
+    _queueHooks: function () {
+      
+    }
+  });
 
+  jQuery.fn.extend({
+    queue: function () {
+
+    },
+    dequeue: function () {
+
+    },
+    delay: function () {
+      
+    },
+    clearQueue: function () {
+
+    },
+    promise: function () {
+      
+    }
+  });
   //3803-4299 attr() prop() val() add()等等对元素属性的操作
 
   //4300-5128 on() trigger()等等 : 事件操作的相关方法

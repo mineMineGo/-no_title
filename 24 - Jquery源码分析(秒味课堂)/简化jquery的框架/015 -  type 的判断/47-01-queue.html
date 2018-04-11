@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>queue 队列方法：执行顺序的管理</title>
+</head>
+<body>
+  <div id="mine1" data-your="yours" data-arr="['1','2']" data-mine="孙悟空" key="value" sex="true">222</div>
+  <div id="mine2" data-mine="猪八戒"></div>
+  <div id="mine3" data-mine="沙僧"></div>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //queue 队列方法：执行顺序的管理
+
+  // 队列中存储的都是函数
+  $(function () {
+    function aaa(){
+      console.log('aaaa');
+    }
+    function bbb(){
+      console.log('bbbb');
+    }
+    function ccc(){
+      console.log('cccc');
+    }
+    function ddd(){
+      console.log('dddd');
+    }
+    $.queue(document, 'q1', aaa);
+    $.queue(document, 'q1', bbb);
+    $.queue(document, 'q1', ccc);
+    $.queue(document, 'q1', [ccc,ddd]); //会覆盖上面的
+    $.queue(document, 'q2', [aaa,ddd]); //这样写也可以
+
+
+
+    console.log($.queue(document, 'q1')); //[ccc(),ddd()]
+    console.log($.queue(document, 'q2')); //[aaa(),ddd()]
+
+
+
+    $.dequeue(document, 'q1'); //ccc  取出第一个函数并执行
+    $.dequeue(document, 'q1'); //ddd  接着取出函数并执行
+
+
+
+    $('#mine1').queue('p1',aaa);
+    $('#mine1').queue('p1',bbb);
+
+    console.log($('#mine1').queue('p1'));
+
+    $("#mine1").dequeue('p1'); //aaaa
+    $("#mine1").dequeue('p1'); //bbbb
+
+
+
+
+  });
+
+
+
+
+
+
+</script>
+</html>
