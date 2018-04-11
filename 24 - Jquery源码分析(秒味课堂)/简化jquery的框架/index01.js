@@ -1276,7 +1276,7 @@
   })({});
   //3308-3652　data() : 数据缓存
   var data_user, data_priv,
-    rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
+    rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/, // 判断是不是{} []
     rmultiDash = /([A-Z])/g;
   function Data(){
     // 老的webkit没有object的preventExtensions和freeze方法
@@ -1445,16 +1445,138 @@
   });
 
   jQuery.fn.extend({
-    data :function () {
-      
+    data :function (key, value) {
+      var attrs, name,
+        elem = this[0], // 获取第一个
+        i = 0,
+        data = null;
+
+      // get all values
+      if(key === undefined){
+        // 判断有没有符合条件的元素
+        if(this.length){
+          data = data_user.get(elem);
+
+          // 获得那些自定义的以data-开头的属性
+          if(elem.nodeType === 1 && !data_priv.get(elem, "hasDataAttrs")){
+            attrs = elem.attributes;
+            for(;i<attrs.length;i++){
+              name = attrs[i].name;
+
+              if(name.indexOf('data-') === 0){
+                name = jQuery.camelCase(name.slice(5));
+                // 如果name此时候正好通过$().data()去修改了和自定义data-属性一直的名字时候，data[name]　!= undefined
+                // 例如　elem元素身上本来就有属性叫做　data-mine="aaa"
+                // 代码中又重新通过$(elem).data('mine',"bbb")时候
+                // data = data_user.get(elem); 所以 data = this.cache[索引],data[name] = 'bbb'
+                // 只有当$().data(key,　value);　这个key不存在于她的属性值时就是undefined就会走如dataAttr中的if判断
+                dataAttr(elem, name, data[name]);
+              }
+            }
+            data_priv.set(elem, "hasDataAttrs", 'true');
+          }
+        }
+        return data;
+      }
+
+      // 多个值时候
+      if(typeof key === "object"){
+        return this.each(function () {
+          data_user.set(this, key);
+        })
+      }
+      /**
+       * @param elems   this
+       * @param fn      fn
+       * @param key     null
+       * @param value   value
+       * @param chainable  arguments.length > 1 true就是设置操作，false就是获取操作
+       * @param emptyGet null
+       * @param raw      true
+       */
+      return jQuery.access(this, function (value) {
+        var data,
+          camelKey = jQuery.camelCase(key);
+
+        if(elem && value === undefined){
+          // 获取
+          //　尝试寻找原始的属性值
+          data = data_user.get(elem, key);
+          if(data != undefined){
+            return data;
+          }
+
+          // 尝试找驼峰后的属性值
+          data = data_user.get(elem, camelKey);
+          if(data != undefined){
+            return data;
+          }
+　
+          // 尝试找html5新特性自定义属性 data-
+          data = dataAttr(elem, camelKey, undefined);
+          if(data != undefined){
+            return data;
+          }
+          return;
+        }
+
+        // 设置 (设置就可能是多个)
+        // 属性会保留，但是属性值会被最后一个覆盖
+        //$('#mine1').data('nameAge', '2222');
+        //$('#mine1').data('name-age', '1111');
+        // console.log($('#mine1').data('nameAge')); 1111
+        // console.log($('#mine1').data('name-age')); 1111
+        this.each(function () {
+          var data = data_user.get(this, camelKey);
+          data_user.set( this, camelKey, value );
+          //如果key中含有- 并且data存在把　这个key属性要赋值value
+          if(key.indexOf("-") !== -1 && data !== undefined){
+            data_user.set( this, key, value );
+          }
+        });
+      }, null, value, arguments.length > 1, null, true );
     },
-    removeData: function () {
-      
+    removeData: function (key) {
+      return this.each(function () {
+        data_user.remove(this, key);
+      });
     }
   });
 
-  function dataAttr(){
+  function dataAttr(elem, key, data){
+    var name;
+    // 做一个undefined判断保证进入的都是自定义属性添加的,
+    // 而不是通过　$('').data(key,value)添加的
+    if(data === undefined && elem.nodeType === 1){
+      //　rmultiDash 匹配的是大写字母，因为key是驼峰现在
+      /*
+      'miaoVAll'.replace(/([A-Z])/g, '-$1')   -----       "miao-V-All"
+      'miao-V-All'.toLowerCase() -----------"miaovall"
+       */
+      name = "data-" + key.replace(rmultiDash, '-$1').toLowerCase();
+      data = elem.getAttribute(name);
 
+      if(typeof data === "string"){
+
+        try {
+          // 属性是　"true"　时候存入的就是　 true;
+          // 属性是　"false"　时候存入的就是 false;
+          // 属性是　"null"　时候存入的就是　null; 不可能存入"true" "false" "null"
+          data = data === "true" ? true :
+            data === "false" ? false :
+            data === "null" ? null :
+              //(判断是不是字符串数字) +"100"就变味数字100 这里就是转数字然后变为字符串　在比较，如果相等就变为数字
+              +data+"" === data ? +data :
+                // {} 会走入　 JSON.parse()
+                // [] 也会走入 JSON.parse()不过会报错走入catch
+                rbrace.test(data) ? JSON.parse(data) : data;
+        } catch (e) {}
+        data_user.set( elem, key, data );
+      } else {
+        data = "undefined"
+      }
+    }
+    return data;
   }
 
   //3653-3797 quene() : 队列管理

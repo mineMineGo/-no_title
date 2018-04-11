@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>data 数据缓存</title>
+</head>
+<body>
+  <div id="mine1" data-your="yours" data-arr="['1','2']" data-mine="孙悟空" key="value" sex="true">222</div>
+  <div id="mine2" data-mine="猪八戒"></div>
+  <div id="mine3" data-mine="沙僧"></div>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //data　数据缓存具体分析
+  /*
+
+
+  jQuery.extend({
+    acceptData: function(){
+      
+    },
+    hasData: function(){
+      
+    },
+    data: function(){
+      
+    },
+    removeData: function(){
+      
+    },
+    _data: function(){
+      
+    },
+    _removeData: function () {
+      
+    }
+  });
+
+  jQuery.fn.extend({
+    data: function(){
+      
+    },
+    removeData: function () {
+      
+    }
+  });
+
+
+
+Data.prototype = {
+  key: function(){
+  },
+  set: function(){
+  },
+  get: function(){
+  },
+  access: function(){
+  },
+  hasData: function(){
+  },
+  remove: function(){
+  },
+  discard: function(){
+  }
+}
+　
+
+
+     */
+
+  $(function () {
+    // 根据源码分析可以得知一个小思想
+    /*
+    当去设置多个对象时候，是可以的
+    而当去获取多个键的值的时候，往往是第一个
+     */
+    // 例子
+    console.log($('div').html());// 获得的是第一个
+    $('div').html(11111);// 这是设置全部div
+
+
+    $('#mine1').data('name', 'hello');
+    $('#mine1').data('mine', '就是我');
+
+    // 如果没有key，就是全部属性,包含自定义data-属性
+    console.log($('#mine1').data());
+
+    var attrsObj = $('div')[0].attributes;
+
+    console.log(attrsObj);
+    console.log($('div')[0].getAttribute('data-mine')); //　孙悟空
+    $('#mine1').attr('data-mine', "猪八戒");
+    console.log($('div')[0].getAttribute('data-mine')); //　猪八戒
+    console.log($('div').data('mine'));　//　就是我
+
+    for(var i=0;i<attrsObj.length;i++){
+      console.log(attrsObj[i]);
+      console.log(1111111);
+      name = attrsObj[i].name;
+      if(name.indexOf('data-') === 0){
+        name = jQuery.camelCase(name.slice(5));
+        console.log(222 + name);
+       // dataAttr(elem, name, data[name]);
+      }
+    }
+
+    // 设置多个对象时候, 循环设置源码中见3558行
+    $('div').data({
+      title: '西游记',
+      author: '罗贯中'
+    });
+    console.log($('div').eq(1).data());
+
+
+    // 属性会保留，但是属性值会被最后一个覆盖
+    $('#mine1').data('nameAge', '2222');
+    $('#mine1').data('name-age', '1111');
+
+    console.log($('#mine1').data('name-age')); //1111
+    console.log($('#mine1').data('nameAge'));  //1111
+
+
+
+    $('#mine1').data('my-age', '4444');
+    $('#mine1').data('myAge', '3333');
+
+    console.log($('#mine1').data('my-age'));//3333
+    console.log($('#mine1').data('myAge')); //3333
+
+  });
+</script>
+</html>
