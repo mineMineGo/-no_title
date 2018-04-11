@@ -3397,7 +3397,7 @@ Data.prototype = {
 				}
 			}
 		}
-		console.log(this);
+		// console.log(this);
 		return cache;
 	},
 	get: function( owner, key ) {
@@ -3655,11 +3655,9 @@ function dataAttr( elem, key, data ) {
 jQuery.extend({
 	queue: function( elem, type, data ) {
 		var queue;
-
 		if ( elem ) {
 			type = ( type || "fx" ) + "queue";
 			queue = data_priv.get( elem, type );
-
 			// Speed up dequeue by getting out quickly if this is just a lookup
 			if ( data ) {
 				if ( !queue || jQuery.isArray( data ) ) {
@@ -3721,17 +3719,16 @@ jQuery.extend({
 jQuery.fn.extend({
 	queue: function( type, data ) {
 		var setter = 2;
-
 		if ( typeof type !== "string" ) {
 			data = type;
 			type = "fx";
 			setter--;
 		}
-
 		if ( arguments.length < setter ) {
 			return jQuery.queue( this[0], type );
 		}
 
+		// data === undefined 就是什么也没传
 		return data === undefined ?
 			this :
 			this.each(function() {
@@ -3792,6 +3789,7 @@ jQuery.fn.extend({
 				count++;
 				tmp.empty.add( resolve );
 			}
+			console.log(count)
 		}
 		resolve();
 		return defer.promise( obj );

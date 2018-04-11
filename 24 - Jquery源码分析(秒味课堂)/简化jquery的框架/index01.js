@@ -1603,7 +1603,7 @@
     dequeue: function (elem, type) {
       type = type || "fx";
       var queue = jQuery.queue(elem, type),
-          starLength = queue.length,
+          startLength = queue.length,
           fn = queue.shift(),
           hooks = jQuery._queueHooks(elem, type),
           next = function () {
@@ -1612,7 +1612,7 @@
       // 只有第一次才会走入
       if(fn === "inprogress"){
         fn = queue.shift();
-        starLength--;
+        startLength--;
       }
 
       if(fn){
@@ -1637,20 +1637,77 @@
   });
 
   jQuery.fn.extend({
-    queue: function () {
+    queue: function (type, data) {
+      var setter = 2;
 
-    },
-    dequeue: function () {
+      // 如果不传type 默认是fx,
+      if(typeof type !== 'string'){
+       data = type;
+       type = 'fx';
+       setter--;
+      }
 
+      // 变量长度小于setter时候判断是获取
+      if(arguments.length < setter){
+        // 获取时候是第一个
+        return jQuery.queue(this[0], type);
+      }
+      return data === "undefined" ?
+          this :
+          this.each(function () {
+            var queue = jQuery.queue(this, type, data);
+
+            jQuery._queueHooks(this, type);
+            // 当类型属于fx 并且 第一个不等于 inprogress时候就出队伍第一个
+            if(type === "fx" && queue[0] !== "inprogress"){
+              jQuery.dequeue(this, type);
+            }
+          })
     },
-    delay: function () {
+    dequeue: function (type) {
+      return this.each(function () {
+        jQuery.dequeue(this, type)
+      })
+    },
+    delay: function (time, type) {
+      time = jQuery.fx ? jQuery.fx.speeds[time] || time : time;
+      type = type || "fx";
       
+      return this.queue(type, function (next, hooks) {
+        var timeout  =setTimeout(next, time);
+        hooks.stop = function () {
+          clearTimeout(timeout)
+        }
+      })
     },
-    clearQueue: function () {
-
+    clearQueue: function (type) {
+      return this.queue(type || 'fx', []);
     },
-    promise: function () {
-      
+    promise: function (type, obj) {
+      var tmp,
+          count = 1, //计数，需要执行的队列数
+          defer = jQuery.Deferred(),
+          elements = this,
+          i = this.length,
+          resolve = function () {
+            if(--count){
+              defer.resolveWith(elements, [elements])
+            }
+          };
+      if(typeof type !== 'string'){
+        obj = type;
+        type = undefined;
+      }
+      type = type || 'fx';
+      while (i--) {
+        tmp = data_priv.get(elements[i], type + 'queueHooks');
+        if(tmp && tmp.empty){
+          count++;
+          tmp.empty.add(resolve);
+        }
+      }
+      resolve();
+      return defer.promise(obj);
     }
   });
   //3803-4299 attr() prop() val() add()等等对元素属性的操作
