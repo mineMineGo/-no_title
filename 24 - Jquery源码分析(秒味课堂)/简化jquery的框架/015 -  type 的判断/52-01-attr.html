@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>attr等方法 </title>
+</head>
+<body>
+  <div id="mine1" miaov="妙味" data-mine="沙僧"></div>
+  <input id="input1" type="checkbox">我的
+  <a id="mine2" href="miaov.com">妙味连接</a>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //attr
+
+  /*
+  实例化方法
+  jQuery.fn.extend({
+    attr:,
+    removeAttr:
+    prop:,
+    removeProp:,
+    addClass:,
+    removeClass:
+    toggleClass:
+    hasClass:
+    val
+  });
+
+// 工具方法
+  jQuery.extend({
+    valHooks:
+    attr,
+    removeAttr,
+    attrHooks,
+    propFix,
+    prop,
+    propHooks
+  })
+
+   */
+
+  /*
+  booleans = "checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped",
+
+  // 源码中就是做了这个判断
+   */
+
+  $(function () {
+   $(document).attr('title', 'hello');
+
+   console.log($('#input1').attr('checked')); //undefined
+   console.log($('#input1').prop('checked')); // false
+
+    $('#input1').attr('checked', true); //这里jq做了兼容处理，　当value不是false时候设置属性值就是属性名　见源码4221处boolHook.set方法
+
+  });
+</script>
+</html>

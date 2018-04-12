@@ -1711,7 +1711,7 @@
     }
   });
   //3803-4299 attr() prop() val() add()等等对元素属性的操作
-  var nodeHook , bookHook,
+  var nodeHook , boolHook,
     rclass = /[\t\r\n\f]/g,
     rreturn = /\r/g,
     rfocusable = /^(?:input|select|textarea|button)$/i;
@@ -1740,16 +1740,41 @@
     attr: function (elem, name, value) {
       var hooks, ret,
         nType = elem.nodeType;
-
+      //　对于text, comment 或者　属性节点不设置/获取节点
       if(!elem || nType === 3 || nType === 8 || nType === 2){
         return;
       }
-
+      // 当元素的getAttribute不存在的时候，　走入prop方法
+      //　例如这时候$(document).attr('title', 'hello')就会走入这个判断;
       if(typeof elem.getAttribute === core_strundefined){
         return jQuery.prop(elem, name, value);
       }
+      // nodeType == 1代表元素节点
+      if(nType !== 1 || !jQuery.isXMLDoc(elem)){
+        name = name.toLowerCase();
+        hooks = jQuery.attrHooks[name] ||
+          (jQuery.expr.match.bool.test(name) ? boolHook : nodeHook);
+      }
 
-
+      // 判断value是不是存在，存在就是赋值
+      if(value !== undefined){
+        //　value === null,　jq做的就是删除这个属性
+        if(value === null){
+          jQuery.removeAttr(elem, name);
+        } else if (hooks && "set" in hooks && (ret =hooks.set(elem, value, name)) !== undefined){
+          return ret;
+        }else {
+          elem.setAttribute(name, value + "");
+          return value
+        }
+      } else if (hooks && 'get' in hooks && (ret = hooks.get(elem, name)) != null) {
+        return ret;
+      }else {
+        ret = jQuery.find.attr(elem, name);
+        return ret == null ?
+          undefined:
+          ret;
+      }
     },
     valHooks: {
 
@@ -1758,7 +1783,20 @@
 
     },
     attrHooks: {
-
+      type: {
+        set: function (elem, value) {
+          // 检测功能是先赋值在设置属性,如果不支持就进入这个if
+          if(!jQuery.support.radioValue && value === "radio" && jQuery.nodeName(elem, "input")){
+            var val = elem.value;
+            // 先设置属性在赋值
+            elem.setAttribute("type", value);
+            if(val){
+              elem.value = val;
+            }
+            return value;
+          }
+        }
+      }
     },
     propFix: {
       "for": "htmlFor",
@@ -1772,6 +1810,19 @@
     }
 
   });
+  // Hooks for boolean attributes
+  boolHook = {
+    // 这里做了兼容处理，设置布尔值属性时候
+    set: function( elem, value, name ) {
+      if ( value === false ) {
+        // Remove boolean attributes when set to false
+        jQuery.removeAttr( elem, name );
+      } else {
+        elem.setAttribute( name, name );
+      }
+      return name;
+    }
+  };
 
   //4300-5128 on() trigger()等等 : 事件操作的相关方法
 
