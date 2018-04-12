@@ -1935,7 +1935,7 @@
         get: function (elem) {
           // 兼容低版本浏览器
           // 高版本中 elem.attributes.value是undefined
-          // 低版本中 elem.attributes.value是object,    elem.attributes.value.specified是false
+          // 低版本中 elem.attributes.value是object,    elem .attributes.value.specified是false
 
           // 这样　低版本中最终 return elem.next
           //　     高版本中　  return elem.value
@@ -1958,14 +1958,28 @@
             values = one ? null : [],
             // 单选的
             max = one ? index + 1 : options.length,
-            // 单选的话　i =
+            // 单选的话
             i = index <0 ? max: one ? index : 0;
               //单选，循环一次，多选，循环多次
           for(;i<max;i++){
+            option = options[i];
 
+            if((options.selected || i=== index) &&
+                // 针对已经禁用的opt不做循环
+                (jQuery.support.optDisabled ? !option.disabled : options.getAttribute('disabled') === "null")  &&
+                (!option.parentNode.disabled || !jQuery.nodeName(option.parentNode, "optgroup"))){
+
+              value = jQuery(option).val();
+
+              if(one){
+                return value
+              }
+              values.push(value);
+            }
           }
+          return values
+        },
 
-        }
       }
     },
     removeAttr: function (elem, value) {
