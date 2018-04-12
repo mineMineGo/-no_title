@@ -1734,8 +1734,50 @@
       })
     },
     addClass: function (value) {
+      var classes, elem, cur, clazz, j,
+        i = 0,
+        len = this.length,
+        // 如果value不是字符串，proceed就是false
+        proceed = typeof value === "string" && value;
 
-    }
+      // 如果value是字符串
+      if(jQuery.isFunction(value)){
+        return this.each(function (j) {
+          jQuery(this).addClass(value.call(this, j, this.className));
+        })
+      }
+
+      if(proceed){
+        // 如果value是字符串，就把value字符串空格分隔　，classes就是一个数组
+        classes = (value || "").match(core_rnotwhite)　|| [];
+
+        // 循环
+        for(;i<len;i++){
+          elem = this[i];　// 找到每一个元素
+          // 1元素节点,如果不是cur就是false，
+          // 如果是元素节点在判断
+          // 如果没有className, cur = " "
+          //　如果有className, 就判断不能重复添加(比如已经有了box2，　又addClass('box2'))，就要做出处理
+          cur = elem.nodeType === 1 &&(elem.className ?
+              // rclass = /[\t\r\n\f]/g, 制表符　回车　换行　换页　，把这些转移符号变为""
+              (' '　+ elem.className + " ").replace(rclass, " ")　: " "
+          )
+          //" " 空格字符串也会走入if , 因为是true
+          if(cur) {
+            j = 0;
+            while ((clazz = classes[j++])) {
+              // 如果有className, 就判断不能重复添加(比如已经有了box2，这里做了处理
+              if(cur.indexOf(" " + clazz + " ") < 0){
+                cur += clazz + " ";
+              }
+            }
+            elem.className = jQuery.trim(cur);// 去除前后空格
+          }
+        }
+      }
+      // 方便链式调用　
+      return this;
+    },
 
   });
 

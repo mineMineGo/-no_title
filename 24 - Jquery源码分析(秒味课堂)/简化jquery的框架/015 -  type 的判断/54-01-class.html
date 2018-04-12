@@ -9,6 +9,9 @@
 </head>
 <body>
   <div class="box1 box2" id="mine1" miaov="妙味" yours="anfou" href="111" data-mine="沙僧"></div>
+  <div>22</div>
+  <div>33</div>
+  <div>444</div>
 </body>
 <script type="text/javascript" src="../index.js"></script>
 <script type="text/javascript">
@@ -38,10 +41,32 @@
     prop,
     propHooks
   })
-
    */
   $(function () {
+    $('#mine1').addClass('box3 box4');
+    $('#mine1').removeClass('box3 box4');
+
+    console.log($('#mine1').hasClass('box3')); //false
+    console.log($('#mine1').hasClass('box2')); // true
+
+
+    // 支持回调函数
+    /*
+    jQuery 1.4 新增支持：参数classNames可以为函数。
+    addClass()将根据匹配的所有元素遍历执行该函数，
+    函数中的this将指向对应的DOM元素。
+    addClass()还会为函数传入两个参数：
+        第一个参数就是该元素在匹配元素中的索引，
+        第二个参数就是该元素节点当前的class属性值。
+     */
+    $('div').addClass(function (index, key) {
+      $(this).html(index +"是我" + key);
+      return "box" + index; //　return 增加class
+    })
+
 
   });
+
+
 </script>
 </html>
