@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>queue 队列方法：执行顺序的管理</title>
+</head>
+<style>
+  #mine2{
+    width: 100px;
+    height: 100px;
+    background: red;
+    position: absolute;
+  }
+
+</style>
+<body>
+  <div id="mine1" data-mine="沙僧"></div>
+  <div id="mine2" data-mine="沙僧"></div>
+  <div id="mine3" data-mine="沙僧"></div>
+  <div id="mine4" data-mine="沙僧"></div>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //queue 队列方法：执行顺序的管理
+
+  // 队列中存储的都是函数
+  $(function () {
+    function aaa() {
+      console.log('aaa');
+    }
+
+    function bbb() {
+      console.log('bbb');
+    }
+/*
+工具方法中有三个可选参数：
+
+element：附加列队的DOM元素（不是**jQuery**元素）；
+queueName：字符串值，包含序列的名称。默认是 fx, 标准的效果序列；
+callback：要添加进队列的函数，它还可以是一个函数数组。
+ */
+   //  $.queue($('div')[0],'qa2', aaa);
+   //  $.queue($('div')[0],'qa2', bbb);
+   //  console.log($.queue($('div')[0],'qa2'));
+   //
+   //
+   //
+   //  $('div').queue('q1', aaa);
+   //  $('div').queue('q1', bbb);
+   // console.log( $('div').queue('q1') ); // 对象有多个时候默认取得第一个
+
+    function ccc(){
+      console.log('ccc');
+    }
+    function ddd(){
+      console.log('ddd');
+    }
+
+    console.log( $('#mine1').queue()); // []
+
+
+    $('#mine1').queue(ccc);
+    $('#mine1').queue(ddd);
+    console.log( $('#mine1').queue());
+
+    // delay 延迟队列的执行
+
+    $('#mine2').click(function () {
+      $(this)
+          .animate({
+        width: 300
+      }, 2000)
+          .delay(1000) // 停顿1000
+          .animate({
+        left: 300
+      }, 2000)
+          .animate({
+            top: 100
+          }, 2000);
+
+      // promise 当队列全部执行完毕后执行promise
+      $(this).promise().done(function () {
+        console.log(1234)
+      });
+    });
+
+  });
+
+  function ccc(type, data) {
+    if(type !== 'string'){
+      type = "fx";
+      data = type;
+    }
+    console.log('长度为' +arguments.length);
+  }
+
+  ccc();  // 长度为0
+  ccc(1); // 长度为1
+
+
+  console.log(0.3-0.2 == 0.2-0.1); //false
+
+  var a = 0.3 - 0.2;
+  var b = 0.2 - 0.1;
+  console.log(a == b) // false
+  console.log(a.toFixed(2) == b.toFixed(2)) // true
+
+  var cccc = {
+    name: '11',
+    age: 30
+  };
+  // delete 操作符用于删除对象的某个属性；
+  delete cccc.age;
+  console.log(cccc);
+</script>
+</html>
