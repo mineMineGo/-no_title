@@ -1885,8 +1885,33 @@
         return
       }
 
+      isFunction = jQuery.isFunction(value);
+      return this.each(function (i) {
+        var val;
+        //元素节点
+        if(this.nodeType !== 1){
+          return
+        }
+        if(isFunction){
+          val = value.call(this, i, jQuery(this).val());
+        } else {
+          val = value;
+        }
+        if(val == null){
+          val = "";
+        } else if (typeof val === "number") {
+          val += "";
+        }else if(jQuery.isArray(val)){
+          val = jQuery.map(val, function (value) {
+            return value == null ? "" : value + "";
+          })
+        }
+        hooks = jQuery.valHooks[this.type]||jQuery.valHooks[this.nodeName.toLowerCase()];
 
-
+        if(!hooks || !("set" in hooks) || hooks.set(this, val, "value")=== undefined ){
+          this.value = val;
+        }
+      });
     }
   });
 
@@ -1979,7 +2004,24 @@
           }
           return values
         },
+        set: function (elem, value) {
+          var optionSet, option,
+              options = elem.options,
+              values = jQuery.makeArray(value),
+              i = options.length;
 
+          while(i--){
+            option = options[i];
+            // 判断当循环值与 赋值相等的时候，就想中当前
+            if(option.selected = jQuery.inArray(jQuery(option).val(), values) >= 0){
+              optionSet = true;
+            }
+          }
+          if(!optionSet){
+            elem.selectedIndex = -1;
+          }
+          return values;
+        }
       }
     },
     removeAttr: function (elem, value) {
@@ -2066,6 +2108,41 @@
     }
   };
 
+  jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( i, name ) {
+    var getter = jQuery.expr.attrHandle[ name ] || jQuery.find.attr;
+
+    jQuery.expr.attrHandle[ name ] = function( elem, name, isXML ) {
+      var fn = jQuery.expr.attrHandle[ name ],
+          ret = isXML ?
+              undefined :
+              /* jshint eqeqeq: false */
+              // Temporarily disable this handler to check existence
+              (jQuery.expr.attrHandle[ name ] = undefined) !=
+              getter( elem, name, isXML ) ?
+
+                  name.toLowerCase() :
+                  null;
+
+      // Restore handler
+      jQuery.expr.attrHandle[ name ] = fn;
+
+      return ret;
+    };
+  });
+  // Support: IE9+
+// Selectedness for an option in an optgroup can be inaccurate
+  if ( !jQuery.support.optSelected ) {
+    jQuery.propHooks.selected = {
+      get: function( elem ) {
+        var parent = elem.parentNode;
+        if ( parent && parent.parentNode ) {
+          parent.parentNode.selectedIndex;
+        }
+        return null;
+      }
+    };
+  }
+
 
   jQuery.each([
     "tabIndex",
@@ -2086,6 +2163,7 @@
     jQuery.valHooks[ this ] = {
       set: function( elem, value ) {
         if ( jQuery.isArray( value ) ) {
+          // 选中判断
           return ( elem.checked = jQuery.inArray( jQuery(elem).val(), value ) >= 0 );
         }
       }

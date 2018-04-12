@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>val操作value中的设置数据 </title>
+</head>
+<body>
+  <div class="box1 box2" id="mine1" miaov="妙味" yours="anfou" href="111" data-mine="沙僧"></div>
+  <div>22</div>
+  <div>33</div>
+  <div>444</div>
+  <input id="input1" value="hello" type="text" />
+  <select>
+    <option value="1">111</option>
+    <option value="2">222</option>
+    <option value="3">333</option>
+    <option >444</option>
+  </select>
+  <select multiple>
+    <option value="1">111</option>
+    <option value="2">222</option>
+    <option value="3">333</option>
+    <option value="4">444</option>
+  </select>
+  <input type="radio" />
+  <input id="input2" type="checkbox" value="hello">
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //attr
+
+  /*
+  实例化方法
+  jQuery.fn.extend({
+    attr:,
+    removeAttr:
+    prop:,
+    removeProp:,
+    addClass:,
+    removeClass:
+    toggleClass:
+    hasClass:
+    val
+  });
+
+// 工具方法
+  jQuery.extend({
+    valHooks: {
+      options
+      select
+    },
+    attr,
+    removeAttr,
+    attrHooks,
+    propFix,
+    prop,
+    propHooks
+  })
+
+
+  其实valHooks下面有　option select radio checkbox　
+   */
+  $(function () {
+    $('#input1').val(null); // ""
+    $('#input1').val(1111); // 变为字符串 "1111"
+
+    // 设置数组时候
+    // 遍历数据是否与input2 value进行匹配，匹配到就选中
+    $('#input2').val(['hello']);
+  });
+</script>
+</html>
