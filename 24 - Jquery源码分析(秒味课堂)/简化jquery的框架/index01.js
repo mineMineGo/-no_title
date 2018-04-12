@@ -1932,13 +1932,39 @@
     },
     valHooks: {
       option: {
-        get: function () {
+        get: function (elem) {
+          // 兼容低版本浏览器
+          // 高版本中 elem.attributes.value是undefined
+          // 低版本中 elem.attributes.value是object,    elem.attributes.value.specified是false
 
+          // 这样　低版本中最终 return elem.next
+          //　     高版本中　  return elem.value
+          var val = elem.attributes.value;
+          return !val || val.specified ? elem.value : elem.text;
         }
       },
       select: { 
-        get: function () {
-          
+        get: function (elem) {
+          var value, option,
+            options = elem.options,
+            /*
+            selectedIndex 属性可设置或返回下拉列表中被选选项的索引号。
+            注释：若允许多重选择，则仅会返回第一个被选选项的索引号
+             */
+            index = elem.selectIndex,
+            //判断是不是单选
+            one = elem.type === "select-one" || index < 0,
+            // 如果是单选one就是true,　values = [],多选的话就是[]
+            values = one ? null : [],
+            // 单选的
+            max = one ? index + 1 : options.length,
+            // 单选的话　i =
+            i = index <0 ? max: one ? index : 0;
+              //单选，循环一次，多选，循环多次
+          for(;i<max;i++){
+
+          }
+
         }
       }
     },
@@ -2025,6 +2051,41 @@
       return name;
     }
   };
+
+
+  jQuery.each([
+    "tabIndex",
+    "readOnly",
+    "maxLength",
+    "cellSpacing",
+    "cellPadding",
+    "rowSpan",
+    "colSpan",
+    "useMap",
+    "frameBorder",
+    "contentEditable"
+  ], function() {
+    jQuery.propFix[ this.toLowerCase() ] = this;
+  });
+  //当是单选框或者复选框时候
+  jQuery.each([ "radio", "checkbox" ], function() {
+    jQuery.valHooks[ this ] = {
+      set: function( elem, value ) {
+        if ( jQuery.isArray( value ) ) {
+          return ( elem.checked = jQuery.inArray( jQuery(elem).val(), value ) >= 0 );
+        }
+      }
+    };
+    // 如果不支持checkOn
+    if ( !jQuery.support.checkOn ) {
+      jQuery.valHooks[ this ].get = function( elem ) {
+        // Support: Webkit
+        // "" is returned instead of "on" if a value isn't specified
+        return elem.getAttribute("value") === null ? "on" : elem.value;
+      };
+    }
+  });
+
 
   //4300-5128 on() trigger()等等 : 事件操作的相关方法
 
