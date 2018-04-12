@@ -1711,6 +1711,67 @@
     }
   });
   //3803-4299 attr() prop() val() add()等等对元素属性的操作
+  var nodeHook , bookHook,
+    rclass = /[\t\r\n\f]/g,
+    rreturn = /\r/g,
+    rfocusable = /^(?:input|select|textarea|button)$/i;
+
+  jQuery.fn.extend({
+    attr: function (name, value) {
+      return jQuery.access(this, jQuery.attr, name, value, arguments.length > 1);
+    },
+    removeAttr: function (name) {
+      return this.each(function () {
+        jQuery.removeAttr(this, name);
+      });
+    },
+    prop: function (name, value) {
+      return jQuery.access(this, jQuery.prop, name, value, arguments.length > 1);
+    },
+    removeProp: function (name) {
+      return this.each(function () {
+        delete this[jQuery.propFix[name] || name]
+      })
+    }
+
+  });
+
+  jQuery.extend({
+    attr: function (elem, name, value) {
+      var hooks, ret,
+        nType = elem.nodeType;
+
+      if(!elem || nType === 3 || nType === 8 || nType === 2){
+        return;
+      }
+
+      if(typeof elem.getAttribute === core_strundefined){
+        return jQuery.prop(elem, name, value);
+      }
+
+
+    },
+    valHooks: {
+
+    },
+    removeAttr: function () {
+
+    },
+    attrHooks: {
+
+    },
+    propFix: {
+      "for": "htmlFor",
+      "class": "className"
+    },
+    prop: function () {
+
+    },
+    propHooks: {
+
+    }
+
+  });
 
   //4300-5128 on() trigger()等等 : 事件操作的相关方法
 
