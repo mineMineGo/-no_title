@@ -1732,6 +1732,9 @@
       return this.each(function () {
         delete this[jQuery.propFix[name] || name]
       })
+    },
+    addClass: function (value) {
+      
     }
 
   });
@@ -1779,8 +1782,24 @@
     valHooks: {
 
     },
-    removeAttr: function () {
+    removeAttr: function (elem, value) {
+      var name, propName,
+        i = 0,
+        // core_rnotwhite = /\s+/g;匹配空白字符
+        attrNames = value && value.match(core_rnotwhite);
+      //　用的match说明返回的是一个数组或者null
+      // 由此可知可以删除多个属性 比如$('#mine1').removeAttr('miaov mine href yours')
+      if(attrNames && elem.nodeType === 1){
+        while ((name = attrNames[i++])) {
+          propName = jQuery.propFix[ name ] || name;
 
+          // 兼容操作，例如操作checked时候，变为布尔值false
+          if(jQuery.expr.match.bool.test(name)){
+            elem[propName] = false;
+          }
+          elem.removeAttribute(name);
+        }
+      }
     },
     attrHooks: {
       type: {
@@ -1802,11 +1821,34 @@
       "for": "htmlFor",
       "class": "className"
     },
-    prop: function () {
+    prop: function (elem, name, value) {
+      var ret, hooks, notxml,
+        nType = elem.nodeType;
+
+      if(!elem || nType === 3||nType === 8 || nType === 2){
+        return;
+      }
+
+      notxml = nType !== 1 || !jQuery.isXMLDoc(elem);
+      // 如果不是xml, 需要走兼容
+      if(notxml){
+        name = jQuery.propFix[name] | name;
+        hooks = jQuery.propHooks[name];
+      }
+
+      if(value !== undefined){
+        return hooks && "set" in hooks && (ret = hooks.set(elem, value, name )) !== undefined ?
+          ret : (elem[name] = value);
+      }
 
     },
     propHooks: {
-
+      tabIndex: {
+        get: function (elem) {
+          return elem.hasAttribute("tabindex") || rfocusable.test(elem.nodeName) || elem.href ?
+            elem.tabIndex : -1;
+        }
+      }
     }
 
   });
