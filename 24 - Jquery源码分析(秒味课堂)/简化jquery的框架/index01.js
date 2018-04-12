@@ -1734,7 +1734,7 @@
       })
     },
     addClass: function (value) {
-      
+
     }
 
   });
