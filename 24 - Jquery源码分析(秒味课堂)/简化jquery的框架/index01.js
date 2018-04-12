@@ -1864,6 +1864,29 @@
         }
       }
       return false;
+    },
+    val: function (value) {
+      var hooks, ret, isFunction,
+        elem = this[0];
+      // 如果不传参数，那就是获取值
+      if(!arguments.length){
+        if(elem){
+          hooks = jQuery.valHooks[elem.type] || jQuery.valHooks[elem.nodeName.toLowerCase()];
+
+          if(hooks && "get" in hooks && (ret = hooks.get(elem, "value")) !== undefined){
+            return ret;
+          }
+          ret  = elem.value;
+
+          return typeof ret === "string" ?
+            ret.replace(rreturn, "") :
+            ret == null ? "" : ret;
+        }
+        return
+      }
+
+
+
     }
   });
 
@@ -1908,7 +1931,16 @@
       }
     },
     valHooks: {
+      option: {
+        get: function () {
 
+        }
+      },
+      select: { 
+        get: function () {
+          
+        }
+      }
     },
     removeAttr: function (elem, value) {
       var name, propName,
