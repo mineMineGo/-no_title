@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>removeAttr </title>
+</head>
+<body>
+  <div class="box1 box2" id="mine1" miaov="妙味" yours="anfou" href="111" data-mine="沙僧"></div>
+  <div>22</div>
+  <div>33</div>
+  <div>444</div>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //attr
+
+  /*
+  实例化方法
+  jQuery.fn.extend({
+    attr:,
+    removeAttr:
+    prop:,
+    removeProp:,
+    addClass:,
+    removeClass:
+    toggleClass:
+    hasClass:
+    val
+  });
+
+// 工具方法
+  jQuery.extend({
+    valHooks:
+    attr,
+    removeAttr,
+    attrHooks,
+    propFix,
+    prop,
+    propHooks
+  })
+   */
+  $(function () {
+
+    //  1　||　0 &&　2 又有|| 又有&& 怎么走呢
+    console.log(1 || 0 && 2); // 1
+    console.log(0 || 0 && 2); // 0
+    console.log(0 || 1 && 2); // 0
+
+    //没有参数时候就是删除所有的class
+    // $('#mine1').removeClass();
+    
+    $('#mine1').removeClass(function (index, classes) {
+      console.log("我的索引"　+ index + "::"+ classes);
+      return "box1";
+    });
+
+    // toggleClass
+    //也是可以接受两个参数的
+    $('#mine1').toggleClass("box1"); //　没有就添加，有就添加
+    $('#mine1').toggleClass('box2 box3');　// 一样的有就删除没有就添加,用空格分开
+    // 第二个参数是一个布尔值
+    //true时候，不管有没有都是添加
+    //false，　不过有没有都是删除
+    $('#mine1').toggleClass('box2 box3', true);　// 没有就添加，　有也不删除
+    $('#mine1').toggleClass('box2 box3', false);　// 没有也不添加，有就删除
+
+
+    // 源码中对于　参数为　布尔值　或者undefined就是不传时候，做了一个缓存处理
+
+    $('#mine1').toggleClass();    //  删除所有的class；
+    $('#mine1').toggleClass(true);//　恢复之前所有的class；
+    $('#mine1').toggleClass(false);// 删除现在所有的class；
+    $('#mine1').toggleClass(true);//　恢复之前所有的class；
+
+
+
+  });
+</script>
+</html>

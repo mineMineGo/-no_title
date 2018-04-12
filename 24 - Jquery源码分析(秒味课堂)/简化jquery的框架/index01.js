@@ -1778,7 +1778,93 @@
       // 方便链式调用　
       return this;
     },
+    removeClass: function (value) {
+      var classes, elem, cur, clazz, j,
+        i = 0,
+        len = this.length,
+        // 参数为空时候，　proceed =  true;
+        //　有参数时候，　如果参数是字符串 proceed = value
+        //             如果参数不是字符串,proceed = false　
+        proceed = arguments.length === 0 || typeof value === "string" && value;
 
+      //　value如果是函数
+      if(jQuery.isFunction(value)){
+        return this.each(function (j) {
+          jQuery(this).removeClass(value.call(this, j, this.className));
+        })
+      }
+
+      if(proceed){
+        classes = (value || "").match(core_rnotwhite) || [];
+      }
+
+      for (;i<len;i++) {
+        elem = this[i];
+        cur = elem.nodeType === 1 && (elem.className ? (" " + elem.className +" " ).replace(rclass, " "): " ");
+
+        if(cur){
+          j = 0;
+          while(clazz = classes[j++]) {
+            while(cur.indexOf(" " + clazz + " ") >= 0){
+              cur = cur.replace(" " + clazz +" ", " ")
+            }
+          }
+          // 如果value为假，就是删除所有的class
+          elem.className = value ? jQuery.trim(cur) : '';
+        }
+      }
+      return this;
+    },
+    // 可以接受两个参数
+    toggleClass: function (value, stateVal) {
+      var type = typeof value;
+      // 判断第二个参数是不是布尔值　并且　value类型是不是字符串
+      if(typeof stateVal === "boolean" && type === "string"){
+        return stateVal ? this.addClass(value) : this.removeClass(value);
+      }
+
+      if (jQuery.isFunction(value)) {
+        return this.each(function (i) {
+          jQuery(this).toggleClass(value.call(this, i, this.className, stateVal),stateVal)
+        })
+      }
+
+      return this.each(function () {
+        if(type === "string"){
+          var className,
+            i = 0,
+            self = jQuery(this),
+            classNames = value.match(core_rnotwhite) || [];
+
+          while (className = classNames[i++]) {
+            if(self.hasClass(className)){
+              self.removeClass(className);
+            }else {
+              self.addClass(className);
+            }
+          }
+        } else if (type === core_strundefined || type === "boolean") {
+          // value类型是　undefined或者布尔值时候
+          // 对于class做了一个缓存处理，可以清空或者还原之前所有的class
+          if(this.className){
+            data_priv.set(this, "__className__", this.className);
+          }
+
+          this.className = this.className || value === false ? "" : data_priv.get(this, "__className__")
+        }
+      })
+    },
+    hasClass: function (selector) {
+      var className = " " + selector + " ",
+        i = 0,
+        l = this.length;
+      for(;i<l;i++) {
+        if(this[i].nodeType === 1 && (" " + this[i].className + " ").replace(rclass, " ").indexOf(className) >= 0){
+          return true;
+        }
+      }
+      return false;
+    }
   });
 
   jQuery.extend({
