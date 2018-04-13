@@ -2388,8 +2388,76 @@
     props: '',
     fixHooks: {},
     keyHooks: {},
-    mouseHooks: {},
-    fix: {},
+    // 鼠标的一些兼容方法
+    mouseHooks: {
+      props: "button buttons clientX clientY offsetX offsetY pageX pageY screenX screenY toElement".split(" "),
+      filter: function( event, original ) {
+        var eventDoc, doc, body,
+          button = original.button;
+
+        // Calculate pageX/Y if missing and clientX/Y available
+        // pageX/Y    低版本的ie是不支持的
+        // clientX/Y  是浏览器都支持的
+        if ( event.pageX == null && original.clientX != null ) {
+          eventDoc = event.target.ownerDocument || document;
+          doc = eventDoc.documentElement;
+          body = eventDoc.body;
+
+          event.pageX = original.clientX + ( doc && doc.scrollLeft || body && body.scrollLeft || 0 ) - ( doc && doc.clientLeft || body && body.clientLeft || 0 );
+          event.pageY = original.clientY + ( doc && doc.scrollTop  || body && body.scrollTop  || 0 ) - ( doc && doc.clientTop  || body && body.clientTop  || 0 );
+        }
+
+        // Add which for click: 1 === left; 2 === middle; 3 === right
+        // Note: button is not normalized, so don't use it
+        if ( !event.which && button !== undefined ) {
+          event.which = ( button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ) );
+        }
+
+        return event;
+      }
+    },
+    fix: function( event ) {
+      // 判断缓存
+      if ( event[ jQuery.expando ] ) {
+        return event;
+      }
+
+      // Create a writable copy of the event object and normalize some properties
+      var i, prop, copy,
+        type = event.type,
+        originalEvent = event,
+        fixHook = this.fixHooks[ type ];
+
+      if ( !fixHook ) {
+        this.fixHooks[ type ] = fixHook =
+          rmouseEvent.test( type ) ? this.mouseHooks :
+          rkeyEvent.test( type ) ? this.keyHooks : {};
+      }
+      copy = fixHook.props ? this.props.concat( fixHook.props ) : this.props;
+
+      event = new jQuery.Event( originalEvent );
+
+      i = copy.length;
+      while ( i-- ) {
+        prop = copy[ i ];
+        // 原生的event赋值给了jq中的event
+        event[ prop ] = originalEvent[ prop ];
+      }
+
+      // Support: Cordova 2.5 (WebKit) (#13255)
+      // All events should have a target; Cordova deviceready doesn't
+      if ( !event.target ) {
+        event.target = document;
+      }
+
+      // Support: Safari 6.0+, Chrome < 28
+      // Target should not be a text node (#504, #13143)
+      if ( event.target.nodeType === 3 ) {
+        event.target = event.target.parentNode;
+      }
+
+      return fixHook.filter? fixHook.filter( event, originalEvent ) : event;
+    },
     special: {},
     simulate: function () {
 

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>on事件操作 </title>
+</head>
+<body style="height: 2000px;">
+  <div class="box1 box2" id="mine1">
+    <span id="mine3">点我</span>
+    点我啊</div>
+  <span id="mine2">span</span>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //on事件分析
+    /*
+    jQuery.event = {
+      global: {}, 事件的全局属性
+      add, 绑定事件
+      remove, 取消事件
+      trigger 主动触发事件
+      dispatch 派发事件的具体操作，
+      handlers 函数执行顺序的操作
+      props    jq中共享原生js的event事件
+      fixHooks 收集event兼容的集合
+      keyHooks 键盘的event兼容
+      mouseHooks 鼠标的event兼容
+      fix       对event对象的兼容处理
+      special   特殊事件的处理
+      simulate
+    }
+
+    jQuery.fn.extend({
+      on
+      one
+      off
+      trigger
+      triggerHandle
+    })
+     */
+
+
+
+    $(function () {
+      // pageX/Y    低版本的ie是不支持的
+      // clientX/Y  是浏览器都支持的
+      document.onclick = function (ev) {
+        // 在没有滚动条时候 他们值是相等的
+        console.log(ev.pageX); // 页面距离(包括滚动条中的区域)
+        console.log(ev.pageY);
+        console.log(ev.clientX);
+        console.log(ev.clientY); // 可视区域内
+
+      };
+      $(document).on('mousedown', function (event) {
+        console.log(event.which); // 左键1 中键2
+
+        //  这里的event 是jq中的event
+        //event.originalEvent这里是原生的event
+        console.log(event.originalEvent);
+
+      })
+
+    });
+
+
+
+
+
+</script>
+</html>
