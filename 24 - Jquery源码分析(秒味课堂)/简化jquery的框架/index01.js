@@ -2202,7 +2202,19 @@
   jQuery.event = {
     global: {},
 
-    add: function () {
+    add: function (elem, types, handler, data, selector) {
+      var handleObjIn, eventHandle, tmp,
+        events, t, handleObj,special, handlers, type, namespaces,
+        origType, elemData = data_priv.get(elem);
+
+      if(!elemData){
+        return;
+      }
+
+      if(handler.handler){
+
+      }
+
 
     },
     remove: function () {
