@@ -2269,6 +2269,7 @@
 
   jQuery.fn.extend({
     // 其实调用的就是jQuery.event.add方法
+    // 5个参数，最后一个是内部调用
     on: function (types, selector, data, fn, /*INTERNAL*/ one) {
 
 
