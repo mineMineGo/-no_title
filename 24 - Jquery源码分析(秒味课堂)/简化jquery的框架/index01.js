@@ -2349,10 +2349,12 @@
 
       // Run delegates first; they may want to stop propagation beneath us
       i = 0;
+      // 判断是否阻止过冒泡
       while ( (matched = handlerQueue[ i++ ]) && !event.isPropagationStopped() ) {
         event.currentTarget = matched.elem;
 
         j = 0;
+        // 是否阻止了同类型得其他事件函数
         while ( (handleObj = matched.handlers[ j++ ]) && !event.isImmediatePropagationStopped() ) {
 
           // Triggered event must either 1) have no namespace, or
@@ -2387,7 +2389,16 @@
     },
     props: '',
     fixHooks: {},
-    keyHooks: {},
+    keyHooks: {
+      props: 'char charCode key keyCode'.split(" "),
+      filter: function (event, original) {
+        // which属性的处理
+        if(event.which == null ){
+          event.which = original.charCode!= null ?original.charCode : original.keyCode;
+        }
+        return event;
+      }
+    },
     // 鼠标的一些兼容方法
     mouseHooks: {
       props: "button buttons clientX clientY offsetX offsetY pageX pageY screenX screenY toElement".split(" "),
@@ -2470,15 +2481,43 @@
     }
   };
 
-  jQuery.Event = function(){
+  jQuery.Event = function( src, props ) {
+    // Allow instantiation without the 'new' keyword
+    if ( !(this instanceof jQuery.Event) ) {
+      return new jQuery.Event( src, props );
+    }
 
+    // Event object
+    if ( src && src.type ) {
+      this.originalEvent = src;
+      this.type = src.type;
+
+      // Events bubbling up the document may have been marked as prevented
+      // by a handler lower down the tree; reflect the correct value.
+      this.isDefaultPrevented = ( src.defaultPrevented ||
+        src.getPreventDefault && src.getPreventDefault() ) ? returnTrue : returnFalse;
+
+      // Event type
+    } else {
+      this.type = src;
+    }
+
+    // Put explicitly provided properties onto the event object
+    if ( props ) {
+      jQuery.extend( this, props );
+    }
+
+    // Create a timestamp if incoming event doesn't have one
+    this.timeStamp = src && src.timeStamp || jQuery.now();
+
+    // Mark it as fixed
+    this[ jQuery.expando ] = true;
   };
 
   jQuery.Event.prototype = {
     isDefaultPrevented: returnFalse,
     isPropagationStopped: returnFalse,
     isImmediatePropagationStopped: returnFalse,
-
     preventDefault: function() {
       var e = this.originalEvent;
 
@@ -2607,7 +2646,6 @@
       }
     }
   });
-
 
   //5140-6057　DOM操作：　添加、删除、获取、包装、DOM筛选等等
 

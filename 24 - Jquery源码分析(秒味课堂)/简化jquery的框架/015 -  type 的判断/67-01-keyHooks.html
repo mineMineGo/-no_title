@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>keyHooks </title>
+</head>
+<body style="height: 2000px;">
+  <div class="box1 box2" id="mine1">
+    <span id="mine3">点我span</span>
+    点我啊</div>
+  <span id="mine2">span</span>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //on事件分析
+    /*
+    jQuery.event = {
+      global: {}, 事件的全局属性
+      add, 绑定事件
+      remove, 取消事件
+      trigger 主动触发事件
+      dispatch 派发事件的具体操作，
+      handlers 函数执行顺序的操作
+      props    jq中共享原生js的event事件
+      fixHooks 收集event兼容的集合
+      keyHooks 键盘的event兼容
+      mouseHooks 鼠标的event兼容
+      fix       对event对象的兼容处理
+      special   特殊事件的处理
+      simulate
+    }
+
+    jQuery.fn.extend({
+      on
+      one
+      off
+      trigger
+      triggerHandle
+    })
+     */
+
+    $(function () {
+      $('div').click(function () {
+        console.log('div被点击了');
+      });
+      $('span').click(function (event) {
+        console.log('span被点击了1, 阻止冒泡了');
+
+        console.log(event.isPropagationStopped());//是否阻止过冒泡事件 false
+        // event.stopPropagation(); //
+        console.log(event.isPropagationStopped());//true
+
+        event.stopImmediatePropagation(); // 不触发其他相同事件函数
+        console.log(event.isPropagationStopped());//true
+      });
+      $('span').click(function () {
+        console.log('span被点击了2');
+      });
+    });
+    // 原生的
+  document.onkeydown = function (ev) {
+    var ev=  ev || window.event;
+    // keyCode兼容性最好
+    console.log(ev.which);  // charCode keyCode
+    console.log(ev.charCode);  // charCode keyCode
+    console.log(ev.keyCode);  // charCode keyCode
+  }
+</script>
+</html>
