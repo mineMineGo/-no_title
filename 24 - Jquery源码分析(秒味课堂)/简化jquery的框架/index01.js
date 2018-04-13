@@ -2180,12 +2180,170 @@
 
 
   //4300-5128 on() trigger()等等 : 事件操作的相关方法
+  var rkeyEvent = /^key/,
+    rmouseEvent = /^(?:mouse|contextmenu)|click/,
+    rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
+    rtypenamespace = /^([^.]*)(?:\.(.+)|)$/;
+
+  function returnTrue() {
+    return true;
+  }
+
+  function returnFalse() {
+    return false;
+  }
+
+  function safeActiveElement() {
+    try {
+      return document.activeElement;
+    } catch ( err ) { }
+  }
+
+  jQuery.event = {
+    global: {},
+
+    add: function () {
+
+    },
+    remove: function () {
+
+    },
+    trigger: function () {
+
+    },
+    dispatch: function () {
+
+    },
+    handlers: function () {
+
+    },
+    props: '',
+    fixHooks: {},
+    keyHooks: {},
+    mouseHooks: {},
+    fix: {},
+    special: {},
+    simulate: function () {
+
+    }
+  };
+
+  jQuery.removeEvent = function( elem, type, handle ) {
+    if ( elem.removeEventListener ) {
+      elem.removeEventListener( type, handle, false );
+    }
+  };
+
+  jQuery.Event = function(){
+
+  };
+
+  jQuery.Event.prototype = {
+    isDefaultPrevented: returnFalse,
+    isPropagationStopped: returnFalse,
+    isImmediatePropagationStopped: returnFalse,
+
+    preventDefault: function() {
+      var e = this.originalEvent;
+
+      this.isDefaultPrevented = returnTrue;
+
+      if ( e && e.preventDefault ) {
+        e.preventDefault();
+      }
+    },
+    stopPropagation: function() {
+      var e = this.originalEvent;
+
+      this.isPropagationStopped = returnTrue;
+
+      if ( e && e.stopPropagation ) {
+        e.stopPropagation();
+      }
+    },
+    stopImmediatePropagation: function() {
+      this.isImmediatePropagationStopped = returnTrue;
+      this.stopPropagation();
+    }
+  };
+
+  jQuery.fn.extend({
+    // 其实调用的就是jQuery.event.add方法
+    on: function (types, selector, data, fn, /*INTERNAL*/ one) {
+
+
+      return this.each(function () {
+        jQuery.event.add(this, types, fn, data, selector);
+      });
+    },
+    // 调用的也是on
+    one: function (types, selector, data, fn) {
+      return this.on(types, selector, data, fn, 1)
+    },
+    //
+    off: function () {
+      
+    },
+    //调用的都是上面的trigger
+    trigger: function (type, data) {
+      return this.each(function () {
+        jQuery.event.trigger(type, data, this);
+      })
+    },
+    //调用的都是上面的trigger
+    triggerHandler: function (type, data) {
+      var elem = this[0];
+      if(elem){
+        return jQuery.event.trigger(type, data, elem, true);
+      }
+    }
+  });
+
 
   //5140-6057　DOM操作：　添加、删除、获取、包装、DOM筛选等等
 
   //6058-6620 css(): 样式的操作
 
   //6621-7854 提交的数据和ajax()，ajax() load() getJson()
+
+  //6720
+  jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblclick " +
+    "mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
+    "change select submit keydown keypress keyup error contextmenu").split(" "), function( i, name ) {
+
+    // Handle event binding
+    // 根据参数的不同调用的是on 或者　trigger
+    jQuery.fn[ name ] = function( data, fn ) {
+      return arguments.length > 0 ?
+        this.on( name, null, data, fn ) :
+        this.trigger( name );
+    };
+  });
+
+  jQuery.fn.extend({
+    // hover调用的是mouseenter/mouseenter 其实最终调用的还是 on或者trigger
+    hover: function( fnOver, fnOut ) {
+      return this.mouseenter( fnOver ).mouseenter( fnOut || fnOver );
+    },
+    // 调用的是on
+    bind: function( types, data, fn ) {
+      return this.on( types, null, data, fn );
+    },
+    //调用的是off
+    unbind: function( types, fn ) {
+      return this.off( types, null, fn );
+    },
+    // 调用的是on
+    delegate: function( selector, types, data, fn ) {
+      return this.on( types, selector, data, fn );
+    },
+    //调用的是off
+    undelegate: function( selector, types, fn ) {
+      // ( namespace ) or ( selector, types [, fn] )
+      return arguments.length === 1 ? this.off( selector, "**" ) : this.off( types, selector || "**", fn );
+    }
+  });
+
 
   //7855-8584 animate(): 运动的方法
 
