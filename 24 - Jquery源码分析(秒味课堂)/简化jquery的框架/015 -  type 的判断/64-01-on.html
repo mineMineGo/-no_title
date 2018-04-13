@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>on事件操作 </title>
+</head>
+<body>
+  <div class="box1 box2" id="mine1">
+    <span id="mine3">点我</span>
+    点我啊</div>
+  <span id="mine2">span</span>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //on事件分析
+    /*
+    jQuery.event = {
+      globale: {},
+      add, 绑定事件
+      remove, 取消事件
+      trigger 主动触发事件
+      dispatch
+      handlers
+      props
+      fixHooks
+      keyHooks
+      mouseHooks
+      fix
+      special
+      simulate
+    }
+
+    jQuery.fn.extend({
+      on
+      one
+      off
+      trigger
+      triggerHandle
+    })
+     */
+
+
+
+    $(function () {
+      //加一个委托事件
+
+      $('#mine1').on('click.aaa', function (a) {
+        console.log(1)
+      });
+      $('#mine1').on('click', function (b) {
+        console.log(2)
+      });
+      $('#mine1').on("click", "#mine3", function (c) {
+        console.log("事件委托4")
+      })
+      $('#mine1').on('mouseenter', function (d) {
+        console.log('鼠标进入事件3')
+      });
+
+      // $('#mine1').trigger('click');
+    //通过前面得知，事件 函数都在挂载在元素身上(当然通过的的Data那个机制，避免出现内存泄露)
+      // 通过在源码4435 console.log(elemData)得出结构
+      var elemData = {
+        events: {
+          click: [  //      click 对应值是一个数组,数组另外还有两个属性
+                    // delegateCount(委托计数) length
+            {
+              // 事件委托放在第一个
+              data: undefined,
+              guid: 3,
+              handler: function (c) {}, // 绑定的事件函数
+              namespace: "", // 命名空间
+              needsContext: false,
+              origType: "click",
+              selector: "#mine3",
+              type: "click"
+            },
+            {
+              data: undefined,
+              guid: 1,
+              handler: function (a) {},
+              namespace: "aaa",
+              needsContext: undefined,
+              origType: "click",
+              selector: undefined,
+              type: "click"
+            },
+            {
+              data: undefined,
+              guid: 2,
+              handler: function (b) {},
+              namespace: "",
+              needsContext: undefined,
+              origType: "click",
+              selector: undefined,
+              type: "click"
+            }
+          ],
+          mouseover: [
+            {
+              data: undefined,
+              guid: 4,
+              handler: function (d) {},
+              namespace: "",
+              needsContext: undefined,
+              origType: "mouseenter",
+              selector: undefined,
+              type: "mouseover"
+            }
+          ]
+        },
+        handle: function (e) {
+
+        }
+      }
+
+    });
+
+
+
+
+
+</script>
+</html>
