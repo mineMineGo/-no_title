@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>on事件操作 </title>
+</head>
+<body>
+  <div class="box1 box2" id="mine1">点我啊</div>
+
+  <ul>
+      <li>11</li>
+      <li>22</li>
+      <li>33</li>
+      <li>44</li>
+  </ul>
+  <input type="text" id="input1">
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //on事件分析
+
+    // $('#mine1').on('click', function () {
+    //   console.log(1111)
+    // });
+
+  // $('#mine1').on('click',{name: 'hello'}, function (event) {
+  //   console.log(123);
+  // });
+
+  // 鼠标移入,pc端
+  // $('#mine1').on('mouseover',function (event) {
+  //   console.log(456);
+  // });
+
+  // 5个参数
+  //on: function (types, selector, data, fn, /*INTERNAL*/ one)
+
+
+  // 第一个参数types可以为对象
+  $('#mine1').on({
+    'click': function () {
+      console.log(123);
+    },
+    'mouseover': function () {
+      console.log(456);
+    }
+  });
+
+  // trigger triggerHandler 区别
+    $('#input1').focus(function () {
+      $(this).css('backgroundColor', 'red')
+    })
+
+    //主动触发focus事件，但是区别是
+  $('#input1').trigger('focus'); // 光标会进入，说明会触发当前事件的默认行为
+
+  // $('#input1').triggerHandler('focus'); // 光标不会进入。说明不会触发当前事件的默认行为
+
+</script>
+</html>

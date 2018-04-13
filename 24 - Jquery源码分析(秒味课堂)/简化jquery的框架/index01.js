@@ -2271,7 +2271,51 @@
     // 其实调用的就是jQuery.event.add方法
     // 5个参数，最后一个是内部调用
     on: function (types, selector, data, fn, /*INTERNAL*/ one) {
+      var origFn, type;
+      // (types-Object, selector, data)
+      if(typeof types === "object"){
+        if(typeof selector !== "string"){
+          // (types-Object, data)
+          data = data || selector;
+          selector = undefined;
+        }
+        for(type in types){
+          this.on(type, selector, data, types[type], one);
+        }
+        return this
+      }
 
+      if(data == null && fn == null){
+        // ( types, fn )
+        fn = selector;
+        data = selector = undefined
+      } else if(fn == null) {
+        if ( typeof selector === "string" ) {
+          // ( types, selector, fn )
+          fn = data;
+          data = undefined;
+        } else {
+          // ( types, data, fn )
+          fn = data;
+          data = selector;
+          selector = undefined;
+        }
+      }
+
+      if ( fn === false ) {
+        fn = returnFalse;
+      } else if ( !fn ) {
+        return this;
+      }
+
+      if(one === 1){
+        origFn = fn;
+        fn = function (event) {
+          jQuery().off(event);
+          return origFn.apply(this, arguments);
+        };
+        fn.guid = origFn.guid || (origFn.guid = jQuery.guid++);
+      }
 
       return this.each(function () {
         jQuery.event.add(this, types, fn, data, selector);
@@ -2282,8 +2326,36 @@
       return this.on(types, selector, data, fn, 1)
     },
     //
-    off: function () {
-      
+    off: function (types, selector, fn) {
+      var handleObj, type;
+      if(types && types.preventDefault && types.handleObj){
+        handleObj = types.handleObj;
+        jQuery(types.delegateTarget).off(
+          handleObj.namespace ? handleObj.origType + "." + handleObj.namespace : handleObj.origType,
+          handleObj.selector,
+          handleObj.handler
+        );
+        return this;
+      }
+      // 对象遍历
+      if(typeof types === "object"){
+        for(type in types){
+          this.off(type, selector, types[type]);
+        }
+        return this;
+      }
+      // 参数修正
+      if(selector === false || typeof selector === "function"){
+        fn = selector;
+        selector = undefined;
+      }
+      if(fn === false){
+        fn = returnFalse;
+      }
+
+      return this.each(function () {
+        jQuery.event.remove(this, types, fn, selector);
+      })
     },
     //调用的都是上面的trigger
     trigger: function (type, data) {
@@ -2322,9 +2394,9 @@
   });
 
   jQuery.fn.extend({
-    // hover调用的是mouseenter/mouseenter 其实最终调用的还是 on或者trigger
+    // hover调用的是mouseenter/mouseleave 其实最终调用的还是 on或者trigger
     hover: function( fnOver, fnOut ) {
-      return this.mouseenter( fnOver ).mouseenter( fnOut || fnOver );
+      return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
     },
     // 调用的是on
     bind: function( types, data, fn ) {
