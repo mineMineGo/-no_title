@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>on事件操作 </title>
+</head>
+<body>
+  <div class="box1 box2" id="mine1">点我啊</div>
+  <span id="mine2">span</span>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  //on事件分析
+    /*
+    jQuery.event = {
+      globale: {},
+      add, 绑定事件
+      remove, 取消事件
+      trigger 主动触发事件
+      dispatch
+      handlers
+      props
+      fixHooks
+      keyHooks
+      mouseHooks
+      fix
+      special
+      simulate
+    }
+
+    jQuery.fn.extend({
+      on
+      one
+      off
+      trigger
+      triggerHandle
+    })
+     */
+
+    /*
+
+    $(function () {
+      $('#mine1').on('click', function () {
+        console.log(1)
+      });
+      $('#mine1').on('click', function () {
+        console.log(2)
+      });
+
+      $('#mine1').trigger('click');
+
+    });
+
+    */
+
+
+
+  /*
+  小插曲 es6
+
+   const task= [];
+    const output = (i)=> new Promise((resolve)=>{
+
+      setTimeout(()=>{
+        console.log(new Date, i);
+            resolve();
+        }, 1000*i);
+    })
+
+    for(var  i =0;i<5;i++){
+      task.push(output(i));
+    }
+    Promise.all(task).then(()=>{
+          setTimeout(()=>{
+            console.log(new Date, i);
+      },1000)
+    })
+
+   */
+
+    // 原生实现方式
+    window.onload = function (ev) {
+      var oDiv  = document.getElementById('mine1');
+      var oSpan = document.getElementById('mine2');
+
+      function aaa (){
+        console.log("1111");
+      }
+      function bbb(){
+        console.log(2222);
+      }
+      add(oDiv, "click", aaa);
+      add(oDiv, "click", bbb);
+
+      remove(oDiv, "click", aaa);
+
+      add(oSpan, "show", aaa);
+      add(oSpan, "show", bbb);
+      trigger(oSpan, "show"); // 主动触发
+
+
+      remove(oSpan, "show"); // 删除事件
+      trigger(oSpan, "show"); // 主动触发
+
+    };
+    //绑定
+    function add(elem, types, fn) {
+      elem.listeners = elem.listeners || {};
+      elem.listeners[types] = elem.listeners[types] || [];
+      elem.listeners[types].push(fn); // 这里应该做去重，暂时不做
+
+
+      elem.addEventListener(types, fn, false);
+    }
+    // 解绑
+    function remove(elem, types, fn) {
+      elem.removeEventListener(types, fn, false);
+      delete elem.listeners[types]; //删除
+    }
+    // 怎么实现呢， add的时候既要存入， trigger时候再去取然后执行函数
+    // 建立映射关系    相关元素的映射
+    //               相关事件的映射
+    function trigger(elem, types) {
+      var arr = elem.listeners[types] || [];
+      for (var i = 0; i < arr.length; i++) {
+        arr[i]();
+      }
+    }
+
+
+</script>
+</html>
