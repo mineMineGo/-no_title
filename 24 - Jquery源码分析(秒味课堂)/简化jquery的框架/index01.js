@@ -2469,7 +2469,56 @@
 
       return fixHook.filter? fixHook.filter( event, originalEvent ) : event;
     },
-    special: {},
+    special: {
+      load: {
+        // Prevent triggered image.load events from bubbling to window.load
+        noBubble: true
+      },
+      focus: {
+        // Fire native event if possible so blur/focus sequence is correct
+        trigger: function() {
+          if ( this !== safeActiveElement() && this.focus ) {
+            this.focus();
+            return false;
+          }
+        },
+        delegateType: "focusin"
+      },
+      blur: {
+        trigger: function() {
+          if ( this === safeActiveElement() && this.blur ) {
+            this.blur();
+            return false;
+          }
+        },
+        delegateType: "focusout"
+      },
+      click: {
+        // For checkbox, fire native event so checked state will be right
+        trigger: function() {
+          if ( this.type === "checkbox" && this.click && jQuery.nodeName( this, "input" ) ) {
+            this.click();
+            return false;
+          }
+        },
+
+        // For cross-browser consistency, don't fire native .click() on links
+        _default: function( event ) {
+          return jQuery.nodeName( event.target, "a" );
+        }
+      },
+
+      beforeunload: {
+        postDispatch: function( event ) {
+
+          // Support: Firefox 20+
+          // Firefox doesn't alert if the returnValue field is not set.
+          if ( event.result !== undefined ) {
+            event.originalEvent.returnValue = event.result;
+          }
+        }
+      }
+    },
     simulate: function () {
 
     }
@@ -2541,6 +2590,34 @@
       this.stopPropagation();
     }
   };
+
+  // Create mouseenter/leave events using mouseover/out and event-time checks
+// Support: Chrome 15+
+  jQuery.each({
+    mouseenter: "mouseover",
+    mouseleave: "mouseout"
+  }, function( orig, fix ) {
+    jQuery.event.special[ orig ] = {
+      delegateType: fix,
+      bindType: fix,
+
+      handle: function( event ) {
+        var ret,
+          target = this,
+          related = event.relatedTarget,
+          handleObj = event.handleObj;
+
+        // For mousenter/leave call the handler if related is outside the target.
+        // NB: No relatedTarget if the mouse left/entered the browser window
+        if ( !related || (related !== target && !jQuery.contains( target, related )) ) {
+          event.type = handleObj.origType;
+          ret = handleObj.handler.apply( this, arguments );
+          event.type = fix;
+        }
+        return ret;
+      }
+    };
+  });
 
   jQuery.fn.extend({
     // 其实调用的就是jQuery.event.add方法
