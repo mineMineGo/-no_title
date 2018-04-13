@@ -2202,29 +2202,185 @@
   jQuery.event = {
     global: {},
 
-    add: function (elem, types, handler, data, selector) {
-      var handleObjIn, eventHandle, tmp,
-        events, t, handleObj,special, handlers, type, namespaces,
-        origType, elemData = data_priv.get(elem);
+    add: function( elem, types, handler, data, selector ) {
 
-      if(!elemData){
+      var handleObjIn, eventHandle, tmp,
+        events, t, handleObj,
+        special, handlers, type, namespaces, origType,
+        elemData = data_priv.get( elem );
+
+      // Don't attach events to noData or text/comment nodes (but allow plain objects)
+      if ( !elemData ) {
         return;
       }
 
-      if(handler.handler){
-
+      // Caller can pass in an object of custom data in lieu of the handler
+      if ( handler.handler ) {
+        handleObjIn = handler;
+        handler = handleObjIn.handler;
+        selector = handleObjIn.selector;
       }
 
+      // Make sure that the handler has a unique ID, used to find/remove it later
+      if ( !handler.guid ) {
+        handler.guid = jQuery.guid++;
+      }
 
+      // Init the element's event structure and main handler, if this is the first
+      if ( !(events = elemData.events) ) {
+        events = elemData.events = {};
+      }
+      if ( !(eventHandle = elemData.handle) ) {
+        eventHandle = elemData.handle = function( e ) {
+          // Discard the second event of a jQuery.event.trigger() and
+          // when an event is called after a page has unloaded
+          return typeof jQuery !== core_strundefined && (!e || jQuery.event.triggered !== e.type) ?
+            jQuery.event.dispatch.apply( eventHandle.elem, arguments ) :
+            undefined;
+        };
+        // Add elem as a property of the handle fn to prevent a memory leak with IE non-native events
+        eventHandle.elem = elem;
+      }
+
+      // Handle multiple events separated by a space
+      types = ( types || "" ).match( core_rnotwhite ) || [""];
+      t = types.length;
+      while ( t-- ) {
+        tmp = rtypenamespace.exec( types[t] ) || [];
+        type = origType = tmp[1];
+        namespaces = ( tmp[2] || "" ).split( "." ).sort();
+
+        // There *must* be a type, no attaching namespace-only handlers
+        if ( !type ) {
+          continue;
+        }
+
+        // If event changes its type, use the special event handlers for the changed type
+        // 处理特殊事件，兼容性
+        special = jQuery.event.special[ type ] || {};
+
+        // If selector defined, determine special event api type, otherwise given type
+        type = ( selector ? special.delegateType : special.bindType ) || type;
+
+        // Update special based on newly reset type
+        special = jQuery.event.special[ type ] || {};
+
+        // handleObj is passed to all event handlers
+        handleObj = jQuery.extend({
+          type: type,
+          origType: origType,
+          data: data,
+          handler: handler,
+          guid: handler.guid,
+          selector: selector,
+          needsContext: selector && jQuery.expr.match.needsContext.test( selector ),
+          namespace: namespaces.join(".")
+        }, handleObjIn );
+
+        // Init the event handler queue if we're the first
+        if ( !(handlers = events[ type ]) ) {
+          handlers = events[ type ] = [];
+          handlers.delegateCount = 0;
+
+          // Only use addEventListener if the special events handler returns false
+          if ( !special.setup || special.setup.call( elem, data, namespaces, eventHandle ) === false ) {
+            if ( elem.addEventListener ) {
+              elem.addEventListener( type, eventHandle, false );
+            }
+          }
+        }
+
+        if ( special.add ) {
+          special.add.call( elem, handleObj );
+
+          if ( !handleObj.handler.guid ) {
+            handleObj.handler.guid = handler.guid;
+          }
+        }
+
+        // Add to the element's handler list, delegates in front
+        // 委托事件放在最前面
+        if ( selector ) {
+          handlers.splice( handlers.delegateCount++, 0, handleObj );
+        } else {
+          handlers.push( handleObj );
+        }
+
+        // Keep track of which events have ever been used, for event optimization
+        jQuery.event.global[ type ] = true;
+      }
+
+      // Nullify elem to prevent memory leaks in IE
+      // 防止ie下的内存泄漏
+      elem = null;
+      console.log(elemData)
     },
+
     remove: function () {
 
     },
     trigger: function () {
 
     },
-    dispatch: function () {
+    dispatch: function( event ) {
 
+      // Make a writable jQuery.Event from the native event object
+      // 兼容event
+      event = jQuery.event.fix( event );
+
+      var i, j, ret, matched, handleObj,
+        handlerQueue = [],
+        args = core_slice.call( arguments ),
+        handlers = ( data_priv.get( this, "events" ) || {} )[ event.type ] || [],
+        // 兼容特殊事件
+        special = jQuery.event.special[ event.type ] || {};
+
+      // Use the fix-ed jQuery.Event rather than the (read-only) native event
+      args[0] = event;
+      event.delegateTarget = this;
+
+      // Call the preDispatch hook for the mapped type, and let it bail if desired
+      if ( special.preDispatch && special.preDispatch.call( this, event ) === false ) {
+        return;
+      }
+
+      // Determine handlers 队列顺序
+      handlerQueue = jQuery.event.handlers.call( this, event, handlers );
+
+      // Run delegates first; they may want to stop propagation beneath us
+      i = 0;
+      while ( (matched = handlerQueue[ i++ ]) && !event.isPropagationStopped() ) {
+        event.currentTarget = matched.elem;
+
+        j = 0;
+        while ( (handleObj = matched.handlers[ j++ ]) && !event.isImmediatePropagationStopped() ) {
+
+          // Triggered event must either 1) have no namespace, or
+          // 2) have namespace(s) a subset or equal to those in the bound event (both can have no namespace).
+          if ( !event.namespace_re || event.namespace_re.test( handleObj.namespace ) ) {
+
+            event.handleObj = handleObj;
+            event.data = handleObj.data;
+
+            ret = ( (jQuery.event.special[ handleObj.origType ] || {}).handle || handleObj.handler )
+              .apply( matched.elem, args );
+
+            if ( ret !== undefined ) {
+              if ( (event.result = ret) === false ) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+            }
+          }
+        }
+      }
+
+      // Call the postDispatch hook for the mapped type
+      if ( special.postDispatch ) {
+        special.postDispatch.call( this, event );
+      }
+
+      return event.result;
     },
     handlers: function () {
 
