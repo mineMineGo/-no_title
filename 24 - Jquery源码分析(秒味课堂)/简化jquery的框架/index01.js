@@ -2283,6 +2283,7 @@
           handlers.delegateCount = 0;
 
           // Only use addEventListener if the special events handler returns false
+          // 有特殊事件的先走特殊事件的监听
           if ( !special.setup || special.setup.call( elem, data, namespaces, eventHandle ) === false ) {
             if ( elem.addEventListener ) {
               elem.addEventListener( type, eventHandle, false );
@@ -2316,11 +2317,204 @@
       console.log(elemData)
     },
 
-    remove: function () {
+    // Detach an event or set of events from an element
+    remove: function( elem, types, handler, selector, mappedTypes ) {
 
+      var j, origCount, tmp,
+          events, t, handleObj,
+          special, handlers, type, namespaces, origType,
+          elemData = data_priv.hasData( elem ) && data_priv.get( elem );
+
+      if ( !elemData || !(events = elemData.events) ) {
+        return;
+      }
+
+      // Once for each type.namespace in types; type may be omitted
+      types = ( types || "" ).match( core_rnotwhite ) || [""];
+      t = types.length;
+      while ( t-- ) {
+        tmp = rtypenamespace.exec( types[t] ) || [];
+        type = origType = tmp[1];
+        namespaces = ( tmp[2] || "" ).split( "." ).sort();
+
+        // Unbind all events (on this namespace, if provided) for the element
+        if ( !type ) {
+          for ( type in events ) {
+            jQuery.event.remove( elem, type + types[ t ], handler, selector, true );
+          }
+          continue;
+        }
+
+        special = jQuery.event.special[ type ] || {};
+        type = ( selector ? special.delegateType : special.bindType ) || type;
+        handlers = events[ type ] || [];
+        tmp = tmp[2] && new RegExp( "(^|\\.)" + namespaces.join("\\.(?:.*\\.|)") + "(\\.|$)" );
+
+        // Remove matching events
+        origCount = j = handlers.length;
+        while ( j-- ) {
+          handleObj = handlers[ j ];
+
+          if ( ( mappedTypes || origType === handleObj.origType ) &&
+              ( !handler || handler.guid === handleObj.guid ) &&
+              ( !tmp || tmp.test( handleObj.namespace ) ) &&
+              ( !selector || selector === handleObj.selector || selector === "**" && handleObj.selector ) ) {
+            handlers.splice( j, 1 );
+
+            if ( handleObj.selector ) {
+              handlers.delegateCount--;
+            }
+            if ( special.remove ) {
+              special.remove.call( elem, handleObj );
+            }
+          }
+        }
+
+        // Remove generic event handler if we removed something and no more handlers exist
+        // (avoids potential for endless recursion during removal of special event handlers)
+        if ( origCount && !handlers.length ) {
+          // 有特殊的先走特殊事件的取消绑定
+          if ( !special.teardown || special.teardown.call( elem, namespaces, elemData.handle ) === false ) {
+            jQuery.removeEvent( elem, type, elemData.handle );
+          }
+
+          delete events[ type ];
+        }
+      }
+
+      // Remove the expando if it's no longer used
+      if ( jQuery.isEmptyObject( events ) ) {
+        delete elemData.handle;
+        data_priv.remove( elem, "events" );
+      }
     },
-    trigger: function () {
+    trigger: function( event, data, elem, onlyHandlers ) {
 
+      var i, cur, tmp, bubbleType, ontype, handle, special,
+          eventPath = [ elem || document ],
+          type = core_hasOwn.call( event, "type" ) ? event.type : event,
+          namespaces = core_hasOwn.call( event, "namespace" ) ? event.namespace.split(".") : [];
+
+      cur = tmp = elem = elem || document;
+
+      // Don't do events on text and comment nodes
+      if ( elem.nodeType === 3 || elem.nodeType === 8 ) {
+        return;
+      }
+
+      // focus/blur morphs to focusin/out; ensure we're not firing them right now
+      if ( rfocusMorph.test( type + jQuery.event.triggered ) ) {
+        return;
+      }
+
+      if ( type.indexOf(".") >= 0 ) {
+        // Namespaced trigger; create a regexp to match event type in handle()
+        namespaces = type.split(".");
+        type = namespaces.shift();
+        namespaces.sort();
+      }
+      ontype = type.indexOf(":") < 0 && "on" + type;
+
+      // Caller can pass in a jQuery.Event object, Object, or just an event type string
+      event = event[ jQuery.expando ] ?
+          event :
+          new jQuery.Event( type, typeof event === "object" && event );
+
+      // Trigger bitmask: & 1 for native handlers; & 2 for jQuery (always true)
+      event.isTrigger = onlyHandlers ? 2 : 3;
+      event.namespace = namespaces.join(".");
+      event.namespace_re = event.namespace ?
+          new RegExp( "(^|\\.)" + namespaces.join("\\.(?:.*\\.|)") + "(\\.|$)" ) :
+          null;
+
+      // Clean up the event in case it is being reused
+      event.result = undefined;
+      if ( !event.target ) {
+        event.target = elem;
+      }
+
+      // Clone any incoming data and prepend the event, creating the handler arg list
+      data = data == null ?
+          [ event ] :
+          jQuery.makeArray( data, [ event ] );
+
+      // Allow special events to draw outside the lines
+      special = jQuery.event.special[ type ] || {};
+      if ( !onlyHandlers && special.trigger && special.trigger.apply( elem, data ) === false ) {
+        return;
+      }
+
+      // Determine event propagation path in advance, per W3C events spec (#9951)
+      // Bubble up to document, then to window; watch for a global ownerDocument var (#9724)
+      if ( !onlyHandlers && !special.noBubble && !jQuery.isWindow( elem ) ) {
+
+        bubbleType = special.delegateType || type;
+        if ( !rfocusMorph.test( bubbleType + type ) ) {
+          cur = cur.parentNode;
+        }
+        for ( ; cur; cur = cur.parentNode ) {
+          eventPath.push( cur );
+          tmp = cur;
+        }
+
+        // Only add window if we got to document (e.g., not plain obj or detached DOM)
+        if ( tmp === (elem.ownerDocument || document) ) {
+          eventPath.push( tmp.defaultView || tmp.parentWindow || window );
+        }
+      }
+
+      // Fire handlers on the event path
+      i = 0;
+      while ( (cur = eventPath[i++]) && !event.isPropagationStopped() ) {
+
+        event.type = i > 1 ?
+            bubbleType :
+            special.bindType || type;
+
+        // jQuery handler
+        handle = ( data_priv.get( cur, "events" ) || {} )[ event.type ] && data_priv.get( cur, "handle" );
+        if ( handle ) {
+          handle.apply( cur, data );
+        }
+
+        // Native handler
+        handle = ontype && cur[ ontype ];
+        if ( handle && jQuery.acceptData( cur ) && handle.apply && handle.apply( cur, data ) === false ) {
+          event.preventDefault();
+        }
+      }
+      event.type = type;
+
+      // If nobody prevented the default action, do it now
+      if ( !onlyHandlers && !event.isDefaultPrevented() ) {
+
+        if ( (!special._default || special._default.apply( eventPath.pop(), data ) === false) &&
+            jQuery.acceptData( elem ) ) {
+
+          // Call a native DOM method on the target with the same name name as the event.
+          // Don't do default actions on window, that's where global variables be (#6170)
+          if ( ontype && jQuery.isFunction( elem[ type ] ) && !jQuery.isWindow( elem ) ) {
+
+            // Don't re-trigger an onFOO event when we call its FOO() method
+            tmp = elem[ ontype ];
+
+            if ( tmp ) {
+              elem[ ontype ] = null;
+            }
+
+            // Prevent re-triggering of the same event, since we already bubbled it above
+            jQuery.event.triggered = type;
+            elem[ type ]();
+            jQuery.event.triggered = undefined;
+
+            if ( tmp ) {
+              elem[ ontype ] = tmp;
+            }
+          }
+        }
+      }
+
+      return event.result;
     },
     dispatch: function( event ) {
 
@@ -2378,14 +2572,57 @@
       }
 
       // Call the postDispatch hook for the mapped type
+      // 对于关闭页面的特殊函数处理
       if ( special.postDispatch ) {
         special.postDispatch.call( this, event );
       }
 
       return event.result;
     },
-    handlers: function () {
+    handlers: function( event, handlers ) {
+      var i, matches, sel, handleObj,
+          handlerQueue = [],
+          delegateCount = handlers.delegateCount,
+          cur = event.target;
 
+      // Find delegate handlers
+      // Black-hole SVG <use> instance trees (#13180)
+      // Avoid non-left-click bubbling in Firefox (#3861)
+      if ( delegateCount && cur.nodeType && (!event.button || event.type !== "click") ) {
+
+        for ( ; cur !== this; cur = cur.parentNode || this ) {
+
+          // Don't process clicks on disabled elements (#6911, #8165, #11382, #11764)
+          if ( cur.disabled !== true || event.type !== "click" ) {
+            matches = [];
+            for ( i = 0; i < delegateCount; i++ ) {
+              handleObj = handlers[ i ];
+
+              // Don't conflict with Object.prototype properties (#13203)
+              sel = handleObj.selector + " ";
+
+              if ( matches[ sel ] === undefined ) {
+                matches[ sel ] = handleObj.needsContext ?
+                    jQuery( sel, this ).index( cur ) >= 0 :
+                    jQuery.find( sel, this, null, [ cur ] ).length;
+              }
+              if ( matches[ sel ] ) {
+                matches.push( handleObj );
+              }
+            }
+            if ( matches.length ) {
+              handlerQueue.push({ elem: cur, handlers: matches });
+            }
+          }
+        }
+      }
+
+      // Add the remaining (directly-bound) handlers
+      if ( delegateCount < handlers.length ) {
+        handlerQueue.push({ elem: this, handlers: handlers.slice( delegateCount ) });
+      }
+
+      return handlerQueue;
     },
     props: '',
     fixHooks: {},
@@ -2496,6 +2733,7 @@
       },
       click: {
         // For checkbox, fire native event so checked state will be right
+        // 当是复选框时候就选中
         trigger: function() {
           if ( this.type === "checkbox" && this.click && jQuery.nodeName( this, "input" ) ) {
             this.click();
@@ -2508,7 +2746,7 @@
           return jQuery.nodeName( event.target, "a" );
         }
       },
-
+      // 页面关闭时候
       beforeunload: {
         postDispatch: function( event ) {
 
@@ -2520,8 +2758,27 @@
         }
       }
     },
-    simulate: function () {
-
+    simulate: function( type, elem, event, bubble ) {
+      // Piggyback on a donor event to simulate a different one.
+      // Fake originalEvent to avoid donor's stopPropagation, but if the
+      // simulated event prevents default then we do the same on the donor.
+      var e = jQuery.extend(
+          new jQuery.Event(),
+          event,
+          {
+            type: type,
+            isSimulated: true,
+            originalEvent: {}
+          }
+      );
+      if ( bubble ) {
+        jQuery.event.trigger( e, null, elem );
+      } else {
+        jQuery.event.dispatch.call( elem, e );
+      }
+      if ( e.isDefaultPrevented() ) {
+        event.preventDefault();
+      }
     }
   };
 
@@ -2619,6 +2876,35 @@
       }
     };
   });
+
+  // Create "bubbling" focus and blur events
+  // Support: Firefox, Chrome, Safari
+  if ( !jQuery.support.focusinBubbles ) {
+    jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
+
+      // Attach a single capturing handler while someone wants focusin/focusout
+      var attaches = 0,
+          handler = function( event ) {
+            // 模拟事件处理
+            jQuery.event.simulate( fix, event.target, jQuery.event.fix( event ), true );
+          };
+
+      jQuery.event.special[ fix ] = {
+        setup: function() {
+          if ( attaches++ === 0 ) {
+            // 第三个参数是true,说明在捕获阶段， 因为focusin不会冒泡但是会捕获
+            document.addEventListener( orig, handler, true );
+          }
+        },
+        teardown: function() {
+          if ( --attaches === 0 ) {
+            // 取消特殊事件
+            document.removeEventListener( orig, handler, true );
+          }
+        }
+      };
+    });
+  }
 
   jQuery.fn.extend({
     // 其实调用的就是jQuery.event.add方法

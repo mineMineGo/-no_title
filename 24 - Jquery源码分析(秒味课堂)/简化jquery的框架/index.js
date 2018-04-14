@@ -4651,6 +4651,7 @@ jQuery.event = {
 		event.delegateTarget = this;
 
 		// Call the preDispatch hook for the mapped type, and let it bail if desired
+    // 事件触发前触发
 		if ( special.preDispatch && special.preDispatch.call( this, event ) === false ) {
 			return;
 		}
@@ -4860,6 +4861,7 @@ jQuery.event = {
 			},
 
 			// For cross-browser consistency, don't fire native .click() on links
+      // 对于a做了特殊处理,不会触发页面的跳转，其他标签就会触发默认行为
 			_default: function( event ) {
 				return jQuery.nodeName( event.target, "a" );
 			}

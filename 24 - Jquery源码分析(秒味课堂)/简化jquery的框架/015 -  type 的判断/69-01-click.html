@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>special </title>
+</head>
+<body style="height: 2000px;">
+  <div id="div1">
+    <!--<input id="input1" type="text">-->
+    <input id="input1" type="checkbox">
+    <img src="../images/43-01-data.png" />
+  </div>
+
+  <div id="div2">
+    <input id="input2" type="text">
+  </div>
+  <a href="www.baidu.com" id="myA">点击进入百度</a>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  /*
+    jQuery.event.special = {
+       global: {}, 事件的全局属性
+      add, 绑定事件
+      remove, 取消事件
+      trigger 主动触发事件
+      dispatch 派发事件的具体操作，
+      handlers 函数执行顺序的操作
+      props    jq中共享原生js的event事件
+      fixHooks 收集event兼容的集合
+      keyHooks 键盘的event兼容
+      mouseHooks 鼠标的event兼容
+      fix       对event对象的兼容处理
+      special   特殊事件的处理
+      simulate  例如focusin的模拟处理(trigger, dispatch)
+    }
+  */
+  
+  $(function () {
+    $('#input1').on('click', function () {
+      console.log('input1的click事件触发了');
+    });
+
+    $('#input1').trigger('click');
+  });
+
+  $('#myA').on("click", function () {
+    console.log("点击a了,不会跳转");
+  });
+  $('#myA').trigger('click');// 内部做了特殊处理，不会触发页面的跳转
+
+  //beforeunload
+  // 关闭页面时候
+  $(window).on('beforeunload', function () {
+    return 111;
+  });
+
+  // document.getElementById('div2').addEventListener('focusin', function (evt) {
+  //   console.log(2222);
+  // });
+
+  //focusin其实
+  $('#div2').on("focusin", function () {
+    console.log(1111);
+  });
+
+</script>
+</html>
