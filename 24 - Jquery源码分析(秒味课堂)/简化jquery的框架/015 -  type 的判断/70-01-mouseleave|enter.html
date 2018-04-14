@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>special </title>
+</head>
+<style>
+  #div1{
+    width: 300px;
+    height: 300px;
+    background-color: red;
+  }
+  #div2{
+    width: 100px;
+    height: 100px;
+    background-color: yellow;
+    position: absolute;
+  }
+</style>
+<body>
+  <div id="div1">
+    <div id="div2"></div>
+  </div>
+  <span id="span1"></span>
+</body>
+<script type="text/javascript" src="../index.js"></script>
+<script type="text/javascript">
+  /*
+    jQuery.event.special = {
+       global: {}, 事件的全局属性
+      add, 绑定事件
+      remove, 取消事件
+      trigger 主动触发事件
+      dispatch 派发事件的具体操作，
+      handlers 函数执行顺序的操作
+      props    jq中共享原生js的event事件
+      fixHooks 收集event兼容的集合
+      keyHooks 键盘的event兼容
+      mouseHooks 鼠标的event兼容
+      fix       对event对象的兼容处理
+      special   特殊事件的处理
+      simulate  例如focusin的模拟处理(trigger, dispatch)
+    }
+  */
+  window.onload = function (ev) {
+    var oDiv1 = document.getElementById('div1');
+    var oDiv2 = document.getElementById('div2');
+    var oSpan1 = document.getElementById('span1');
+
+/*
+    oDiv1.onmouseover = function (ev1) {
+      oSpan1.innerHTML += "1";
+      console.log('over事件');
+      oDiv2.style.display = "block";
+    };
+// 这里会发现有时候既触发了out事件也触发了over事件, 利用leave事件就可以避免
+    oDiv1.onmouseout = function (ev1) {
+      oSpan1.innerHTML += "2";
+      console.log('out事件');
+      oDiv2.style.display = "hidden";
+    };
+// 这里会发现leave事件的效果
+//     oDiv1.onmouseleave = function (ev1) {
+//       oSpan1.innerHTML += "3";
+//       oDiv2.style.display = "hidden";
+//     }
+
+*/
+
+  // 改造一下
+    //onmouseover 属性在鼠标指针移动到元素上时触发。
+    oDiv1.onmouseover = function (ev1) {
+      var ev = ev1 || window.event;
+      var a  = this;
+      var b = ev.relatedTarget; // 相对元素 在操作之前的那个元素
+      // 例如从 body移动到红色身上时 a是div1 b是body
+      //    从红色移动到黄色身上时候 a是div1 b还是div1
+      //    从黄色移动到红色身上时候 a是div1 b是黄块
+      if(!elContains(a, b) && a != b){
+        oSpan1.innerHTML += "1";
+      }
+    };
+    //onmouseout 属性在鼠标指针移动到元素外时触发。
+    oDiv1.onmouseout = function (ev1) {
+      var ev = ev1 || window.event;
+      var a = this;
+      var b = ev.relatedTarget;
+      if(!elContains(a, b) && a!=b){
+        oSpan1.innerHTML += '2';
+      }
+    }
+  };
+
+  function elContains(a, b) { //两个元素是否是嵌套关系
+    return a.contains ? a!=b && a.contains(b) : !! (a.compareDocumentPosition(b) & 16);
+  }
+</script>
+</html>

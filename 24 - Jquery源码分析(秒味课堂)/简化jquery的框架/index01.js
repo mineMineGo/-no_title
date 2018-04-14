@@ -2848,7 +2848,7 @@
       this.stopPropagation();
     }
   };
-
+// 通过mouseover/out（主流浏览器已经支持）创造 mouseenter/leave事件
   // Create mouseenter/leave events using mouseover/out and event-time checks
 // Support: Chrome 15+
   jQuery.each({
@@ -2862,11 +2862,12 @@
       handle: function( event ) {
         var ret,
           target = this,
-          related = event.relatedTarget,
+          related = event.relatedTarget, // 操作之前的相关元素
           handleObj = event.handleObj;
 
         // For mousenter/leave call the handler if related is outside the target.
         // NB: No relatedTarget if the mouse left/entered the browser window
+        // 写法原理同70-01.html是一样的
         if ( !related || (related !== target && !jQuery.contains( target, related )) ) {
           event.type = handleObj.origType;
           ret = handleObj.handler.apply( this, arguments );
