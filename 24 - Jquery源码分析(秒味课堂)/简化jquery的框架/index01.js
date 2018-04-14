@@ -2472,6 +2472,7 @@
     special: {
       load: {
         // Prevent triggered image.load events from bubbling to window.load
+        // 没有冒泡,比如保证image.load冒泡到window.load上
         noBubble: true
       },
       focus: {

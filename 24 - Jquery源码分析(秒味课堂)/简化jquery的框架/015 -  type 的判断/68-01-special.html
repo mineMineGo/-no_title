@@ -5,18 +5,75 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>keyHooks </title>
+  <title>special </title>
 </head>
 <body style="height: 2000px;">
-  <div class="box1 box2" id="mine1">
-    <span id="mine3">点我span</span>
-    点我啊</div>
-  <span id="mine2">span</span>
+  <div id="div1">
+    <input id="input1" type="text">
+    <img src="../images/43-01-data.png" />
+  </div>
+
+  <div id="div2">
+    <input id="input2" type="text">
+  </div>
 </body>
 <script type="text/javascript" src="../index.js"></script>
 <script type="text/javascript">
-  //on事件分析
+  /*
+    jQuery.event.special = {
+      load:
+      focus
+      blur
+      click
+      beforeunload
+      mouseenter
+      mouseleave
+      focusin
+      focusout
+    }
+  */
+  
+  $(function () {
+    $('#div1').on('click', function () {
+      console.log(111);
+    });
+    $('#input1').on('click', function () {
+      console.log(2222)
+    });
+    $('#input1').trigger('click'); // jq中的主动出发是支持冒泡的
+
+    $('window').on('load', function () {
+      console.log('window加载了');
+    })
+
+    $('img').on('load', function () {
+      console.log('img加载了');
+    });
+    $('img').trigger('load'); //  做了特殊处理，img的load事件不会冒泡到window的load时间上
 
 
+
+    // $('#div2').on('focus', function () {
+    //   console.log('div2获得焦点事件被触发');
+    // });
+    // $('#input2').on('focus', function () {
+    //   console.log('input2获得焦点事件被触发')
+    // });
+    // $('#input2').trigger('focus'); // 做了特殊处理， focus也是不会触发冒泡事件
+
+
+    // 也可以通过事件委托机制因为做了特殊处理, 因为div没有focus事件
+    // 因为内部做了特殊处理 ，发现是事件委托的话就会 转换为事件 'focusin'
+    $('#div2').delegate('#input2', 'focus', function () {
+      console.log('input2事件委托div2')
+    })
+    // 同样的blur也做了特殊处理， 转换为事件'focusout'
+
+
+
+
+  })
+  
+  
 </script>
 </html>
