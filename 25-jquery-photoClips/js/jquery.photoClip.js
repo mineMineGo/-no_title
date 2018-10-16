@@ -335,7 +335,8 @@
               "rotate(0deg) scale(" +
               -hisScale.scaleX +
               "," +
-              hisScale.scaleY +
+              // hisScale.scaleY +
+              1 +
               ")"
           });
           hisScale.scaleX = hisScale.scaleX === -1 ? 1 : -1;
@@ -347,7 +348,8 @@
           $(".photo-clip-rotateLayer img").css({
             transform:
               "rotate(0deg) scale(" +
-              hisScale.scaleX +
+              // hisScale.scaleX +
+              1 +
               "," +
               -hisScale.scaleY +
               ")"
@@ -564,20 +566,124 @@
         );
       }
 
-      // 如果是水平旋转需要先把画布水平平移
-      // 先平移。
-      if (hisScale.scaleX === -1 && hisScale.scaleY == 1) {
-        //水平旋
-        ctx.translate(2 * (curX - local.x / scale) + $img.width(), 0);
-      } else if (hisScale.scaleX === 1 && hisScale.scaleY === -1) {
-        //  如果是垂直旋转，需要先把画布垂直平移
-        ctx.translate(0, 2 * (curY - local.y / scale) + $img.height());
-      }
-      //再反转
-      ctx.scale(hisScale.scaleX, hisScale.scaleY);
+      //  --------------------------------------
+      // console.log((local.x * 360) / 640);
+      // console.log(local.x);
 
-      ctx.translate(curX - local.x / scale, curY - local.y / scale);
-      ctx.rotate((curAngle * Math.PI) / 180);
+      // // 如果是水平旋转需要先把画布水平平移scaleX
+      // // 先平移。
+      // if (hisScale.scaleX === -1 && hisScale.scaleY == 1) {
+      //   //水平旋
+      //   ctx.translate(2 * (curX - local.x / scale) + $img.width(), 0);
+      // } else if (hisScale.scaleX === 1 && hisScale.scaleY === -1) {
+      //   //  如果是垂直旋转，需要先把画布垂直平移
+      //   ctx.translate(0, 2 * (curY - local.y / scale) + $img.height());
+      // }
+      // console.log("缩放比例：" + scale);
+      // console.log(($img.width() * scale * 360) / 640);
+      // //再反转
+      // ctx.scale(hisScale.scaleX, hisScale.scaleY);
+      // console.log("旋转时候第一次位移距离");
+      // console.log(curX - local.x / scale, curY - local.y / scale);
+      // ctx.translate(curX - local.x / scale, curY - local.y / scale);
+      // ctx.rotate((curAngle * Math.PI) / 180);
+
+      // --------------------------------
+      // ctx.rotate((curAngle * Math.PI) / 180);
+
+      switch (Number(curAngle)) {
+        case 0:
+          // 翻转时候
+          if (hisScale.scaleX === -1 && hisScale.scaleY == 1) {
+            console.log("水平镜像-0");
+            //  水平旋转
+            ctx.translate(
+              $img.width() + curX - local.x / scale,
+              curY - local.y / scale
+            );
+            ctx.scale(hisScale.scaleX, hisScale.scaleY);
+          } else if (hisScale.scaleX === 1 && hisScale.scaleY === -1) {
+            //  如果是垂直旋转，需要先把画布垂直平移
+            console.log("垂直镜像-0");
+            ctx.translate(
+              curX - local.x / scale,
+              curY - local.y / scale + $img.height()
+            );
+            ctx.scale(hisScale.scaleX, hisScale.scaleY);
+          } else {
+            console.log("没有镜像0");
+            // 没有旋转也没有翻转
+            ctx.translate(curX - local.x / scale, curY - local.y / scale);
+          }
+          break;
+        case 90:
+          // 翻转时候
+          if (hisScale.scaleX === -1 && hisScale.scaleY == 1) {
+            //  水平旋转
+            console.log("水平镜像-90");
+            ctx.rotate((curAngle * Math.PI) / 180);
+            ctx.scale(hisScale.scaleX, hisScale.scaleY);
+            ctx.translate(
+              -$img.width() + local.y / scale,
+              -$img.height() + local.x / scale
+            );
+          } else if (hisScale.scaleX === 1 && hisScale.scaleY === -1) {
+            console.log("垂直镜像-90");
+            ctx.rotate((curAngle * Math.PI) / 180);
+            ctx.scale(hisScale.scaleX, hisScale.scaleY);
+            ctx.translate(-local.y / scale, -local.x / scale);
+          } else {
+            // 没有翻转、
+            console.log("没有镜像90");
+            ctx.translate(curX - local.x / scale, curY - local.y / scale);
+            ctx.rotate((curAngle * Math.PI) / 180);
+          }
+          break;
+        case 180:
+          if (hisScale.scaleX === -1 && hisScale.scaleY == 1) {
+            console.log("水平镜像-180");
+
+            ctx.rotate((curAngle * Math.PI) / 180);
+            ctx.scale(hisScale.scaleX, hisScale.scaleY);
+            ctx.translate(-local.x / scale, -$img.height() + local.y / scale);
+          } else if (hisScale.scaleX === 1 && hisScale.scaleY === -1) {
+            //  如果是垂直旋转，需要先把画布垂直平移
+            console.log("垂直镜像-180");
+            ctx.rotate((curAngle * Math.PI) / 180);
+            ctx.scale(hisScale.scaleX, hisScale.scaleY);
+            ctx.translate(-$img.width() + local.x / scale, -local.y / scale);
+          } else {
+            // 没有翻转
+            console.log("没有镜像180");
+            ctx.translate(curX - local.x / scale, curY - local.y / scale);
+            ctx.rotate((curAngle * Math.PI) / 180);
+          }
+          break;
+        case 270:
+          if (hisScale.scaleX === -1 && hisScale.scaleY == 1) {
+            console.log("水平镜像270");
+            ctx.rotate((curAngle * Math.PI) / 180);
+            ctx.scale(hisScale.scaleX, hisScale.scaleY);
+            ctx.translate(-local.y / scale, -local.x / scale);
+          } else if (hisScale.scaleX === 1 && hisScale.scaleY === -1) {
+            console.log("垂直镜像270");
+            ctx.rotate((curAngle * Math.PI) / 180);
+            ctx.scale(hisScale.scaleX, hisScale.scaleY);
+            ctx.translate(
+              -$img.width() + local.y / scale,
+              -$img.height() + local.x / scale
+            );
+          } else {
+            console.log("没有镜像270");
+            // 没有翻转
+            ctx.translate(curX - local.x / scale, curY - local.y / scale);
+            ctx.rotate((curAngle * Math.PI) / 180);
+          }
+          break;
+      }
+
+      // ----------------------------------
+
       ctx.drawImage($img[0], 0, 0);
       ctx.restore();
       var dataURL = canvas.toDataURL(outputType, 1);
