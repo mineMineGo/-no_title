@@ -134,7 +134,9 @@
       imgLoaded; //图片是否已经加载完成
 
     $file.attr("accept", "image/*");
-    // if(imgBase64){createImg(imgBase64)}
+    if (option.imgBase64) {
+      createImg(imgBase64);
+    }
     $file.change(function() {
       if (!this.files.length) return;
       var files = this.files[0];
