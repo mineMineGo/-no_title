@@ -593,6 +593,52 @@
       // --------------------------------
       // ctx.rotate((curAngle * Math.PI) / 180);
 
+      const finalGetImgCanvasWidth = $img[0].width * scale;
+      const finalGetImgCanvasHeight = $img[0].height * scale;
+      const outerTrimBoxWidth = option.size[0];
+      const outerTrimBoxHeight = option.size[1];
+
+      console.log("裁切框的宽度:" + option.size[0]);
+      console.log("裁切框的高度:" + option.size[1]);
+      console.log("最终裁切的图片宽度" + $img[0].width * scale);
+      console.log("最终裁切图片高度" + $img[0].height * scale);
+
+      console.log("canvas的宽度" + canvas.width);
+      console.log("canvas的高度" + canvas.height);
+      console.log("当前缩放比例" + scale);
+
+      console.log("图片宽度:" + $img[0].width);
+      console.log("图片高度:" + $img[0].height);
+
+      // 640-240 = 400/2=20x40
+
+      // ctx.drawImage(
+      //   $img[0],
+      //   0, // 开始剪切的图片上的水平位置
+      //   0, // 开始剪切的图片上的垂直位置
+      //   $img[0].width,
+      //   $img[0].height,
+      //   0, // 开始放置canvas的水平位置
+      //   400, // 开始放置canvas的垂直位置
+      //   $img[0].width,
+      //   $img[0].height
+      // );
+
+      // 0度时候
+      //  水平翻转
+
+      // const calcX = (outerTrimBoxWidth - finalGetImgCanvasWidth) / scale / 2;
+      // const translateX =
+      //   finalGetImgCanvasWidth >= outerTrimBoxWidth ? 0 : calcX;
+      // const caclY = (outerTrimBoxHeight - finalGetImgCanvasHeight) / scale / 2;
+      // const translateY =
+      //   finalGetImgCanvasHeight >= outerTrimBoxHeight ? 0 : caclY;
+
+      let calcX = 0;
+      let caclY = 0;
+      let translateX = 0;
+      let translateY = 0;
+
       switch (Number(curAngle)) {
         case 0:
           // 翻转时候
@@ -604,6 +650,8 @@
               curY - local.y / scale
             );
             ctx.scale(hisScale.scaleX, hisScale.scaleY);
+            calcX = -(outerTrimBoxWidth - finalGetImgCanvasWidth) / scale / 2;
+            caclY = (outerTrimBoxHeight - finalGetImgCanvasHeight) / scale / 2;
           } else if (hisScale.scaleX === 1 && hisScale.scaleY === -1) {
             //  如果是垂直旋转，需要先把画布垂直平移
             console.log("垂直镜像-0");
@@ -612,10 +660,16 @@
               curY - local.y / scale + $img.height()
             );
             ctx.scale(hisScale.scaleX, hisScale.scaleY);
+            // 镜像翻转
+            calcX = (outerTrimBoxWidth - finalGetImgCanvasWidth) / scale / 2;
+            caclY = -(outerTrimBoxHeight - finalGetImgCanvasHeight) / scale / 2;
           } else {
             console.log("没有镜像0");
             // 没有旋转也没有翻转
             ctx.translate(curX - local.x / scale, curY - local.y / scale);
+            // 没有翻转
+            calcX = (outerTrimBoxWidth - finalGetImgCanvasWidth) / scale / 2;
+            caclY = (outerTrimBoxHeight - finalGetImgCanvasHeight) / scale / 2;
           }
           break;
         case 90:
@@ -629,36 +683,49 @@
               -$img.width() + local.y / scale,
               -$img.height() + local.x / scale
             );
+            calcX = -(outerTrimBoxWidth - finalGetImgCanvasWidth) / scale / 2;
+            caclY = -(outerTrimBoxHeight - finalGetImgCanvasHeight) / scale / 2;
           } else if (hisScale.scaleX === 1 && hisScale.scaleY === -1) {
             console.log("垂直镜像-90");
             ctx.rotate((curAngle * Math.PI) / 180);
             ctx.scale(hisScale.scaleX, hisScale.scaleY);
             ctx.translate(-local.y / scale, -local.x / scale);
+            calcX = (outerTrimBoxWidth - finalGetImgCanvasWidth) / scale / 2;
+            caclY = (outerTrimBoxHeight - finalGetImgCanvasHeight) / scale / 2;
           } else {
             // 没有翻转、
             console.log("没有镜像90");
             ctx.translate(curX - local.x / scale, curY - local.y / scale);
             ctx.rotate((curAngle * Math.PI) / 180);
+            //
+            calcX = (outerTrimBoxWidth - finalGetImgCanvasWidth) / scale / 2;
+            caclY = -(outerTrimBoxHeight - finalGetImgCanvasHeight) / scale / 2;
           }
           break;
         case 180:
           if (hisScale.scaleX === -1 && hisScale.scaleY == 1) {
             console.log("水平镜像-180");
-
             ctx.rotate((curAngle * Math.PI) / 180);
             ctx.scale(hisScale.scaleX, hisScale.scaleY);
             ctx.translate(-local.x / scale, -$img.height() + local.y / scale);
+            calcX = (outerTrimBoxWidth - finalGetImgCanvasWidth) / scale / 2;
+            caclY = -(outerTrimBoxHeight - finalGetImgCanvasHeight) / scale / 2;
           } else if (hisScale.scaleX === 1 && hisScale.scaleY === -1) {
             //  如果是垂直旋转，需要先把画布垂直平移
             console.log("垂直镜像-180");
             ctx.rotate((curAngle * Math.PI) / 180);
             ctx.scale(hisScale.scaleX, hisScale.scaleY);
             ctx.translate(-$img.width() + local.x / scale, -local.y / scale);
+            calcX = -(outerTrimBoxWidth - finalGetImgCanvasWidth) / scale / 2;
+            caclY = (outerTrimBoxHeight - finalGetImgCanvasHeight) / scale / 2;
           } else {
             // 没有翻转
             console.log("没有镜像180");
             ctx.translate(curX - local.x / scale, curY - local.y / scale);
             ctx.rotate((curAngle * Math.PI) / 180);
+            calcX = 0;
+            calcX = -(outerTrimBoxWidth - finalGetImgCanvasWidth) / scale / 2;
+            caclY = -(outerTrimBoxHeight - finalGetImgCanvasHeight) / scale / 2;
           }
           break;
         case 270:
@@ -667,6 +734,9 @@
             ctx.rotate((curAngle * Math.PI) / 180);
             ctx.scale(hisScale.scaleX, hisScale.scaleY);
             ctx.translate(-local.y / scale, -local.x / scale);
+            //
+            calcX = -(outerTrimBoxWidth - finalGetImgCanvasWidth) / scale / 2;
+            caclY = (outerTrimBoxHeight - finalGetImgCanvasHeight) / scale / 2;
           } else if (hisScale.scaleX === 1 && hisScale.scaleY === -1) {
             console.log("垂直镜像270");
             ctx.rotate((curAngle * Math.PI) / 180);
@@ -675,18 +745,51 @@
               -$img.width() + local.y / scale,
               -$img.height() + local.x / scale
             );
+            //
+            calcX = -(outerTrimBoxWidth - finalGetImgCanvasWidth) / scale / 2;
+            caclY = -(outerTrimBoxHeight - finalGetImgCanvasHeight) / scale / 2;
           } else {
             console.log("没有镜像270");
             // 没有翻转
             ctx.translate(curX - local.x / scale, curY - local.y / scale);
             ctx.rotate((curAngle * Math.PI) / 180);
+            //
+            calcX = -(outerTrimBoxWidth - finalGetImgCanvasWidth) / scale / 2;
+            caclY = (outerTrimBoxHeight - finalGetImgCanvasHeight) / scale / 2;
           }
           break;
       }
+      translateX = finalGetImgCanvasWidth >= outerTrimBoxWidth ? 0 : calcX;
+      translateY = finalGetImgCanvasHeight >= outerTrimBoxHeight ? 0 : caclY;
+      // 90度时候
 
+      //  180度时候
+      //  270度时候
+      ctx.drawImage(
+        $img[0],
+        translateX,
+        translateY,
+        $img[0].width,
+        $img[0].height
+      );
+
+      // 空白地方成白色;
+      // 获取图片的数据; // 获取图片的数据
+
+      var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      //   console.log(imageData);
+      for (var i = 0; i < imageData.data.length; i += 4) {
+        // 当该像素是透明的，则设置成白色
+        if (imageData.data[i + 3] == 0) {
+          imageData.data[i] = 255;
+          imageData.data[i + 1] = 255;
+          imageData.data[i + 2] = 255;
+          imageData.data[i + 3] = 255;
+        }
+      }
       // ----------------------------------
+      ctx.putImageData(imageData, 0, 0);
 
-      ctx.drawImage($img[0], 0, 0);
       ctx.restore();
       var dataURL = canvas.toDataURL(outputType, 1);
       $view.css("background-image", "url(" + dataURL + ")");
@@ -774,7 +877,7 @@
       var sx = w1 / w2;
       var sy = h1 / h2;
       // 更改地方--------
-      return sx > sy ? sx : sy;
+      return sx < sy ? sx : sy;
       // -------------
     }
 
