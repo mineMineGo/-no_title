@@ -735,8 +735,8 @@
             ctx.scale(hisScale.scaleX, hisScale.scaleY);
             ctx.translate(-local.y / scale, -local.x / scale);
             //
-            calcX = -(outerTrimBoxWidth - finalGetImgCanvasWidth) / scale / 2;
-            caclY = (outerTrimBoxHeight - finalGetImgCanvasHeight) / scale / 2;
+            calcX = (outerTrimBoxWidth - finalGetImgCanvasWidth) / scale / 2;
+            caclY = -(outerTrimBoxHeight - finalGetImgCanvasHeight) / scale / 2;
           } else if (hisScale.scaleX === 1 && hisScale.scaleY === -1) {
             console.log("垂直镜像270");
             ctx.rotate((curAngle * Math.PI) / 180);
