@@ -16,15 +16,22 @@
   <link rel="icon" href="./assets/hy_icon.ico" type="image/x-icon">
 
   <link href="./assets/site.css" type="text/css" rel="stylesheet">
+  <link rel="stylesheet" href="./css/components/slideshow.min.css">
   <script type="text/javascript" async="" defer="" src="./assets/piwik.js"></script>
   <script type="text/javascript" async="" src="./assets/dc.js"></script>
   <script src="./assets/jquery.js" type="text/javascript"></script>
   <script src="./assets/uikit.min.js" type="text/javascript"></script>
   <script src="./assets/site.js" type="text/javascript"></script>
-
+  <script type="text/javascript" src="./js/components/slideshow.min.js"></script>
   <style>
     .uk-grid>* {
       padding: 0 1px !important;
+    }
+    .uk-slidenav-previous:before{
+      content: '〈';
+    }
+    .uk-slidenav-next:before{
+      content:"〉";
     }
   </style>
 
@@ -59,84 +66,274 @@
 
   <main class="site-main">
     <div class="uk-container uk-container-center" style="height:45px; background:#fff;padding-left:55px; font-size:13px">首页
-      > 禾悦自选</div>
-    <div style="height:45px; padding-left:40px; font-size:13px ;background:#f1f1f1">
-      <div class="uk-container uk-container-center"><span class="hy-common-cn">中式风格</span> <span class="hy-common-en">（CHINESE
-          STYLE）</span></div>
+      > 禾悦自选
     </div>
 
+    <div class="uk-slidenav-position" data-uk-slideshow="{animation: 'scroll'}">
+      <ul class="uk-slideshow uk-slideshow-fullscreen">
+        <li aria-hidden=" true" class="" style="animation-duration: 500ms;">
+          <div>
+            <div class="uk-cover-background uk-position-cover">
+              <div style="height:45px; padding-left:40px; font-size:13px ;background:#f1f1f1">
+                <div class="uk-container uk-container-center"><span class="hy-common-cn">中式风格</span> <span class="hy-common-en">（CHINESE
+                    STYLE）</span></div>
+              </div>
+              <div class="uk-block uk-text-center hy-banner-config uk-text-lighter" style='overflow: hidden;'>
+                <div style="height:45px; margin: 10px 0 260px;; z-index:100">
+                  <div class="uk-container uk-container-center" style="max-width:1600px !important">
+                    <div class="uk-grid uk-margin-large uk-flex-center" data-uk-grid-margin="">
+                      <div style="width:30%; float:left">
+                        <div class="uk-row-first" style=" height:340px;">
+                          <img src="./assets/hy_1j.png" style="width:470px;">
+                        </div>
+                      </div>
+
+                      <div style="width:60%; float:right">
+                        <div class="uk-row-first" style=" height:340px; padding-top:90px; width:500px; margin:0 auto;">
+                          <span class="hy_tips">一居室——中式风格</span>
+                          <p style="font-size:12px; color:#333">全球一线品牌中式古典风格,专属私人定制,新中产家装首选中式古典风格
+                            生活家装饰,中式古典风格含材料,包设计,一站式全屋定制.全球一线品牌中式古典风格,
+                            专属私人定制,新中产家装首选中式古典风格 生活家装饰,中式古典风格含材料,包设计,一站式全屋定制.</p>
+                          <span class="hy_btn">选择定制</span>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="height:45px; background:#8ca29a; margin: 30px 0;">
+                <div class="uk-container uk-container-center">
+                  <div id="outerNavTitle" class="uk-grid uk-margin-large uk-flex-center" data-uk-grid-margin="">
+                    <div class="uk-row-first hy-tag hy-tag-on" style="width:150px;">
+                      一居室
+                    </div>
+                    <div class="hy-tag" style="width:150px;">
+                      二居室
+                    </div>
+                    <div class="hy-tag" style="width:150px;">
+                      三居室
+                    </div>
+                    <div class="hy-tag" style="width:150px;">
+                      四居室
+                    </div>
+                  </div>
+                </div>
+              </div>
 
 
-    <div class="uk-block uk-text-center hy-banner-config uk-text-lighter" style='overflow: hidden;'>
-      <div style="height:45px; margin: 10px 0 260px;; z-index:100">
-        <div class="uk-container uk-container-center" style="max-width:1600px !important">
-          <div class="uk-grid uk-margin-large uk-flex-center" data-uk-grid-margin="">
-            <div style="width:30%; float:left">
-              <div class="uk-row-first" style=" height:340px;">
-                <img src="./assets/hy_1j.png" style="width:470px;">
+
+              <div style="height:260px; margin: 30px 0;">
+                <div class="uk-container uk-container-center">
+                  <div id='innerNavTitle' class="uk-grid uk-margin-large uk-flex-center" data-uk-grid-margin="">
+                    <div class="uk-row-first hy-tag" style="width:20%;">
+                      <img src="./assets/hy_style_zs.png">
+                      <div class="hy-style-tips hy-style-tips_on">
+                        中式风格
+                      </div>
+                    </div>
+                    <div class="hy-tag" style="width:20%;">
+                      <img src="./assets/hy_style_os.png">
+                      <div class="hy-style-tips">
+                        欧式风格
+                      </div>
+                    </div>
+                    <div class="hy-tag" style="width:20%;">
+                      <img src="./assets/hy_style_jy.png">
+                      <div class="hy-style-tips">
+                        简约风格
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
+          </div>
+          <canvas>
+          </canvas>
+        </li>
+        <li aria-hidden="true" style="animation-duration: 500ms;" class="">
+          <div>
+            <div class="uk-cover-background uk-position-cover">
+              <div style="height:45px; padding-left:40px; font-size:13px ;background:#f1f1f1">
+                <div class="uk-container uk-container-center"><span class="hy-common-cn">中式风格</span> <span class="hy-common-en">（CHINESE
+                    STYLE）</span></div>
+              </div>
+              <div class="uk-block uk-text-center hy-banner-config uk-text-lighter" style='overflow: hidden;'>
+                <div style="height:45px; margin: 10px 0 260px;; z-index:100">
+                  <div class="uk-container uk-container-center" style="max-width:1600px !important">
+                    <div class="uk-grid uk-margin-large uk-flex-center" data-uk-grid-margin="">
+                      <div style="width:30%; float:left">
+                        <div class="uk-row-first" style=" height:340px;">
+                          <img src="./assets/hy_1j.png" style="width:470px;">
+                        </div>
+                      </div>
 
-            <div style="width:60%; float:right">
-              <div class="uk-row-first" style=" height:340px; padding-top:90px; width:500px; margin:0 auto; ">
+                      <div style="width:60%; float:right">
+                        <div class="uk-row-first" style=" height:340px; padding-top:90px; width:500px; margin:0 auto; ">
 
-                <span class="hy_tips">一居室——中式风格</span>
-                <p style="font-size:12px; color:#333">全球一线品牌中式古典风格,专属私人定制,新中产家装首选中式古典风格
-                  生活家装饰,中式古典风格含材料,包设计,一站式全屋定制.全球一线品牌中式古典风格,
-                  专属私人定制,新中产家装首选中式古典风格 生活家装饰,中式古典风格含材料,包设计,一站式全屋定制.</p>
-                <span class="hy_btn">选择定制</span>
+                          <span class="hy_tips">一居室——中式风格</span>
+                          <p style="font-size:12px; color:#333">全球一线品牌中式古典风格,专属私人定制,新中产家装首选中式古典风格
+                            生活家装饰,中式古典风格含材料,包设计,一站式全屋定制.全球一线品牌中式古典风格,
+                            专属私人定制,新中产家装首选中式古典风格 生活家装饰,中式古典风格含材料,包设计,一站式全屋定制.</p>
+                          <span class="hy_btn">选择定制</span>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="height:45px; background:#8ca29a; margin: 30px 0;">
+                <div class="uk-container uk-container-center">
+                  <div id="outerNavTitle" class="uk-grid uk-margin-large uk-flex-center" data-uk-grid-margin="">
+                    <div class="uk-row-first hy-tag hy-tag-on" style="width:150px;">
+                      一居室
+                    </div>
+                    <div class="hy-tag" style="width:150px;">
+                      二居室
+                    </div>
+                    <div class="hy-tag" style="width:150px;">
+                      三居室
+                    </div>
+                    <div class="hy-tag" style="width:150px;">
+                      四居室
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="height:260px; margin: 30px 0;">
+                <div class="uk-container uk-container-center">
+                  <div id='innerNavTitle' class="uk-grid uk-margin-large uk-flex-center" data-uk-grid-margin="">
+                    <div class="uk-row-first hy-tag" style="width:20%;">
+                      <img src="./assets/hy_style_zs.png">
+                      <div class="hy-style-tips hy-style-tips_on">
+                        中式风格
+                      </div>
+                    </div>
+                    <div class="hy-tag" style="width:20%;">
+                      <img src="./assets/hy_style_os.png">
+                      <div class="hy-style-tips">
+                        欧式风格
+                      </div>
+                    </div>
+                    <div class="hy-tag" style="width:20%;">
+                      <img src="./assets/hy_style_jy.png">
+                      <div class="hy-style-tips">
+                        简约风格
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-
           </div>
-        </div>
-      </div>
+          <canvas>
+          </canvas>
+        </li>
+        <li aria-hidden="false" style="animation-duration: 500ms;" class="uk-active">
+          <div class="uk-cover-background uk-position-cover">
+            <div>
+              <div style="height:45px; padding-left:40px; font-size:13px ;background:#f1f1f1">
+                <div class="uk-container uk-container-center"><span class="hy-common-cn">中式风格</span> <span class="hy-common-en">（CHINESE
+                    STYLE）</span></div>
+              </div>
+              <div class="uk-block uk-text-center hy-banner-config uk-text-lighter" style='overflow: hidden;'>
+                <div style="height:45px; margin: 10px 0 260px;; z-index:100">
+                  <div class="uk-container uk-container-center" style="max-width:1600px !important">
+                    <div class="uk-grid uk-margin-large uk-flex-center" data-uk-grid-margin="">
+                      <div style="width:30%; float:left">
+                        <div class="uk-row-first" style=" height:340px;">
+                          <img src="./assets/hy_1j.png" style="width:470px;">
+                        </div>
+                      </div>
+
+                      <div style="width:60%; float:right">
+                        <div class="uk-row-first" style=" height:340px; padding-top:90px; width:500px; margin:0 auto; ">
+
+                          <span class="hy_tips">一居室——中式风格</span>
+                          <p style="font-size:12px; color:#333">全球一线品牌中式古典风格,专属私人定制,新中产家装首选中式古典风格
+                            生活家装饰,中式古典风格含材料,包设计,一站式全屋定制.全球一线品牌中式古典风格,
+                            专属私人定制,新中产家装首选中式古典风格 生活家装饰,中式古典风格含材料,包设计,一站式全屋定制.</p>
+                          <span class="hy_btn">选择定制</span>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="height:45px; background:#8ca29a; margin: 30px 0;">
+                <div class="uk-container uk-container-center">
+                  <div id="outerNavTitle" class="uk-grid uk-margin-large uk-flex-center" data-uk-grid-margin="">
+                    <div class="uk-row-first hy-tag hy-tag-on" style="width:150px;">
+                      一居室
+                    </div>
+                    <div class="hy-tag" style="width:150px;">
+                      二居室
+                    </div>
+                    <div class="hy-tag" style="width:150px;">
+                      三居室
+                    </div>
+                    <div class="hy-tag" style="width:150px;">
+                      四居室
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div style="height:260px; margin: 30px 0;">
+                <div class="uk-container uk-container-center">
+                  <div id='innerNavTitle' class="uk-grid uk-margin-large uk-flex-center" data-uk-grid-margin="">
+                    <div class="uk-row-first hy-tag" style="width:20%;">
+                      <img src="./assets/hy_style_zs.png">
+                      <div class="hy-style-tips hy-style-tips_on">
+                        中式风格
+                      </div>
+                    </div>
+                    <div class="hy-tag" style="width:20%;">
+                      <img src="./assets/hy_style_os.png">
+                      <div class="hy-style-tips">
+                        欧式风格
+                      </div>
+                    </div>
+                    <div class="hy-tag" style="width:20%;">
+                      <img src="./assets/hy_style_jy.png">
+                      <div class="hy-style-tips">
+                        简约风格
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div><canvas>
+          </canvas>
+        </li>
+      </ul>
+      <a href="#" class="uk-slidenav uk-slidenav-contrast uk-slidenav-previous" data-uk-slideshow-item="previous" style="color: rgba(255,255,255,0.4)"></a>
+      <a href="#" class="uk-slidenav uk-slidenav-contrast uk-slidenav-next" data-uk-slideshow-item="next" style="color: rgba(255,255,255,0.4)"></a>
     </div>
 
 
-    <div style="height:45px; background:#8ca29a; margin: 30px 0;">
-      <div class="uk-container uk-container-center">
-        <div id="outerNavTitle" class="uk-grid uk-margin-large uk-flex-center" data-uk-grid-margin="">
-          <div class="uk-row-first hy-tag hy-tag-on" style="width:150px;">
-            一居室
-          </div>
-          <div class="hy-tag" style="width:150px;">
-            二居室
-          </div>
-          <div class="hy-tag" style="width:150px;">
-            三居室
-          </div>
-          <div class="hy-tag" style="width:150px;">
-            四居室
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <div style="height:260px; margin: 30px 0;">
-      <div class="uk-container uk-container-center">
-        <div id='innerNavTitle' class="uk-grid uk-margin-large uk-flex-center" data-uk-grid-margin="">
-          <div class="uk-row-first hy-tag" style="width:20%;">
-            <img src="./assets/hy_style_zs.png">
-            <div class="hy-style-tips hy-style-tips_on">
-              中式风格
-            </div>
-          </div>
-          <div class="hy-tag" style="width:20%;">
-            <img src="./assets/hy_style_os.png">
-            <div class="hy-style-tips">
-              欧式风格
-            </div>
-          </div>
-          <div class="hy-tag" style="width:20%;">
-            <img src="./assets/hy_style_jy.png">
-            <div class="hy-style-tips">
-              简约风格
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+
+
+
+
+
+
+
+
 
     <div class="uk-block uk-block-hy-bottom uk-text-center hue-rotate" style="padding-top:30px; padding-bottom:30px;">
       <div class="uk-container uk-container-center">
@@ -187,10 +384,10 @@
       }
     })
     $('#innerNavTitle .hy-style-tips').hover(function () {
-      var isActive = $(this).hasClass("hy-style-tips-on");
-      if (isActive) {
-        $('#innerNavTitle .hy-style-tips-on').removeClass(".hy-style-tips-on");
-        $(this).addClass("hy-style-tips-on");
+      var isActive = $(this).hasClass("hy-style-tips_on");
+      if (!isActive) {
+        $('#innerNavTitle .hy-style-tips_on').removeClass("hy-style-tips_on");
+        $(this).addClass("hy-style-tips_on");
       }
     })
   })()
