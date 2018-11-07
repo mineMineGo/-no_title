@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<style>
+  #mine img{
+      width: 200px
+    }
+</style>
+
+<body>
+  合成图片：
+  <canvas width="500px" height="500px" id='myCanvas'>你的浏览器咱不支持</canvas>
+  <div id='mine'>
+    <img src="./2.png" alt="">
+    <img src="./1.png" alt="">
+    <img src="./3.png" alt="">
+  </div>
+</body>
+<script src="./jquery.js"></script>
+<script type='text/javascript'>
+  (function () {
+    window.onload = function () {
+      var canvas = document.getElementById("myCanvas");
+      var ctx = canvas.getContext("2d");
+      var $imgs = $('#mine img')
+      $imgs.each(function (index) {
+        ctx.drawImage($imgs[index], 0, 0, canvas.width, canvas.height)
+      })
+    }
+  })()
+</script>
+
+</html>
