@@ -1,5 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
+import MyButtonController from "./components/MyButtonController";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<MyButtonController />, document.getElementById("root"));
