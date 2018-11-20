@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 
 class MyButton extends PureComponent {
   render() {
-    const { onClick, items = [] } = this.props;
+    const { onClick, items } = this.props;
     const itemHtml = items.map((item, index) => {
       return <li key={index}>{item}</li>;
     });
