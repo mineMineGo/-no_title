@@ -7,6 +7,12 @@ const ListStore = Object.assign({}, EventEmitter.prototype, {
     console.log("store中收到了dispatch的变化");
     this.items.push(text);
     console.log(this.items);
+  },
+  emitChange: function() {
+    this.emit("change");
+  },
+  addChangeListener: function(callback) {
+    this.on("change", callback);
   }
 });
 

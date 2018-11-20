@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
 import MyButton from "./MyButton";
 import ButtonAction from "../actions/ButtonAction";
+import ListStore from "../stores/ListStore";
 
 class MyButtonController extends PureComponent {
   constructor(props) {
@@ -9,6 +10,13 @@ class MyButtonController extends PureComponent {
       items: []
     };
   }
+  componentDidMount() {
+    ListStore.addChangeListener(this._onChange);
+  }
+
+  _onChange = () => {
+    console.log("触发了view中的这个事件");
+  };
 
   createNewItem = () => {
     console.log("点击事件");
