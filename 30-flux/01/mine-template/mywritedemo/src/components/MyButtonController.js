@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import MyButton from "./MyButton";
 import ButtonAction from "../actions/ButtonAction";
 import ListStore from "../stores/ListStore";
+import Provider from "./Provider";
 
 class MyButtonController extends PureComponent {
   constructor(props) {
@@ -34,8 +35,12 @@ class MyButtonController extends PureComponent {
 
   render() {
     const { items } = this.state;
-    console.log(items);
-    return <MyButton items={items} onClick={this.createNewItem} />;
+    return (
+      <Provider>
+        <MyButton items={items} onClick={this.createNewItem} />
+      </Provider>
+    );
   }
 }
+
 export default MyButtonController;

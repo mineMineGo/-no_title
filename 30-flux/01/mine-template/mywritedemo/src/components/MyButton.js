@@ -6,7 +6,7 @@ class MyButton extends PureComponent {
     const itemHtml = items.map((item, index) => {
       return <li key={index}>{item}</li>;
     });
-
+    console.log(this.context);
     return (
       <div>
         <ul>{itemHtml}</ul>
