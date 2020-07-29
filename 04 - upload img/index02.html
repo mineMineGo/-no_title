@@ -1,164 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>从web图片裁剪出发：了解H5中的Blob</title>
+  <meta charset="UTF-8">
+  <title>从web图片裁剪出发：了解H5中的Blob</title>
 </head>
+
 <body>
-    <form name='test'>
-        <input type="file" name='file'>
-        <input type="submit" value="提交">
-    </form>
-    <img src="" alt="">
+  <form name='test'>
+    <input type="file" name='file'>
+    <input type="submit" value="提交">
+  </form>
+  <img src="" alt="">
 </body>
 <script type="text/javascript" src="js/jquery-3.2.1.js"></script>
 <script type="text/javascript">
+  /*
+  参考地址：http://www.cnblogs.com/tarol/p/5263050.html
+
+   可以看到这个元素有个属性files，
+   它的类型是FileList。
+   这个类不做过多介绍，就是一个类数组，
+   由浏览器通过用户行为往里面添加或删除元素，
+   JS只有访问其元素的接口，无法对其进行操作。
+   而files的元素就是File类型，File是blob的子类，
+   比blob主要多出一个name的属性。
+
+   现在我们选取一个文件，这里问题来了，
+   这个元素是文件在浏览器的完整备份，还是一个指向文件系统的引用？
+   答案是后者，我们选定文件，
+   然后修改文件名，再上传文件，浏览器报错了。
+   */
+  (function() {
+    //        var input = document.querySelector('input[type=file]'),
+    //            form = document.test;
+    //        form.addEventListener('submit', function(e) {
+    //            e.preventDefault();
+    //            var file = input.files[0],
+    //                fd = new FormData(),
+    //                xhr = new XMLHttpRequest();
+    //            fd.append('file', file);
+    //            xhr.open('post', '/upload');
+    //            xhr.send(fd);
+    //        });
+
+
     /*
-    参考地址：http://www.cnblogs.com/tarol/p/5263050.html
+     当用户选取图片时，调用FileReader的readAsArrayBuffer把图片数据读出来，
+     然后生成新的blob对象保存在浏览器中。
+     查看chrome://blob-internals/，可以注意到这一项：
+     对应的就是刚才的blob，可以对比length和图片本身的大小。
+     上面那个demo很突兀，完全没有解释什么是ArrayBuffer，
+     为什么创建blob要传入一个ArrayBuffer。
+     那么第三个问题来了，什么是ArrayBuffer、BinaryString、DataURL、Text
+     ，它们有什么联系和不同，Blob类到底是个什么东西？
+     首先，图片是个二进制文件，它的内容也是由0和1组成的。
+     用户肯定是看不懂0和1的组合的，能看懂的只有最终展示的图片，
+     而程序员也看不懂0和1，但程序员能看懂另外几种0和1变换后的组合。
+     它们就是以上的4种：ArrayBuffer、BinaryString、DataURL和Text。
 
-     可以看到这个元素有个属性files，
-     它的类型是FileList。
-     这个类不做过多介绍，就是一个类数组，
-     由浏览器通过用户行为往里面添加或删除元素，
-     JS只有访问其元素的接口，无法对其进行操作。
-     而files的元素就是File类型，File是blob的子类，
-     比blob主要多出一个name的属性。
+       其中ArrayBuffer是最接近二进制数据的表现的，
+     可以理解为它就是二进制数据的存储器，
+     这也是为什么二进制文件的Blob需要传入ArrayBuffer。
+     正因为它的内部是二进制数据，所以我们是不可以直接操作的。
+     这时候就需要一个代理者帮助我们读或写，这个代理者就是ArrayBufferView。
 
-     现在我们选取一个文件，这里问题来了，
-     这个元素是文件在浏览器的完整备份，还是一个指向文件系统的引用？
-     答案是后者，我们选定文件，
-     然后修改文件名，再上传文件，浏览器报错了。
+       ArrayBufferView不是一个类，而是一个类的集合，
+     包括：Int8Array、Uint8Array、Uint8ClampedArray、Int16Array、Uint16Array、Int32Array、Uint32Array、Float32Array、Float64Array和DataView，
+     分别表示以8位、16位、32位、64位数字为元素对ArrayBuffer内的二进制数据进行展现
+     ，它们都有统一的属性buffer指向对应的ArrayBuffer。栗子暂时不举，之后会用到。
+
+       ArrayBuffer简单介绍了，那什么是BinaryString呢？
+     是二进制数据直接以byte的形式展现的字符串，比如1100001，
+     用Uint8表示就是97，用BinaryString表示就是'a'。对，前者是charCode，
+     后者是char，所以BinaryString和Uint8Array之间是可以自由转换的。
+
+       接下来是DataURL了，这是一个经过base64编码的字符串，它的组成如下：
+
+     data:[mimeType];base64,[base64(binaryString)]
+
+       除了固定的字符串部分，它主要包含两个重要信息即中括号括起的部分，
+     mimeType和base64编码后的binaryString，从它里面我们可以这样取到这两个信息。
+
+     var binaryString = atob(dataUrl.split(',')[1]),
+     mimeType = dataUrl.split(',')[0].match(/:(.*?);/)[1];
+       最后，Text是什么呢？在ftp上，文本传输和二进制传输的区别是什么
+     ，那Text类型和BinaryString类型的区别就是什么了，
+     也就是Text类型是经过一定转换的BinaryString，对于图片来说，这个类型是用不到的。
+
+       好了，现在我们了解了一张图片在浏览器里以数据的形式可以表现为ArrayBuffer、BinaryString、DataURL，那么第四个问题来了，它们各有实际用途呢？
+     我们从应用场景出发，回到文章开头的问题，图片的裁剪和上传。
+     图片的裁剪我们要倚仗牛逼的canvas，而canvas的context有这么一个方法toDataURL，
+     就是把canvas的内容转换为图片数据，而数据的表现形式就是DataURL！
+     图片的上传我们用的是FormData，它可以添加Blob类型的对象进去，
+     那Blob类型除了从input[type=file]中直接获取，还能靠什么生成呢？
+     自然是ArrayBuffer！好了，裁剪图片的功能要用到DataURL，
+     上传图片的功能要用到ArrayBuffer，那怎么从DataURL转换为ArrayBuffer呢？
+     我们知道DataURL很重要的组成部分就是经过base64编码的BinaryString，
+     那么很显然我们可以从DataURL中提取BinaryString，
+     而BinaryString就是ArrayBuffer对应的Uint8Array的字符形式的表现，
+     所以可以由BinaryString生成ArrayBuffer，那么DataURL到ArrayBuffer之间的桥就是BinaryString！
+
+       到现在为止，我们说了很多概念，然而这并没有什么卵用，
+     验证概念的方法不是提出新的概念，而是建立一个example。
+     以下的example就是把图片数据从input中取出，然后以DataURL的格式进行预览，
+     提交时把预览生成图片上传的整个流程。
      */
-    (function () {
-//        var input = document.querySelector('input[type=file]'),
-//            form = document.test;
-//        form.addEventListener('submit', function(e) {
-//            e.preventDefault();
-//            var file = input.files[0],
-//                fd = new FormData(),
-//                xhr = new XMLHttpRequest();
-//            fd.append('file', file);
-//            xhr.open('post', '/upload');
-//            xhr.send(fd);
-//        });
+    //        input.addEventListener('change', function() {
+    //            var file = this.files[0],
+    //                fr = new FileReader(),
+    //                blob;
+    //            fr.onload = function() {
+    //                blob = new Blob([this.result]);
+    //            };
+    //            fr.readAsArrayBuffer(file)
+    //        });
 
 
+    var img = document.querySelector('img'),
+      preview;
+    document.test.file.addEventListener('change', function() {
+      var fr = new FileReader();
+      fr.readAsDataURL(this.files[0]);
+      fr.onload = function() {
+        preview = this.result;
+        img.src = preview;
+        console.info(preview)
+      };
+    });
+    document.test.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var binaryString = atob(preview.split(',')[1]),
+        mimeType = preview.split(',')[0].match(/:(.*?);/)[1],
+        length = binaryString.length,
+        u8arr = new Uint8Array(length),
+        blob,
+        fd = new FormData(),
+        xhr = new XMLHttpRequest();
+      while (length--) {
+        u8arr[length] = binaryString.charCodeAt(length);
+      }
+      blob = new Blob([u8arr.buffer], { type: mimeType });
+      fd.append('file', blob);
+      xhr.open('post', '/upload');
+      xhr.send(fd);
+    })
+
+
+  })();
         /*
-         当用户选取图片时，调用FileReader的readAsArrayBuffer把图片数据读出来，
-         然后生成新的blob对象保存在浏览器中。
-         查看chrome://blob-internals/，可以注意到这一项：
-         对应的就是刚才的blob，可以对比length和图片本身的大小。
-         上面那个demo很突兀，完全没有解释什么是ArrayBuffer，
-         为什么创建blob要传入一个ArrayBuffer。
-         那么第三个问题来了，什么是ArrayBuffer、BinaryString、DataURL、Text
-         ，它们有什么联系和不同，Blob类到底是个什么东西？
-         首先，图片是个二进制文件，它的内容也是由0和1组成的。
-         用户肯定是看不懂0和1的组合的，能看懂的只有最终展示的图片，
-         而程序员也看不懂0和1，但程序员能看懂另外几种0和1变换后的组合。
-         它们就是以上的4种：ArrayBuffer、BinaryString、DataURL和Text。
-
-         　　其中ArrayBuffer是最接近二进制数据的表现的，
-         可以理解为它就是二进制数据的存储器，
-         这也是为什么二进制文件的Blob需要传入ArrayBuffer。
-         正因为它的内部是二进制数据，所以我们是不可以直接操作的。
-         这时候就需要一个代理者帮助我们读或写，这个代理者就是ArrayBufferView。
-
-         　　ArrayBufferView不是一个类，而是一个类的集合，
-         包括：Int8Array、Uint8Array、Uint8ClampedArray、Int16Array、Uint16Array、Int32Array、Uint32Array、Float32Array、Float64Array和DataView，
-         分别表示以8位、16位、32位、64位数字为元素对ArrayBuffer内的二进制数据进行展现
-         ，它们都有统一的属性buffer指向对应的ArrayBuffer。栗子暂时不举，之后会用到。
-
-         　　ArrayBuffer简单介绍了，那什么是BinaryString呢？
-         是二进制数据直接以byte的形式展现的字符串，比如1100001，
-         用Uint8表示就是97，用BinaryString表示就是'a'。对，前者是charCode，
-         后者是char，所以BinaryString和Uint8Array之间是可以自由转换的。
-
-         　　接下来是DataURL了，这是一个经过base64编码的字符串，它的组成如下：
-
-         data:[mimeType];base64,[base64(binaryString)]
-
-         　　除了固定的字符串部分，它主要包含两个重要信息即中括号括起的部分，
-         mimeType和base64编码后的binaryString，从它里面我们可以这样取到这两个信息。
-
-         var binaryString = atob(dataUrl.split(',')[1]),
-         mimeType = dataUrl.split(',')[0].match(/:(.*?);/)[1];
-         　　最后，Text是什么呢？在ftp上，文本传输和二进制传输的区别是什么
-         ，那Text类型和BinaryString类型的区别就是什么了，
-         也就是Text类型是经过一定转换的BinaryString，对于图片来说，这个类型是用不到的。
-
-         　　好了，现在我们了解了一张图片在浏览器里以数据的形式可以表现为ArrayBuffer、BinaryString、DataURL，那么第四个问题来了，它们各有实际用途呢？
-         我们从应用场景出发，回到文章开头的问题，图片的裁剪和上传。
-         图片的裁剪我们要倚仗牛逼的canvas，而canvas的context有这么一个方法toDataURL，
-         就是把canvas的内容转换为图片数据，而数据的表现形式就是DataURL！
-         图片的上传我们用的是FormData，它可以添加Blob类型的对象进去，
-         那Blob类型除了从input[type=file]中直接获取，还能靠什么生成呢？
-         自然是ArrayBuffer！好了，裁剪图片的功能要用到DataURL，
-         上传图片的功能要用到ArrayBuffer，那怎么从DataURL转换为ArrayBuffer呢？
-         我们知道DataURL很重要的组成部分就是经过base64编码的BinaryString，
-         那么很显然我们可以从DataURL中提取BinaryString，
-         而BinaryString就是ArrayBuffer对应的Uint8Array的字符形式的表现，
-         所以可以由BinaryString生成ArrayBuffer，那么DataURL到ArrayBuffer之间的桥就是BinaryString！
-
-         　　到现在为止，我们说了很多概念，然而这并没有什么卵用，
-         验证概念的方法不是提出新的概念，而是建立一个example。
-         以下的example就是把图片数据从input中取出，然后以DataURL的格式进行预览，
-         提交时把预览生成图片上传的整个流程。
-         */
-//        input.addEventListener('change', function() {
-//            var file = this.files[0],
-//                fr = new FileReader(),
-//                blob;
-//            fr.onload = function() {
-//                blob = new Blob([this.result]);
-//            };
-//            fr.readAsArrayBuffer(file)
-//        });
+    使用chrome打开chrome://blob-internals/，可以看到一条这样的记录
+       9202d2b2-1f5b-4b0e-94d8-391b02cb43a5
+       Refcount: 1
+       Status: BlobStatus::DONE: Blob built with no errors.
+       Content Type: image/jpeg
+       Type: file
+       Path: F:\360Downloads\360wallpaper (6).jpg
 
 
-        var img = document.querySelector('img'),
-            preview;
-        document.test.file.addEventListener('change', function() {
-            var fr = new FileReader();
-            fr.readAsDataURL(this.files[0]);
-            fr.onload = function() {
-                preview = this.result;
-                img.src = preview;
-                console.info(preview)
-            };
-        });
-        document.test.addEventListener('submit', function(e) {
-            e.preventDefault();
-            var binaryString = atob(preview.split(',')[1]),
-                mimeType = preview.split(',')[0].match(/:(.*?);/)[1],
-                length = binaryString.length,
-                u8arr = new Uint8Array(length),
-                blob,
-                fd = new FormData(),
-                xhr = new XMLHttpRequest();
-            while(length--) {
-                u8arr[length] = binaryString.charCodeAt(length);
-            }
-            blob = new Blob([u8arr.buffer], {type: mimeType});
-            fd.append('file', blob);
-            xhr.open('post', '/upload');
-            xhr.send(fd);
-        })
-
-
-    })();
-        /*
-         　使用chrome打开chrome://blob-internals/，可以看到一条这样的记录
-             9202d2b2-1f5b-4b0e-94d8-391b02cb43a5
-             Refcount: 1
-             Status: BlobStatus::DONE: Blob built with no errors.
-             Content Type: image/jpeg
-             Type: file
-             Path: F:\360Downloads\360wallpaper (6).jpg
-
-
-         　　可见这仅仅是一条引用。第二个问题来了，如果我们要对图片进行处理，那么只拿到引用是不行的，肯定要在浏览器有一份数据的备份，那么怎么获取这个备份呢？答案就是FileReader，FileReader的对象主要有readAsArrayBuffer、readAsBinaryString、readAsDataURL、readAsText等方法，它们的入参都是Blob对象或是File对象，结果对应最终获取的数据类型。这几个方法是异步的，读取过程中会抛出对应的事件，其中读取完毕的事件为load，
-         所以数据的处理要放在onload下。我先给一个简单的example：
-         */
+     可见这仅仅是一条引用。第二个问题来了，如果我们要对图片进行处理，那么只拿到引用是不行的，肯定要在浏览器有一份数据的备份，那么怎么获取这个备份呢？答案就是FileReader，FileReader的对象主要有readAsArrayBuffer、readAsBinaryString、readAsDataURL、readAsText等方法，它们的入参都是Blob对象或是File对象，结果对应最终获取的数据类型。这几个方法是异步的，读取过程中会抛出对应的事件，其中读取完毕的事件为load，
+   所以数据的处理要放在onload下。我先给一个简单的example：
+   */
 
 </script>
+
 </html>
